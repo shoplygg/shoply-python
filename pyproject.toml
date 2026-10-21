@@ -1,0 +1,37 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "shoply"
+version = "0.1.0"
+description = "Shoply's API from your own server: every route as a method, safe retries, pages, and checking webhooks."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.9"
+authors = [{ name = "Shoply" }]
+keywords = ["shoply", "api", "sdk", "ecommerce", "webhooks", "digital-goods"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Office/Business :: Financial :: Point-Of-Sale",
+    "Typing :: Typed",
+]
+dependencies = []
+
+[project.urls]
+Documentation = "https://docs.shoply.gg/api-reference/python"
+Source = "https://github.com/shoplygg/shoply-python"
+Issues = "https://github.com/shoplygg/shoply-python/issues"
+Changelog = "https://docs.shoply.gg/changelog"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/shoply"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/shoply", "tests", "README.md", "LICENSE", "pyproject.toml"]
