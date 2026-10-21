@@ -4035,6 +4035,131 @@ CartRecoveryCartResult = TypedDict("CartRecoveryCartResult", {
     "recoveredAt": Any,
 })
 
+WinBackShowResult = TypedDict("WinBackShowResult", {
+    "enabled": bool,
+    "firstOn": bool,
+    "firstDays": float,
+    "firstSubject": str,
+    "secondOn": bool,
+    "secondDays": float,
+    "secondSubject": str,
+    "secondPercent": float,
+    "audience": str,
+})
+
+WinBackUpdateResult = TypedDict("WinBackUpdateResult", {
+    "enabled": bool,
+    "firstOn": bool,
+    "firstDays": float,
+    "firstSubject": str,
+    "secondOn": bool,
+    "secondDays": float,
+    "secondSubject": str,
+    "secondPercent": float,
+    "audience": str,
+})
+
+WinBackBuyersItem = TypedDict("WinBackBuyersItem", {
+    "id": str,
+    "email": str,
+    "customerId": str,
+    "orders": float,
+    "spent": float,
+    "tags": Union[List[Any], Dict[str, Any]],
+    "state": str,
+    "stopped": Any,
+    "lastOrderId": str,
+    "lastOrderAt": str,
+    "what": str,
+    "nextStep": str,
+    "dueAt": str,
+    "emailedAt": Any,
+    "secondEmailAt": Any,
+    "clickedAt": Any,
+    "couponCode": Any,
+    "couponExpiresAt": Any,
+    "wonOrderId": Any,
+    "wonAt": Any,
+    "wonAfter": Any,
+    "quietDays": Any,
+    "unsubscribedAt": Any,
+})
+
+WinBackBuyerResult = TypedDict("WinBackBuyerResult", {
+    "id": str,
+    "email": str,
+    "customerId": str,
+    "orders": float,
+    "spent": float,
+    "tags": Union[List[Any], Dict[str, Any]],
+    "state": str,
+    "stopped": Any,
+    "lastOrderId": str,
+    "lastOrderAt": str,
+    "what": str,
+    "nextStep": str,
+    "dueAt": str,
+    "emailedAt": Any,
+    "secondEmailAt": Any,
+    "clickedAt": Any,
+    "couponCode": Any,
+    "couponExpiresAt": Any,
+    "wonOrderId": Any,
+    "wonAt": Any,
+    "wonAfter": Any,
+    "quietDays": Any,
+    "unsubscribedAt": Any,
+})
+
+SubscribersSummaryResultFigures = TypedDict("SubscribersSummaryResultFigures", {
+    "subscribed": float,
+    "joined": float,
+    "asked": float,
+    "rate": float,
+    "unsubscribed": float,
+    "sent": float,
+})
+
+SubscribersSummaryResult = TypedDict("SubscribersSummaryResult", {
+    "asking": bool,
+    "figures": SubscribersSummaryResultFigures,
+})
+
+SubscribersAskingResult = TypedDict("SubscribersAskingResult", {
+    "asking": bool,
+})
+
+SubscribersListItem = TypedDict("SubscribersListItem", {
+    "email": str,
+    "customerId": str,
+    "subscribed": bool,
+    "subscribedAt": str,
+    "source": str,
+    "where": str,
+    "orderId": str,
+    "unsubscribedAt": Any,
+    "unsubscribedBy": Any,
+})
+
+SubscribersUnsubscribeResult = TypedDict("SubscribersUnsubscribeResult", {
+    "email": str,
+    "customerId": Any,
+    "subscribed": bool,
+    "subscribedAt": str,
+    "source": str,
+    "where": str,
+    "orderId": str,
+    "unsubscribedAt": str,
+    "unsubscribedBy": str,
+})
+
+CustomersListItemTagsItem = TypedDict("CustomersListItemTagsItem", {
+    "id": str,
+    "name": str,
+    "tone": str,
+    "automatic": bool,
+})
+
 CustomersListItem = TypedDict("CustomersListItem", {
     "id": str,
     "emailAddress": str,
@@ -4045,6 +4170,7 @@ CustomersListItem = TypedDict("CustomersListItem", {
     "lastOrderAt": Any,
     "balance": float,
     "affiliateState": Any,
+    "tags": List[CustomersListItemTagsItem],
 })
 
 CustomersCreateResult = TypedDict("CustomersCreateResult", {
@@ -4098,6 +4224,13 @@ CustomersStatsResult = TypedDict("CustomersStatsResult", {
     "averageSpend": CustomersStatsResultAverageSpend,
 })
 
+CustomersShowResultTagsItem = TypedDict("CustomersShowResultTagsItem", {
+    "id": str,
+    "name": str,
+    "tone": str,
+    "automatic": bool,
+})
+
 CustomersShowResultBalanceHistoryItem = TypedDict("CustomersShowResultBalanceHistoryItem", {
     "id": str,
     "kind": str,
@@ -4113,6 +4246,7 @@ CustomersShowResultBalanceHistoryItem = TypedDict("CustomersShowResultBalanceHis
 CustomersShowResult = TypedDict("CustomersShowResult", {
     "balance": float,
     "balanceAtCheckout": bool,
+    "tags": List[CustomersShowResultTagsItem],
     "balanceHistory": List[CustomersShowResultBalanceHistoryItem],
     "affiliate": Any,
     "blacklisted": bool,
@@ -4131,6 +4265,13 @@ CustomersShowResult = TypedDict("CustomersShowResult", {
     "orders": Union[List[Any], Dict[str, Any]],
 })
 
+CustomersSetBalanceResultTagsItem = TypedDict("CustomersSetBalanceResultTagsItem", {
+    "id": str,
+    "name": str,
+    "tone": str,
+    "automatic": bool,
+})
+
 CustomersSetBalanceResultBalanceHistoryItem = TypedDict("CustomersSetBalanceResultBalanceHistoryItem", {
     "id": str,
     "kind": str,
@@ -4146,12 +4287,20 @@ CustomersSetBalanceResultBalanceHistoryItem = TypedDict("CustomersSetBalanceResu
 CustomersSetBalanceResult = TypedDict("CustomersSetBalanceResult", {
     "balance": float,
     "balanceAtCheckout": bool,
+    "tags": List[CustomersSetBalanceResultTagsItem],
     "balanceHistory": List[CustomersSetBalanceResultBalanceHistoryItem],
     "affiliate": Any,
     "blacklisted": bool,
     "blacklistedBy": Union[List[Any], Dict[str, Any]],
     "blacklistRules": float,
     "knownAddresses": float,
+})
+
+CustomersBlacklistResultTagsItem = TypedDict("CustomersBlacklistResultTagsItem", {
+    "id": str,
+    "name": str,
+    "tone": str,
+    "automatic": bool,
 })
 
 CustomersBlacklistResultBalanceHistoryItem = TypedDict("CustomersBlacklistResultBalanceHistoryItem", {
@@ -4176,6 +4325,7 @@ CustomersBlacklistResultBlacklistedByItem = TypedDict("CustomersBlacklistResultB
 CustomersBlacklistResult = TypedDict("CustomersBlacklistResult", {
     "balance": float,
     "balanceAtCheckout": bool,
+    "tags": List[CustomersBlacklistResultTagsItem],
     "balanceHistory": List[CustomersBlacklistResultBalanceHistoryItem],
     "affiliate": Any,
     "blacklisted": bool,
@@ -4183,6 +4333,13 @@ CustomersBlacklistResult = TypedDict("CustomersBlacklistResult", {
     "blacklistRules": float,
     "knownAddresses": float,
     "added": float,
+})
+
+CustomersUnblacklistResultTagsItem = TypedDict("CustomersUnblacklistResultTagsItem", {
+    "id": str,
+    "name": str,
+    "tone": str,
+    "automatic": bool,
 })
 
 CustomersUnblacklistResultBalanceHistoryItem = TypedDict("CustomersUnblacklistResultBalanceHistoryItem", {
@@ -4200,6 +4357,7 @@ CustomersUnblacklistResultBalanceHistoryItem = TypedDict("CustomersUnblacklistRe
 CustomersUnblacklistResult = TypedDict("CustomersUnblacklistResult", {
     "balance": float,
     "balanceAtCheckout": bool,
+    "tags": List[CustomersUnblacklistResultTagsItem],
     "balanceHistory": List[CustomersUnblacklistResultBalanceHistoryItem],
     "affiliate": Any,
     "blacklisted": bool,
@@ -4207,6 +4365,50 @@ CustomersUnblacklistResult = TypedDict("CustomersUnblacklistResult", {
     "blacklistRules": float,
     "knownAddresses": float,
     "removed": float,
+})
+
+CustomersSetTagsResultItem = TypedDict("CustomersSetTagsResultItem", {
+    "id": str,
+    "name": str,
+    "tone": str,
+    "automatic": bool,
+})
+
+CustomersTagResultItem = TypedDict("CustomersTagResultItem", {
+    "id": str,
+    "name": str,
+    "tone": str,
+    "automatic": bool,
+})
+
+CustomerTagsListResultItem = TypedDict("CustomerTagsListResultItem", {
+    "id": str,
+    "name": str,
+    "tone": str,
+    "automatic": bool,
+    "customers": float,
+})
+
+CustomerTagsCreateResult = TypedDict("CustomerTagsCreateResult", {
+    "id": str,
+    "name": str,
+    "tone": str,
+    "automatic": bool,
+})
+
+CustomerTagsAutomaticResultItem = TypedDict("CustomerTagsAutomaticResultItem", {
+    "id": str,
+    "name": str,
+    "tone": str,
+    "automatic": bool,
+    "customers": float,
+})
+
+CustomerTagsUpdateResult = TypedDict("CustomerTagsUpdateResult", {
+    "id": str,
+    "name": str,
+    "tone": str,
+    "automatic": bool,
 })
 
 AffiliatesListResultItem = TypedDict("AffiliatesListResultItem", {
@@ -7949,6 +8151,8 @@ WebhookEventName = Literal[
     "product.deleted",
     "customer.created",
     "customer.balance_changed",
+    "customer.tagged",
+    "customer.untagged",
     "affiliate.created",
     "affiliate.payout_requested",
     "affiliate.payout_answered",
@@ -7963,6 +8167,10 @@ WebhookEventName = Literal[
     "cart.email_sent",
     "cart.recovered",
     "cart.unsubscribed",
+    "winback.email_sent",
+    "winback.won_back",
+    "subscriber.subscribed",
+    "subscriber.unsubscribed",
     "routing.processor_paused",
     "routing.processor_resumed",
     "dispute.opened",

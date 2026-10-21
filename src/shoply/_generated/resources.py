@@ -184,24 +184,35 @@ from .types import (
     CustomerSubscriptionsPauseResultItem,
     CustomerSubscriptionsResumeResultItem,
     CustomerSubscriptionsUndoResultItem,
+    CustomerTagsAutomaticResultItem,
+    CustomerTagsCreateResult,
+    CustomerTagsListResultItem,
+    CustomerTagsUpdateResult,
     CustomerVerifyResult,
     CustomersBlacklistResult,
     CustomersBlacklistResultBalanceHistoryItem,
     CustomersBlacklistResultBlacklistedByItem,
+    CustomersBlacklistResultTagsItem,
     CustomersCreateResult,
     CustomersListItem,
+    CustomersListItemTagsItem,
     CustomersSetBalanceResult,
     CustomersSetBalanceResultBalanceHistoryItem,
+    CustomersSetBalanceResultTagsItem,
+    CustomersSetTagsResultItem,
     CustomersShowResult,
     CustomersShowResultBalanceHistoryItem,
+    CustomersShowResultTagsItem,
     CustomersStatsResult,
     CustomersStatsResultAverageSpend,
     CustomersStatsResultCustomers,
     CustomersStatsResultNewCustomers,
     CustomersStatsResultRange,
     CustomersStatsResultReturning,
+    CustomersTagResultItem,
     CustomersUnblacklistResult,
     CustomersUnblacklistResultBalanceHistoryItem,
+    CustomersUnblacklistResultTagsItem,
     DisputesAccessResult,
     DisputesAccessResultAfterItem,
     DisputesAccessResultAnswer,
@@ -550,6 +561,11 @@ from .types import (
     StorefrontsListResultItem,
     StorefrontsRenameResultItem,
     StorefrontsSetLiveResultItem,
+    SubscribersAskingResult,
+    SubscribersListItem,
+    SubscribersSummaryResult,
+    SubscribersSummaryResultFigures,
+    SubscribersUnsubscribeResult,
     SubscriptionsAddDaysResult,
     SubscriptionsCancelResult,
     SubscriptionsEmailResult,
@@ -849,6 +865,10 @@ from .types import (
     WebhooksListResultItem,
     WebhooksShowResult,
     WebhooksUpdateResult,
+    WinBackBuyerResult,
+    WinBackBuyersItem,
+    WinBackShowResult,
+    WinBackUpdateResult,
 )
 
 
@@ -5420,6 +5440,253 @@ class CartRecovery:
         return cast("CartRecoveryCartResult", self._caller._call("cartRecovery.cart", [cart_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
 
+class WinBack:
+
+    def __init__(self, caller: Any) -> None:
+        self._caller = caller
+
+    def show(
+        self,
+        *,
+        range: Optional[Literal["today", "yesterday", "7d", "30d", "this_week", "last_week", "this_month", "last_month", "this_year"]] = None,
+        from_: Optional[str] = None,
+        to: Optional[str] = None,
+        tz: Optional[str] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> WinBackShowResult:
+        """**Get Win-Back**
+
+        Win-Back's settings as `data`. `meta.figures` is the period's four figures: the revenue it won back (and the period before's), subscribers and the share of buyers asked who said yes, the share of buyers emailed who came back, and the emails sent with how many buyers clicked and unsubscribed. `meta.set` is false where the store has never set it up, `meta.asking` whether the checkout asks buyers for leave, `meta.sendable` whether the store can send email at all, `meta.audiences` the tags it may be narrowed to, and `meta.choices` what each setting may take.
+
+        Needs the `marketing.read` permission (Read Email Marketing).
+
+        Args:
+            range: The period. Left out, it is "30d".
+            from_: The first day of a period of your own, as `YYYY-MM-DD`. With `to`, in place of `range`.
+            to: Its last day, as `YYYY-MM-DD`.
+            tz: The time zone those days are in, as an IANA name. Left out, UTC.
+
+        Docs: https://docs.shoply.gg/api-reference/email-marketing/get-win-back
+        """
+        return cast("WinBackShowResult", self._caller._call("winBack.show", [], {"range": range, "from": from_, "to": to, "tz": tz}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def update(
+        self,
+        *,
+        enabled: Optional[bool] = None,
+        firstOn: Optional[bool] = None,
+        firstDays: Optional[int] = None,
+        firstSubject: Optional[str] = None,
+        secondOn: Optional[bool] = None,
+        secondDays: Optional[int] = None,
+        secondSubject: Optional[str] = None,
+        secondPercent: Optional[int] = None,
+        audience: Optional[str] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> WinBackUpdateResult:
+        """**Change Win-Back**
+
+        Changes the settings named and keeps the rest. Win-Back writes only to subscribers: buyers who ticked "Email me news and offers" at checkout on an order they paid, and have not said no since. The first email goes the set number of days after a buyer's last completed order, if they have not ordered since; the second, days after the first, carries a coupon made for that buyer, good for 7 days. A buyer with a dispute on record is not written to. Switching it on also switches on asking at checkout, and `meta.askingTurnedOn` says so. An empty subject is the email's own.
+
+        Needs the `marketing.write` permission (Change Email Marketing).
+
+        Args:
+            enabled: Whether Win-Back writes to anybody.
+            firstOn: Whether the first email is sent.
+            firstDays: Days after a buyer's last order. One of 14, 21, 30, 45, 60, 90.
+            firstSubject: Its subject, up to 150 characters.
+            secondOn: Whether the second email is sent.
+            secondDays: Days after the first. One of 3, 7, 14, 21, 30.
+            secondSubject: Its subject, up to 150 characters.
+            secondPercent: The percent off its coupon. One of 0, 5, 10, 15, 20, 25. 0 sends it with no coupon.
+            audience: Who is written to: empty for every subscriber, `vip`, or the ID of one of the store's tags.
+
+        Docs: https://docs.shoply.gg/api-reference/email-marketing/change-win-back
+        """
+        return cast("WinBackUpdateResult", self._caller._call("winBack.update", [], {"enabled": enabled, "firstOn": firstOn, "firstDays": firstDays, "firstSubject": firstSubject, "secondOn": secondOn, "secondDays": secondDays, "secondSubject": secondSubject, "secondPercent": secondPercent, "audience": audience}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def buyers(
+        self,
+        *,
+        show: Optional[Literal["all", "due", "emailed", "won", "unsubscribed", "clicked"]] = None,
+        search: Optional[str] = None,
+        page: Optional[int] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> Page[WinBackBuyersItem]:
+        """**List Win-Back buyers**
+
+        The buyers Win-Back has written to or will within 7 days, the latest to have moved first, 25 a page. A buyer is here once for each time they go quiet. `state` is `due` (`dueAt` says when its first email goes), `first` or `second` (the email it last had), `won` (they ordered within 14 days of an email: `wonOrderId`, `wonAt`, `wonAfter`, `quietDays`), `unsubscribed`, or `stopped` (`stopped` says why: `ordered`, `off`, `audience`, `disputed`, `failed`). `orders` and `spent` are their completed orders at the store, `tags` theirs as on Get a customer, `couponCode` and `couponExpiresAt` the second email's coupon, and `clickedAt` when a browser first opened an email's button.
+
+        Needs the `marketing.read` permission (Read Email Marketing).
+
+        Args:
+            show: Only these. Left out, it is "all".
+            search: Part of a buyer's email.
+            page: Which page of the list. The first is 1. Left out, it is 1.
+
+        Docs: https://docs.shoply.gg/api-reference/email-marketing/list-win-back-buyers
+        """
+        return cast("Page[WinBackBuyersItem]", self._caller._call("winBack.buyers", [], {"show": show, "search": search, "page": page}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def buyer(
+        self,
+        buyer_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> WinBackBuyerResult:
+        """**Get a Win-Back buyer**
+
+        One buyer as "List Win-Back buyers" has them. What the `winback.` webhooks send.
+
+        Needs the `marketing.read` permission (Read Email Marketing).
+
+        Docs: https://docs.shoply.gg/api-reference/email-marketing/get-a-win-back-buyer
+        """
+        return cast("WinBackBuyerResult", self._caller._call("winBack.buyer", [buyer_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+
+class Subscribers:
+
+    def __init__(self, caller: Any) -> None:
+        self._caller = caller
+
+    def summary(
+        self,
+        *,
+        range: Optional[Literal["today", "yesterday", "7d", "30d", "this_week", "last_week", "this_month", "last_month", "this_year"]] = None,
+        from_: Optional[str] = None,
+        to: Optional[str] = None,
+        tz: Optional[str] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> SubscribersSummaryResult:
+        """**Get subscriber figures**
+
+        `asking`, whether the checkout asks buyers "Email me news and offers", and `figures` for the period: `subscribed` now, `joined` in the period, `asked` (paid orders whose box was shown) and `rate` (the share of those ticked), `unsubscribed` in the period, and `sent`, the emails Cart Recovery and Win-Back sent in it.
+
+        Needs the `marketing.read` permission (Read Email Marketing).
+
+        Args:
+            range: The period. Left out, it is "30d".
+            from_: The first day of a period of your own, as `YYYY-MM-DD`. With `to`, in place of `range`.
+            to: Its last day, as `YYYY-MM-DD`.
+            tz: The time zone those days are in, as an IANA name. Left out, UTC.
+
+        Docs: https://docs.shoply.gg/api-reference/email-marketing/get-subscriber-figures
+        """
+        return cast("SubscribersSummaryResult", self._caller._call("subscribers.summary", [], {"range": range, "from": from_, "to": to, "tz": tz}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def asking(
+        self,
+        *,
+        on: bool,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> SubscribersAskingResult:
+        """**Change asking at checkout**
+
+        Whether the checkout shows buyers an unticked box above Pay, "Email me news and offers from" the store, on checkouts they start on the store, in the embed and in the Checkout Kit. Never on an invoice or a payment link. Switched off, nobody new subscribes, and everybody subscribed stays so.
+
+        Needs the `marketing.write` permission (Change Email Marketing).
+
+        Args:
+            on: Ask, or not. Required.
+
+        Docs: https://docs.shoply.gg/api-reference/email-marketing/change-asking-at-checkout
+        """
+        return cast("SubscribersAskingResult", self._caller._call("subscribers.asking", [], {"on": on}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def list(
+        self,
+        *,
+        show: Optional[Literal["all", "subscribed", "unsubscribed"]] = None,
+        search: Optional[str] = None,
+        page: Optional[int] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> Page[SubscribersListItem]:
+        """**List subscribers**
+
+        Who said yes to the store's news and offers, newest first, 25 a page: `subscribedAt`, `source` and `where` (the store's checkout, the embed or the Checkout Kit), `orderId` (the order whose box was ticked; they became a subscriber when it was paid), and for one who said no since, `unsubscribedAt` and `unsubscribedBy` (`email`, a link in an email; `seller`; `key`).
+
+        Needs the `marketing.read` permission (Read Email Marketing).
+
+        Args:
+            show: Only these. Left out, it is "all".
+            search: Part of an email address.
+            page: Which page of the list. The first is 1. Left out, it is 1.
+
+        Docs: https://docs.shoply.gg/api-reference/email-marketing/list-subscribers
+        """
+        return cast("Page[SubscribersListItem]", self._caller._call("subscribers.list", [], {"show": show, "search": search, "page": page}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def export(
+        self,
+        *,
+        show: Optional[Literal["all", "subscribed", "unsubscribed"]] = None,
+        search: Optional[str] = None,
+        check: Optional[Literal["1"]] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> File:
+        """**Export subscribers**
+
+        The subscribers the same filters would list, as a CSV file. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, every kind together, whoever asks: after that the answer is 429.
+
+        Needs the `marketing.read` permission (Read Email Marketing). It is one of the heavier reads, and is counted against a smaller budget of its own: 60 a minute for each key.
+
+        Args:
+            show: Only these. Left out, it is "all".
+            search: Part of an email address.
+            check: `1` for how many rows the file would have, as `{ rows }`, in place of the file.
+
+        Docs: https://docs.shoply.gg/api-reference/email-marketing/export-subscribers
+        """
+        return cast("File", self._caller._call("subscribers.export", [], {"show": show, "search": search, "check": check}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def unsubscribe(
+        self,
+        *,
+        email: str,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> SubscribersUnsubscribeResult:
+        """**Unsubscribe a subscriber**
+
+        No more Win-Back to this address. They become a subscriber again only by ticking the box on another order they pay. 404 for an address that never said yes. Answers the subscriber.
+
+        Needs the `marketing.write` permission (Change Email Marketing).
+
+        Args:
+            email: Their email address. Required.
+
+        Docs: https://docs.shoply.gg/api-reference/email-marketing/unsubscribe-a-subscriber
+        """
+        return cast("SubscribersUnsubscribeResult", self._caller._call("subscribers.unsubscribe", [], {"email": email}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+
 class Customers:
 
     def __init__(self, caller: Any) -> None:
@@ -5432,7 +5699,8 @@ class Customers:
         perPage: Optional[int] = None,
         search: Optional[str] = None,
         sort: Optional[Literal["newest", "spent", "orders", "recent", "balance"]] = None,
-        only: Optional[Literal["affiliates"]] = None,
+        only: Optional[Literal["affiliates", "subscribed"]] = None,
+        tag: Optional[str] = None,
         range: Optional[Literal["today", "yesterday", "7d", "30d", "this_week", "last_week", "this_month", "last_month", "this_year"]] = None,
         from_: Optional[str] = None,
         to: Optional[str] = None,
@@ -5444,7 +5712,7 @@ class Customers:
     ) -> Page[CustomersListItem]:
         """**List customers**
 
-        The store's customers, a page at a time, each with how many orders they have paid for, what they have spent and their balance.
+        The store's customers, a page at a time, each with how many orders they have paid for, what they have spent, their balance and their `tags`: Shoply's two first (`vip` and `disputed`, worked out from their orders as they are read), then the store's own.
 
         Needs the `customers.read` permission (Read Customers).
 
@@ -5453,7 +5721,8 @@ class Customers:
             perPage: How many a page holds. Left out, it is 20.
             search: Part of an email address.
             sort: What the list is ordered by, largest or latest first. Left out, it is "newest".
-            only: Only customers who are affiliates.
+            only: Only customers who are affiliates, or who are subscribed to the store's news and offers.
+            tag: Only customers wearing this tag: `vip`, `disputed`, or the ID of one of the store's own.
             range: Only customers first seen in this period.
             from_: Only customers first seen on or after this day, as `YYYY-MM-DD`. With `to`, in place of `range`.
             to: Only customers first seen on or before this day, as `YYYY-MM-DD`.
@@ -5461,7 +5730,7 @@ class Customers:
 
         Docs: https://docs.shoply.gg/api-reference/customers/list-customers
         """
-        return cast("Page[CustomersListItem]", self._caller._call("customers.list", [], {"page": page, "perPage": perPage, "search": search, "sort": sort, "only": only, "range": range, "from": from_, "to": to, "tz": tz}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("Page[CustomersListItem]", self._caller._call("customers.list", [], {"page": page, "perPage": perPage, "search": search, "sort": sort, "only": only, "tag": tag, "range": range, "from": from_, "to": to, "tz": tz}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def create(
         self,
@@ -5490,7 +5759,8 @@ class Customers:
         *,
         search: Optional[str] = None,
         sort: Optional[Literal["newest", "spent", "orders", "recent", "balance"]] = None,
-        only: Optional[Literal["affiliates"]] = None,
+        only: Optional[Literal["affiliates", "subscribed"]] = None,
+        tag: Optional[str] = None,
         check: Optional[Literal["1"]] = None,
         range: Optional[Literal["today", "yesterday", "7d", "30d", "this_week", "last_week", "this_month", "last_month", "this_year"]] = None,
         from_: Optional[str] = None,
@@ -5503,14 +5773,15 @@ class Customers:
     ) -> File:
         """**Export customers**
 
-        The customers the same filters would list, as a CSV file: each one's email, when they were first seen, the orders they paid for and what they spent, their first and last paid order, their store balance, and their affiliate code and balance where they have one. Every customer the filters match is in the file, however many: it is sent as it is read. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, orders, customers, fraud events and blacklist rules together, whoever asks: after that the answer is 429.
+        The customers the same filters would list, as a CSV file: each one's email, when they were first seen, the orders they paid for and what they spent, their first and last paid order, their store balance, their affiliate code and balance where they have one, their tags, and whether they are subscribed to the store's news and offers. Every customer the filters match is in the file, however many: it is sent as it is read. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, orders, customers, fraud events and blacklist rules together, whoever asks: after that the answer is 429.
 
         Needs the `customers.read` permission (Read Customers). It is one of the heavier reads, and is counted against a smaller budget of its own: 60 a minute for each key.
 
         Args:
             search: Part of an email address.
             sort: What the file is ordered by, largest or latest first. Left out, it is "newest".
-            only: Only customers who are affiliates.
+            only: Only customers who are affiliates, or who are subscribed to the store's news and offers.
+            tag: Only customers wearing this tag: `vip`, `disputed`, or the ID of one of the store's own.
             check: `1` for how many rows the file would have, as `{ rows }`, in place of the file. Not counted against the store's exports, and refused with 429 where none are left.
             range: Only customers first seen in this period.
             from_: Only customers first seen on or after this day, as `YYYY-MM-DD`. With `to`, in place of `range`.
@@ -5519,7 +5790,7 @@ class Customers:
 
         Docs: https://docs.shoply.gg/api-reference/customers/export-customers
         """
-        return cast("File", self._caller._call("customers.export", [], {"search": search, "sort": sort, "only": only, "check": check, "range": range, "from": from_, "to": to, "tz": tz}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("File", self._caller._call("customers.export", [], {"search": search, "sort": sort, "only": only, "tag": tag, "check": check, "range": range, "from": from_, "to": to, "tz": tz}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def stats(
         self,
@@ -5560,7 +5831,7 @@ class Customers:
     ) -> CustomersShowResult:
         """**Get a customer**
 
-        One customer: their orders, their balance and its history, whether they are blacklisted, and their affiliate figures if they are one.
+        One customer: their orders, their balance and its history, their `tags`, whether they are blacklisted, and their affiliate figures if they are one.
 
         Needs the `customers.read` permission (Read Customers).
 
@@ -5642,6 +5913,191 @@ class Customers:
         Docs: https://docs.shoply.gg/api-reference/customers/clear-a-customer-from-the-blacklist
         """
         return cast("CustomersUnblacklistResult", self._caller._call("customers.unblacklist", [customer_id], {"addresses": addresses}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def setTags(
+        self,
+        customer_id: str,
+        *,
+        tags: List[str],
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> List[CustomersSetTagsResultItem]:
+        """**Set a customer's tags**
+
+        The customer's own tags become exactly these: any not listed is taken off, any new one is put on, and each is sent as `customer.tagged` or `customer.untagged`. Shoply's two are not set here. Answers their tags.
+
+        Needs the `customers.tags` permission (Change Tags).
+
+        Args:
+            tags: The IDs of the store's tags they wear. Required.
+
+        Docs: https://docs.shoply.gg/api-reference/customers/set-a-customers-tags
+        """
+        return cast("List[CustomersSetTagsResultItem]", self._caller._call("customers.setTags", [customer_id], {"tags": tags}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def tag(
+        self,
+        customer_id: str,
+        tag_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> List[CustomersTagResultItem]:
+        """**Put a tag on a customer**
+
+        One of the store's tags on the customer. One they already wear changes nothing. Answers their tags.
+
+        Needs the `customers.tags` permission (Change Tags).
+
+        Docs: https://docs.shoply.gg/api-reference/customers/put-a-tag-on-a-customer
+        """
+        return cast("List[CustomersTagResultItem]", self._caller._call("customers.tag", [customer_id, tag_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def untag(
+        self,
+        customer_id: str,
+        tag_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> Union[List[Any], Dict[str, Any]]:
+        """**Take a tag off a customer**
+
+        One of the store's tags off the customer. One they do not wear changes nothing. Answers their tags.
+
+        Needs the `customers.tags` permission (Change Tags).
+
+        Docs: https://docs.shoply.gg/api-reference/customers/take-a-tag-off-a-customer
+        """
+        return cast("Union[List[Any], Dict[str, Any]]", self._caller._call("customers.untag", [customer_id, tag_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+
+class CustomerTags:
+
+    def __init__(self, caller: Any) -> None:
+        self._caller = caller
+
+    def list(
+        self,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> List[CustomerTagsListResultItem]:
+        """**List customer tags**
+
+        The store's own tags as `data`, by name, each with `customers`, how many wear it. `meta.automatic` is Shoply's two: VIP's rule (`vipOn`, `vipSpent` in the store's currency, `vipOrders` completed orders, `vipDays` the period, 0 for all time; either number 0 leaves that half out) and `disputedOn`, with `vipCustomers` and `disputedCustomers`, how many wear each today.
+
+        Needs the `customers.read` permission (Read Customers).
+
+        Docs: https://docs.shoply.gg/api-reference/customers/list-customer-tags
+        """
+        return cast("List[CustomerTagsListResultItem]", self._caller._call("customerTags.list", [], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def create(
+        self,
+        *,
+        name: str,
+        tone: Optional[Literal["neutral", "primary", "success", "warning", "danger"]] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> CustomerTagsCreateResult:
+        """**Add a customer tag**
+
+        A tag of the store's own. A store has at most 50. Names are told apart without regard to case, and VIP and Disputed Before are Shoply's.
+
+        Needs the `customers.tags` permission (Change Tags).
+
+        Args:
+            name: Its name, up to 32 characters. Required.
+            tone: Its colour. Left out, it is "neutral".
+
+        Docs: https://docs.shoply.gg/api-reference/customers/add-a-customer-tag
+        """
+        return cast("CustomerTagsCreateResult", self._caller._call("customerTags.create", [], {"name": name, "tone": tone}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def automatic(
+        self,
+        *,
+        vipOn: Optional[bool] = None,
+        vipSpent: Optional[float] = None,
+        vipOrders: Optional[int] = None,
+        vipDays: Optional[Literal[0, 365, 180, 90, 30]] = None,
+        disputedOn: Optional[bool] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> List[CustomerTagsAutomaticResultItem]:
+        """**Change VIP and Disputed Before**
+
+        Shoply's two tags: whether each is put on, and who is a VIP. Both are worked out from a customer's orders whenever they are read, so a change reaches every customer at once. Answers as List customer tags does.
+
+        Needs the `customers.tags` permission (Change Tags).
+
+        Args:
+            vipOn: Whether VIP is put on.
+            vipSpent: A VIP has spent at least this, in the store's currency, on completed orders. 0 leaves it out.
+            vipOrders: Or paid for at least this many orders. 0 leaves it out.
+            vipDays: Over this many days back, 0 for all time.
+            disputedOn: Whether Disputed Before is put on: a dispute on any of their orders, won or lost.
+
+        Docs: https://docs.shoply.gg/api-reference/customers/change-vip-and-disputed-before
+        """
+        return cast("List[CustomerTagsAutomaticResultItem]", self._caller._call("customerTags.automatic", [], {"vipOn": vipOn, "vipSpent": vipSpent, "vipOrders": vipOrders, "vipDays": vipDays, "disputedOn": disputedOn}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def update(
+        self,
+        tag_id: str,
+        *,
+        name: Optional[str] = None,
+        tone: Optional[Literal["neutral", "primary", "success", "warning", "danger"]] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> CustomerTagsUpdateResult:
+        """**Change a customer tag**
+
+        Renames a tag or changes its colour, keeping what is not sent. Everybody wearing it keeps it.
+
+        Needs the `customers.tags` permission (Change Tags).
+
+        Args:
+            name: Its name, up to 32 characters.
+            tone: Its colour.
+
+        Docs: https://docs.shoply.gg/api-reference/customers/change-a-customer-tag
+        """
+        return cast("CustomerTagsUpdateResult", self._caller._call("customerTags.update", [tag_id], {"name": name, "tone": tone}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def delete(
+        self,
+        tag_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> Union[List[Any], Dict[str, Any]]:
+        """**Delete a customer tag**
+
+        Deletes a tag and takes it off everybody wearing it. No `customer.untagged` is sent for each. Win-Back narrowed to this tag writes to everybody subscribed again. Answers the tags left.
+
+        Needs the `customers.tags` permission (Change Tags).
+
+        Docs: https://docs.shoply.gg/api-reference/customers/delete-a-customer-tag
+        """
+        return cast("Union[List[Any], Dict[str, Any]]", self._caller._call("customerTags.delete", [tag_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
 
 class Affiliates:
@@ -6325,7 +6781,7 @@ class Disputes:
     ) -> Page[DisputesListItem]:
         """**List disputes**
 
-        The disputes buyers opened on the store's payments, as their payment providers reported them: the ones that need an answer first, soonest deadline first, then the rest newest first. `status` is how it reads on the dashboard: `needs_response`, `under_review`, `won`, `lost`, `accepted` or `closed` (ended with no chargeback). `providerStatus` is the provider's own last word, `stage` is `inquiry`, `chargeback`, `claim` (a PayPal case), `pre_arbitration` or `arbitration`, and `dueAt` when the provider stops taking an answer, where it says. `answeredFrom` is where it is answered: `here` (Stripe's, through this API), `provider` (in the provider's own dashboard, named in `answerPlace`) or `none`. `meta.figures` is the dashboard's four: how many need an answer and how many are due within three days, the money in the open ones in the store's currency, how many ended won and lost in the last 90 days, and the orders disputed beside those that took money in that time.
+        The disputes buyers opened on the store's payments, as their payment providers reported them: the ones that need an answer first, soonest deadline first, then the rest newest first. `status` is how it reads on the dashboard: `needs_response`, `under_review`, `won`, `lost`, `accepted` or `closed` (ended with no chargeback). `providerStatus` is the provider's own last word, `stage` is `inquiry`, `chargeback`, `claim` (a PayPal case), `pre_arbitration` or `arbitration`, and `dueAt` when the provider stops taking an answer, where it says. `answeredFrom` is where it is answered: `here` (through this API: Stripe's, Revolut's, Adyen's, and PayPal's where PayPal is connected with API keys), `provider` (in the provider's own dashboard, named in `answerPlace`) or `none`. `meta.figures` is the dashboard's four: how many need an answer and how many are due within three days, the money in the open ones in the store's currency, how many ended won and lost in the last 90 days, and the orders disputed beside those that took money in that time.
 
         Needs the `disputes.read` permission (Read Disputes).
 
@@ -6448,7 +6904,7 @@ class Disputes:
     ) -> Any:
         """**Submit a dispute's answer**
 
-        Sends a Stripe dispute's answer to Stripe, which hands it to the card's bank at once: Stripe's evidence fields filled in from what Shoply recorded, Shoply's PDF of it, the store's own files, and the statement. Stripe takes one answer a dispute, so this cannot be taken back. Any draft fields in the body are saved first. Answers 409 `answered_elsewhere` for a dispute with another provider, `not_answerable` for one not waiting on an answer, and `past_due` once its deadline has passed. Stripe refusing it is 502, with `stripe_key` where the store's Stripe key may not write disputes and files, and `provider_refused` otherwise, the dispute back to a draft with `answer.note` saying why. A store sends at most 20 answers or acceptances every 10 minutes.
+        Sends a dispute's answer to its provider, once: what Shoply recorded, Shoply's PDF of it, the store's own files, and the statement, in each provider's own shape. Stripe's evidence fields; Revolut's files and a challenge whose comment is the statement's first 250 characters; PayPal's evidence, appeal or supporting information, whichever the dispute takes now, with the statement as its notes; Adyen's documents under a defense reason, the statement in the PDF. It cannot be taken back. Any draft fields in the body are saved first. Answers 409 `answered_elsewhere` for a dispute answered in its provider's own dashboard, `not_answerable` for one not waiting on an answer, `past_due` once its deadline has passed, and `file_not_taken` for one of the store's files the provider does not take (Adyen takes no PNG, and a PDF of up to 2 MB). The provider refusing it is 502, with `stripe_key` or `provider_key` where the store's key or app may not answer disputes, and `provider_refused` otherwise, the dispute back to a draft with `answer.note` saying why. A store sends at most 20 answers or acceptances every 10 minutes.
 
         Needs the `disputes.write` permission (Answer Disputes).
 
@@ -6473,7 +6929,7 @@ class Disputes:
     ) -> Any:
         """**Accept a dispute**
 
-        Concedes a Stripe dispute in Stripe: the buyer keeps the money and the order becomes a chargeback. Cannot be undone. Answers as Submit does when it cannot be done, and counts toward the same 20 every 10 minutes.
+        Concedes a dispute in its provider (Stripe, Revolut, Adyen, or PayPal's claim, which PayPal refunds from the store's account): the buyer keeps the money and the order becomes a chargeback. Cannot be undone. Answers as Submit does when it cannot be done, and counts toward the same 20 every 10 minutes.
 
         Needs the `disputes.write` permission (Answer Disputes).
 
@@ -6534,7 +6990,7 @@ class Disputes:
     ) -> Any:
         """**Add a file to a dispute's answer**
 
-        One of the store's own files for the answer, sent as `multipart/form-data` in a field called `file`: a PDF, a PNG or a JPEG, its type read from the file itself. One of each `kind`, a new one in place of the one there was, and all of a dispute's files together up to 4 MB, which with Shoply's PDF is within Stripe's limit. Sent to Stripe as `customer_communication`, `receipt` and `service_documentation`. A store adds at most 30 files every 10 minutes.
+        One of the store's own files for the answer, sent as `multipart/form-data` in a field called `file`: a PDF, a PNG or a JPEG, its type read from the file itself. One of each `kind`, a new one in place of the one there was, and all of a dispute's files together up to 4 MB, which with Shoply's PDF is within Stripe's limit. Sent to Stripe as `customer_communication`, `receipt` and `service_documentation`, and to Revolut, PayPal and Adyen beside Shoply's PDF. For a dispute answered to Adyen, a PNG is refused as `invalid_type`, and a PDF over 2 MB as `too_large`: Adyen takes neither. A store adds at most 30 files every 10 minutes.
 
         Needs the `disputes.write` permission (Answer Disputes).
 
@@ -6648,16 +7104,16 @@ class Disputes:
     ) -> DisputesUpdateSettingsResult:
         """**Change dispute settings**
 
-        Changes the settings named and keeps the rest. Accepting small ones and submitting before the deadline are Stripe's alone, the only disputes answered from Shoply, and run every few minutes: a dispute under `acceptUnder` that nobody has started an answer for is accepted, and with a day left an answer is submitted as it stands, or where there is none, only when the buyer opened their order or took a file from the address they paid from. Nothing over `askAbove` is sent or accepted by itself where `askAboveOn` is on.
+        Changes the settings named and keeps the rest. Accepting small ones and submitting before the deadline are for disputes answered from Shoply (Stripe's, Revolut's, Adyen's, and PayPal's with API keys), and run every few minutes: a dispute under `acceptUnder` that nobody has started an answer for is accepted, and with a day left an answer is submitted as it stands, or where there is none, only when the buyer opened their order or took a file from the address they paid from. Nothing over `askAbove` is sent or accepted by itself where `askAboveOn` is on.
 
         Needs the `disputes.write` permission (Answer Disputes).
 
         Args:
             blacklist: Blacklist the buyer's email and addresses when a dispute opens.
             takeBackAccess: Hide what the order delivered from its buyer while a dispute is open, shown again if it is won.
-            acceptSmall: Accept a Stripe dispute under `acceptUnder` rather than fight it.
+            acceptSmall: Accept a dispute answered from Shoply under `acceptUnder` rather than fight it.
             acceptUnder: The amount, above 0.
-            autoSubmit: Submit a Stripe dispute's answer with a day left.
+            autoSubmit: Submit the answer of a dispute answered from Shoply with a day left.
             askAboveOn: Never send or accept one over `askAbove` by itself.
             askAbove: The amount, above 0, up to 1,000,000.
             emailOpened: Email the store when one opens, with its deadline.
@@ -7902,7 +8358,10 @@ class ClientResources:
     brokenLinks: BrokenLinks
     sitemap: Sitemap
     cartRecovery: CartRecovery
+    winBack: WinBack
+    subscribers: Subscribers
     customers: Customers
+    customerTags: CustomerTags
     affiliates: Affiliates
     affiliateProgramme: AffiliateProgramme
     blacklist: Blacklist
@@ -7952,7 +8411,10 @@ class ClientResources:
         self.brokenLinks = BrokenLinks(self)
         self.sitemap = Sitemap(self)
         self.cartRecovery = CartRecovery(self)
+        self.winBack = WinBack(self)
+        self.subscribers = Subscribers(self)
         self.customers = Customers(self)
+        self.customerTags = CustomerTags(self)
         self.affiliates = Affiliates(self)
         self.affiliateProgramme = AffiliateProgramme(self)
         self.blacklist = Blacklist(self)
