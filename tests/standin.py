@@ -87,6 +87,23 @@ class StandIn:
             handler.end_headers()
             handler.wfile.write(text)
 
+        # OAuth's two addresses answer as OAuth does, not in the API's envelope.
+        if path in ("/v1/oauth/token", "/v1/oauth/revoke"):
+            form = dict(urllib.parse.parse_qsl(raw.decode("utf-8")))
+            if form.get("code") == "bad":
+                status, said = 400, {"error": "invalid_grant", "error_description": "The code is not right."}
+            elif path == "/v1/oauth/revoke":
+                status, said = 200, {}
+            else:
+                status, said = 200, {"access_token": "shoply_at_" + "b" * 48, "token_type": "Bearer", "scope": "orders.read products.read", "store_id": STORE}
+            text = json.dumps(said).encode("utf-8")
+            handler.send_response(status)
+            handler.send_header("Content-Type", "application/json")
+            handler.send_header("Content-Length", str(len(text)))
+            handler.end_headers()
+            handler.wfile.write(text)
+            return None
+
         if path == "/v1/key":
             return send(200, {"store": {"id": STORE}})
 

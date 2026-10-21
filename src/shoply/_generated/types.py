@@ -28,6 +28,7 @@ KeyShowResultStore = TypedDict("KeyShowResultStore", {
 
 KeyShowResult = TypedDict("KeyShowResult", {
     "key": KeyShowResultKey,
+    "app": Any,
     "store": KeyShowResultStore,
     "api": str,
 })
@@ -7969,6 +7970,8 @@ WebhookEventName = Literal[
     "dispute.won",
     "dispute.lost",
     "dispute.closed",
+    "app.connected",
+    "app.disconnected",
     "fraud.checkout_blocked",
     "webhook.test",
 ]

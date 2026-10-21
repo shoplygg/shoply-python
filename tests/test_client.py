@@ -4,6 +4,7 @@ sends, what it does with each kind of answer, and webhooks. Nothing here reaches
     python3 -m unittest discover -s tests
 """
 
+import base64
 import hashlib
 import hmac
 import json
@@ -13,13 +14,14 @@ import sys
 import tempfile
 import time
 import unittest
+import urllib.parse
 from typing import Any
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src"))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import shoply  # noqa: E402
-from shoply import Client, Customer, File, Page, ShoplyError, webhooks  # noqa: E402
+from shoply import Client, Customer, File, Page, ShoplyError, oauth, webhooks  # noqa: E402
 from shoply._generated.routes import ROUTES  # noqa: E402
 from standin import STORE, StandIn  # noqa: E402
 
@@ -384,6 +386,65 @@ class Webhooks(unittest.TestCase):
             webhooks.verify(self.body, old, self.secret)
         self.assertEqual(caught.exception.code, "too_old")
         self.assertEqual(webhooks.verify(self.body, old, self.secret, tolerance=900)["id"], "e1")
+
+
+class OAuth(Case):
+    def test_an_apps_token_is_a_key_too(self) -> None:
+        Client("shoply_at_" + "a" * 48, store_id=STORE, base_url=stand_in.base).orders.list()
+        self.assertEqual(self.seen[-1]["headers"]["authorization"], "Bearer shoply_at_" + "a" * 48)
+
+    def test_the_address_to_send_a_seller_to(self) -> None:
+        url = oauth.authorize_url("shoply_app_0123456789abcdef", "https://app.example/back", state="s1", code_challenge="c" * 43)
+        parts = urllib.parse.urlsplit(url)
+        self.assertEqual(f"{parts.scheme}://{parts.netloc}{parts.path}", "https://dashboard.shoply.gg/oauth/authorize/")
+        self.assertEqual(dict(urllib.parse.parse_qsl(parts.query)), {
+            "response_type": "code",
+            "client_id": "shoply_app_0123456789abcdef",
+            "redirect_uri": "https://app.example/back",
+            "state": "s1",
+            "code_challenge": "c" * 43,
+            "code_challenge_method": "S256",
+        })
+        self.assertNotIn("code_challenge", oauth.authorize_url("x", "https://a.example"))
+        with self.assertRaises(ValueError):
+            oauth.authorize_url("x", "")
+
+    def test_a_pkce_pair_and_a_state(self) -> None:
+        pair = oauth.pkce()
+        self.assertRegex(pair["verifier"], r"^[A-Za-z0-9_-]{43}$")
+        expected = base64.urlsafe_b64encode(hashlib.sha256(pair["verifier"].encode()).digest()).decode().rstrip("=")
+        self.assertEqual(pair["challenge"], expected)
+        self.assertEqual(pair["method"], "S256")
+        self.assertNotEqual(oauth.state(), oauth.state())
+
+    def test_a_code_swapped_with_the_secret(self) -> None:
+        token = oauth.exchange(client_id="shoply_app_0123456789abcdef", client_secret="shoply_cs_secret", code="good", redirect_uri="https://app.example/back", base_url=stand_in.base)
+        sent = self.seen[-1]
+        form = dict(urllib.parse.parse_qsl(sent["body"]))
+        self.assertEqual(token, {"access_token": "shoply_at_" + "b" * 48, "token_type": "Bearer", "scopes": ["orders.read", "products.read"], "store_id": STORE})
+        self.assertEqual(sent["path"], "/v1/oauth/token")
+        self.assertEqual(sent["headers"]["content-type"], "application/x-www-form-urlencoded")
+        self.assertEqual(sent["headers"]["authorization"], "Basic " + base64.b64encode(b"shoply_app_0123456789abcdef:shoply_cs_secret").decode())
+        self.assertEqual(form["grant_type"], "authorization_code")
+        self.assertNotIn("client_id", form)
+
+    def test_a_desktop_app_sends_the_verifier_and_no_secret(self) -> None:
+        oauth.exchange(client_id="shoply_app_0123456789abcdef", code="good", redirect_uri="http://127.0.0.1/cb", code_verifier="v" * 43, base_url=stand_in.base)
+        sent = self.seen[-1]
+        form = dict(urllib.parse.parse_qsl(sent["body"]))
+        self.assertNotIn("authorization", sent["headers"])
+        self.assertEqual(form["client_id"], "shoply_app_0123456789abcdef")
+        self.assertEqual(form["code_verifier"], "v" * 43)
+
+    def test_a_refusal_is_oauths_word(self) -> None:
+        with self.assertRaises(ShoplyError) as caught:
+            oauth.exchange(client_id="x", client_secret="y", code="bad", redirect_uri="https://a.example", base_url=stand_in.base)
+        self.assertEqual((caught.exception.status, caught.exception.code, caught.exception.message), (400, "invalid_grant", "The code is not right."))
+
+    def test_a_token_given_up(self) -> None:
+        oauth.revoke(client_id="shoply_app_0123456789abcdef", client_secret="shoply_cs_secret", token="shoply_at_x", base_url=stand_in.base)
+        self.assertEqual(self.seen[-1]["path"], "/v1/oauth/revoke")
+        self.assertEqual(dict(urllib.parse.parse_qsl(self.seen[-1]["body"]))["token"], "shoply_at_x")
 
 
 if __name__ == "__main__":

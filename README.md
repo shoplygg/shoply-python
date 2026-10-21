@@ -75,4 +75,19 @@ buyer.verify(email=email, code=code)
 me = buyer.show()
 ```
 
+## OAuth
+
+An app that sellers connect to their own stores gets a token by OAuth, and passes it as its key.
+
+```python
+pkce = shoply.oauth.pkce()
+url = shoply.oauth.authorize_url(client_id, redirect_uri, state=state, code_challenge=pkce["challenge"])
+
+# Back at your redirect URL:
+token = shoply.oauth.exchange(client_id=client_id, client_secret=client_secret, code=code, redirect_uri=redirect_uri, code_verifier=pkce["verifier"])
+client = shoply.Client(token["access_token"], store_id=token["store_id"])
+```
+
+How apps work: https://docs.shoply.gg/guides/oauth
+
 The whole guide: https://docs.shoply.gg/api-reference/python

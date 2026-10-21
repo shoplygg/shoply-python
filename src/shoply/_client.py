@@ -33,15 +33,19 @@ class Client(ClientResources):
         max_retries: int = 2,
     ) -> None:
         """
-        api_key:     `shoply_sk_...`. Left out, SHOPLY_API_KEY from the environment.
+        api_key:     `shoply_sk_...`, or an app's token (`shoply_at_...`) from oauth.exchange(). Left
+                     out, SHOPLY_API_KEY from the environment.
         store_id:    the store's ID. Left out, it is asked of the key the first time it is needed.
         timeout:     how long one try waits for an answer, in seconds. 60.
         max_retries: how many more tries a request that is safe to repeat is given. 2.
         """
         key = api_key if api_key is not None else os.environ.get("SHOPLY_API_KEY")
 
-        if not isinstance(key, str) or not key.startswith("shoply_sk_"):
-            raise ShoplyError("Pass the store's secret API key as `api_key` (shoply_sk_...), or set SHOPLY_API_KEY.", code="api_key_required")
+        if not isinstance(key, str) or not key.startswith(("shoply_sk_", "shoply_at_")):
+            raise ShoplyError(
+                "Pass the store's secret API key as `api_key` (shoply_sk_...), or an app's token (shoply_at_...), or set SHOPLY_API_KEY.",
+                code="api_key_required",
+            )
 
         self._store_id = store_id
         self._transport = Transport(base_url, timeout, max_retries, lambda: key)
