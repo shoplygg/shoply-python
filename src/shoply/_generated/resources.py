@@ -176,6 +176,9 @@ from .types import (
     CustomerShowResult,
     CustomerShowResultAffiliate,
     CustomerShowResultDownloads,
+    CustomerShowResultDownloadsInstructionsItem,
+    CustomerShowResultDownloadsOrdersItem,
+    CustomerShowResultDownloadsOrdersItemInstructionsItem,
     CustomerShowResultOrdersItem,
     CustomerShowResultTotals,
     CustomerShowResultTotalsSpentItem,
@@ -6560,7 +6563,7 @@ class Tickets:
     ) -> TicketsGetResult:
         """**Get a support ticket**
 
-        A ticket with its `conversation`, oldest first: each message's `from` (`buyer` or `store`), `body`, `pictures` (each one's `name` and the `url` the dashboard reads it at; read it with Get a ticket's picture) and `createdAt`. `customer` is who wrote it, with their tags, `order` the order it is about, `orders` their five latest, and `canReopenUntil` the last moment the buyer can open a resolved ticket again by writing on it. Reading a ticket marks it read, as opening it on the dashboard does.
+        A ticket with its `conversation`, oldest first: each message's `from` (`buyer` or `store`), `body` (Markdown, as written), `html` (the body as Markdown draws it, escaped: links only to the web or an email, each opening in a new tab, and a picture written in Markdown a link, never loaded), `pictures` (each one's `name` and the `url` the dashboard reads it at; read it with Get a ticket's picture) and `createdAt`. `customer` is who wrote it, with their tags, `order` the order it is about, `orders` their five latest, and `canReopenUntil` the last moment the buyer can open a resolved ticket again by writing on it. Reading a ticket marks it read, as opening it on the dashboard does.
 
         Needs the `tickets.read` permission (Read Support Tickets).
 
@@ -9010,7 +9013,7 @@ class CustomerTickets:
     ) -> CustomerTicketsShowResult:
         """**Get a support ticket**
 
-        A ticket with its `conversation`, oldest first: each message's `from` (`buyer` or `store`), `body`, `pictures` and `createdAt`. A picture is named here and shown in the customer panel. `canReopenUntil` is the last moment writing on a resolved ticket opens it again.
+        A ticket with its `conversation`, oldest first: each message's `from` (`buyer` or `store`), `body` (Markdown, as written), `html` (the body as Markdown draws it, escaped, which is safe to show as it is), `pictures` and `createdAt`. A picture is named here and shown in the customer panel. `canReopenUntil` is the last moment writing on a resolved ticket opens it again.
 
         Needs the buyer's token: `Authorization: Bearer shoply_ct_...`, from Sign in with the code.
 
@@ -9149,6 +9152,8 @@ class CustomerResources:
         """**Get the signed-in buyer**
 
         Everything the customer panel's first page shows: the buyer's email, what they have spent, their store balance, their 200 newest orders, and the downloads, files and setup instructions their paid orders hand over.
+
+        `downloads.files` and `downloads.instructions` are every paid order's together. `downloads.orders` is the same an order at a time, newest first, as the customer panel shows it: each with what it bought, its own files and its own instructions. The store's `buttons` and `general` notes go with every order.
 
         `affiliate` is null unless the store has an affiliate programme the buyer is in or may join, and `subscriptions` says whether they have ever had one. Keys are not listed here: Get an order has them.
 

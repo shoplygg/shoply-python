@@ -4587,6 +4587,7 @@ TicketsGetResultConversationItem = TypedDict("TicketsGetResultConversationItem",
     "id": str,
     "from": str,
     "body": str,
+    "html": str,
     "pictures": Union[List[Any], Dict[str, Any]],
     "createdAt": str,
 })
@@ -4651,6 +4652,7 @@ TicketsReplyResultConversationItem = TypedDict("TicketsReplyResultConversationIt
     "id": str,
     "from": str,
     "body": str,
+    "html": str,
     "pictures": Union[List[Any], Dict[str, Any]],
     "createdAt": str,
 })
@@ -4715,6 +4717,7 @@ TicketsResolveResultConversationItem = TypedDict("TicketsResolveResultConversati
     "id": str,
     "from": str,
     "body": str,
+    "html": str,
     "pictures": Union[List[Any], Dict[str, Any]],
     "createdAt": str,
 })
@@ -4779,6 +4782,7 @@ TicketsReopenResultConversationItem = TypedDict("TicketsReopenResultConversation
     "id": str,
     "from": str,
     "body": str,
+    "html": str,
     "pictures": Union[List[Any], Dict[str, Any]],
     "createdAt": str,
 })
@@ -8364,6 +8368,7 @@ CustomerTicketsCreateResultConversationItem = TypedDict("CustomerTicketsCreateRe
     "id": str,
     "from": str,
     "body": str,
+    "html": str,
     "pictures": Union[List[Any], Dict[str, Any]],
     "createdAt": str,
 })
@@ -8404,6 +8409,7 @@ CustomerTicketsShowResultConversationItem = TypedDict("CustomerTicketsShowResult
     "id": str,
     "from": str,
     "body": str,
+    "html": str,
     "pictures": Union[List[Any], Dict[str, Any]],
     "createdAt": str,
 })
@@ -8444,6 +8450,7 @@ CustomerTicketsReplyResultConversationItem = TypedDict("CustomerTicketsReplyResu
     "id": str,
     "from": str,
     "body": str,
+    "html": str,
     "pictures": Union[List[Any], Dict[str, Any]],
     "createdAt": str,
 })
@@ -8484,6 +8491,7 @@ CustomerTicketsResolveResultConversationItem = TypedDict("CustomerTicketsResolve
     "id": str,
     "from": str,
     "body": str,
+    "html": str,
     "pictures": Union[List[Any], Dict[str, Any]],
     "createdAt": str,
 })
@@ -8562,12 +8570,34 @@ CustomerShowResultOrdersItem = TypedDict("CustomerShowResultOrdersItem", {
     "imageUrl": Any,
 })
 
+CustomerShowResultDownloadsInstructionsItem = TypedDict("CustomerShowResultDownloadsInstructionsItem", {
+    "productName": str,
+    "variantName": str,
+    "text": str,
+})
+
+CustomerShowResultDownloadsOrdersItemInstructionsItem = TypedDict("CustomerShowResultDownloadsOrdersItemInstructionsItem", {
+    "productName": Any,
+    "variantName": Any,
+    "text": Any,
+})
+
+CustomerShowResultDownloadsOrdersItem = TypedDict("CustomerShowResultDownloadsOrdersItem", {
+    "id": str,
+    "dateCreated": str,
+    "products": List[str],
+    "imageUrl": Any,
+    "files": Union[List[Any], Dict[str, Any]],
+    "instructions": List[CustomerShowResultDownloadsOrdersItemInstructionsItem],
+})
+
 CustomerShowResultDownloads = TypedDict("CustomerShowResultDownloads", {
     "buttons": Union[List[Any], Dict[str, Any]],
     "guideUrl": str,
     "files": Union[List[Any], Dict[str, Any]],
-    "instructions": Union[List[Any], Dict[str, Any]],
+    "instructions": List[CustomerShowResultDownloadsInstructionsItem],
     "general": str,
+    "orders": List[CustomerShowResultDownloadsOrdersItem],
 })
 
 CustomerShowResult = TypedDict("CustomerShowResult", {
