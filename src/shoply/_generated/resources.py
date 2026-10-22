@@ -188,6 +188,19 @@ from .types import (
     CustomerTagsCreateResult,
     CustomerTagsListResultItem,
     CustomerTagsUpdateResult,
+    CustomerTicketsCreateResult,
+    CustomerTicketsCreateResultConversationItem,
+    CustomerTicketsCreateResultLimits,
+    CustomerTicketsListResultItem,
+    CustomerTicketsReplyResult,
+    CustomerTicketsReplyResultConversationItem,
+    CustomerTicketsReplyResultLimits,
+    CustomerTicketsResolveResult,
+    CustomerTicketsResolveResultConversationItem,
+    CustomerTicketsResolveResultLimits,
+    CustomerTicketsShowResult,
+    CustomerTicketsShowResultConversationItem,
+    CustomerTicketsShowResultLimits,
     CustomerVerifyResult,
     CustomersBlacklistResult,
     CustomersBlacklistResultBalanceHistoryItem,
@@ -849,6 +862,32 @@ from .types import (
     TaxUpdateResultStandardUA,
     TaxUpdateResultStandardVN,
     TaxUpdateResultStandardZA,
+    TicketsGetResult,
+    TicketsGetResultConversationItem,
+    TicketsGetResultCustomer,
+    TicketsGetResultLimits,
+    TicketsGetResultOrder,
+    TicketsGetResultOrdersItem,
+    TicketsListItem,
+    TicketsReopenResult,
+    TicketsReopenResultConversationItem,
+    TicketsReopenResultCustomer,
+    TicketsReopenResultLimits,
+    TicketsReopenResultOrder,
+    TicketsReopenResultOrdersItem,
+    TicketsReplyResult,
+    TicketsReplyResultConversationItem,
+    TicketsReplyResultCustomer,
+    TicketsReplyResultLimits,
+    TicketsReplyResultOrder,
+    TicketsReplyResultOrdersItem,
+    TicketsResolveResult,
+    TicketsResolveResultConversationItem,
+    TicketsResolveResultCustomer,
+    TicketsResolveResultLimits,
+    TicketsResolveResultOrder,
+    TicketsResolveResultOrdersItem,
+    TicketsSettingsResult,
     UpsellsCreateResult,
     UpsellsCreateResultTargetsItem,
     UpsellsDeleteResult,
@@ -960,6 +999,7 @@ class Store:
         businessPostalCode: Optional[str] = None,
         businessCountry: Optional[str] = None,
         invoiceFooter: Optional[str] = None,
+        expectedVersion: Optional[str] = None,
         expectedUpdatedAt: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
@@ -1009,11 +1049,12 @@ class Store:
             businessPostalCode: Its postal code.
             businessCountry: Its country, as a two-letter code.
             invoiceFooter: A line printed at the foot of every invoice.
+            expectedVersion: The `settingsVersion` you last read. Sent, the change is refused with `stale_write` only if something this route saves has changed since; the store's other settings (Support Tickets on or off, its tax, its payment options and the like) changing is not that. Use it rather than `expectedUpdatedAt`, which every one of them moves.
             expectedUpdatedAt: The `updatedAt` you last read. Sent, the change is refused with `stale_write` if the record has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/store/update-the-store
         """
-        return cast("StoreUpdateResult", self._caller._call("store.update", [], {"name": name, "description": description, "currencyCode": currencyCode, "adaptivePricing": adaptivePricing, "accentColor": accentColor, "locale": locale, "lowStockThreshold": lowStockThreshold, "supportUrl": supportUrl, "guideUrl": guideUrl, "panelUrl": panelUrl, "socialLinks": socialLinks, "customLinks": customLinks, "termsOfService": termsOfService, "refundPolicy": refundPolicy, "logoUrl": logoUrl, "faviconUrl": faviconUrl, "storefrontPassword": storefrontPassword, "publishStock": publishStock, "autoReviews": autoReviews, "publicStats": publicStats, "saleNotifications": saleNotifications, "publicOnline": publicOnline, "active": active, "businessType": businessType, "businessName": businessName, "businessTaxId": businessTaxId, "businessVatNumber": businessVatNumber, "businessLine1": businessLine1, "businessLine2": businessLine2, "businessCity": businessCity, "businessRegion": businessRegion, "businessPostalCode": businessPostalCode, "businessCountry": businessCountry, "invoiceFooter": invoiceFooter, "expectedUpdatedAt": expectedUpdatedAt}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("StoreUpdateResult", self._caller._call("store.update", [], {"name": name, "description": description, "currencyCode": currencyCode, "adaptivePricing": adaptivePricing, "accentColor": accentColor, "locale": locale, "lowStockThreshold": lowStockThreshold, "supportUrl": supportUrl, "guideUrl": guideUrl, "panelUrl": panelUrl, "socialLinks": socialLinks, "customLinks": customLinks, "termsOfService": termsOfService, "refundPolicy": refundPolicy, "logoUrl": logoUrl, "faviconUrl": faviconUrl, "storefrontPassword": storefrontPassword, "publishStock": publishStock, "autoReviews": autoReviews, "publicStats": publicStats, "saleNotifications": saleNotifications, "publicOnline": publicOnline, "active": active, "businessType": businessType, "businessName": businessName, "businessTaxId": businessTaxId, "businessVatNumber": businessVatNumber, "businessLine1": businessLine1, "businessLine2": businessLine2, "businessCity": businessCity, "businessRegion": businessRegion, "businessPostalCode": businessPostalCode, "businessCountry": businessCountry, "invoiceFooter": invoiceFooter, "expectedVersion": expectedVersion, "expectedUpdatedAt": expectedUpdatedAt}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def setAddress(
         self,
@@ -6453,6 +6494,164 @@ class AffiliateProgramme:
         return cast("AffiliateProgrammeUpdateResult", self._caller._call("affiliateProgramme.update", [], {"enabled": enabled, "defaultCommission": defaultCommission, "defaultDiscount": defaultDiscount, "selfSignup": selfSignup, "ownLinks": ownLinks, "toStore": toStore, "payouts": payouts}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
 
+class Tickets:
+
+    def __init__(self, caller: Any) -> None:
+        self._caller = caller
+
+    def list(
+        self,
+        *,
+        show: Optional[Literal["all", "unresolved", "open", "answered", "resolved"]] = None,
+        search: Optional[str] = None,
+        page: Optional[int] = None,
+        perPage: Optional[int] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> Page[TicketsListItem]:
+        """**List support tickets**
+
+        The store's tickets, the latest message first. `status` is `open` (the buyer wrote last: Waiting on You on the dashboard), `answered` (the store did) or `resolved`, with `resolvedBy`: `store`, `buyer`, or `auto` (48 hours after the store's reply with no word from the buyer). `lastFrom` and `lastLine` are the latest message's author and first words, `unread` whether the store has opened it since the buyer last wrote, and `orderId` the order it is about, where the buyer picked one. `meta.on` is whether the store takes tickets (off, buyers can open none and the panel shows no Support), and `meta.figures` the dashboard's four: tickets waiting on the store and when the oldest was written, open ones, the average minutes to a first reply over the last 30 days and the 30 before, and how many were resolved in the last 30 days.
+
+        Needs the `tickets.read` permission (Read Support Tickets).
+
+        Args:
+            show: Only these: `unresolved` is `open` and `answered` together. Left out, it is "all".
+            search: Part of the subject, the buyer's email or the latest message, or the start of the ticket's or the order's ID.
+            page: Which page of the list. The first is 1. Left out, it is 1.
+            perPage: How many a page holds, up to 100. Left out, it is 25.
+
+        Docs: https://docs.shoply.gg/api-reference/support-tickets/list-support-tickets
+        """
+        return cast("Page[TicketsListItem]", self._caller._call("tickets.list", [], {"show": show, "search": search, "page": page, "perPage": perPage}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def settings(
+        self,
+        *,
+        on: bool,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> TicketsSettingsResult:
+        """**Switch Support Tickets on or off**
+
+        Off for every store until switched on. Off, buyers can open no ticket and write on none, the customer panel shows no Support, and the store can resolve and reopen but not reply. The tickets are kept.
+
+        Needs the `tickets.write` permission (Answer Support Tickets).
+
+        Args:
+            on: Whether buyers can open tickets. Required.
+
+        Docs: https://docs.shoply.gg/api-reference/support-tickets/switch-support-tickets-on-or-off
+        """
+        return cast("TicketsSettingsResult", self._caller._call("tickets.settings", [], {"on": on}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def get(
+        self,
+        ticket_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> TicketsGetResult:
+        """**Get a support ticket**
+
+        A ticket with its `conversation`, oldest first: each message's `from` (`buyer` or `store`), `body`, `pictures` (each one's `name` and the `url` the dashboard reads it at; read it with Get a ticket's picture) and `createdAt`. `customer` is who wrote it, with their tags, `order` the order it is about, `orders` their five latest, and `canReopenUntil` the last moment the buyer can open a resolved ticket again by writing on it. Reading a ticket marks it read, as opening it on the dashboard does.
+
+        Needs the `tickets.read` permission (Read Support Tickets).
+
+        Docs: https://docs.shoply.gg/api-reference/support-tickets/get-a-support-ticket
+        """
+        return cast("TicketsGetResult", self._caller._call("tickets.get", [ticket_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def reply(
+        self,
+        ticket_id: str,
+        *,
+        message: str,
+        resolve: Optional[bool] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> TicketsReplyResult:
+        """**Reply to a support ticket**
+
+        Writes on the ticket as the store, which the buyer reads in their customer panel and is emailed (at most once a ticket in 15 minutes; what is written meanwhile follows when they are over). A reply to a resolved ticket opens it again, unless `resolve` is true. Refused with `tickets_off` while the store takes no tickets, since the buyer could not read it. Answers the ticket as Get a support ticket does.
+
+        Needs the `tickets.write` permission (Answer Support Tickets).
+
+        Args:
+            message: The reply, up to 500 characters. Required.
+            resolve: Mark the ticket resolved with the reply. Left out, it is false.
+
+        Docs: https://docs.shoply.gg/api-reference/support-tickets/reply-to-a-support-ticket
+        """
+        return cast("TicketsReplyResult", self._caller._call("tickets.reply", [ticket_id], {"message": message, "resolve": resolve}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def resolve(
+        self,
+        ticket_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> TicketsResolveResult:
+        """**Resolve a support ticket**
+
+        Marks it resolved, by the store. The buyer can still write on it for 30 days, which opens it again. One already resolved is left as it is.
+
+        Needs the `tickets.write` permission (Answer Support Tickets).
+
+        Docs: https://docs.shoply.gg/api-reference/support-tickets/resolve-a-support-ticket
+        """
+        return cast("TicketsResolveResult", self._caller._call("tickets.resolve", [ticket_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def reopen(
+        self,
+        ticket_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> TicketsReopenResult:
+        """**Reopen a support ticket**
+
+        Opens a resolved ticket again: `open` where the buyer wrote last, else `answered`. One that is not resolved is left as it is.
+
+        Needs the `tickets.write` permission (Answer Support Tickets).
+
+        Docs: https://docs.shoply.gg/api-reference/support-tickets/reopen-a-support-ticket
+        """
+        return cast("TicketsReopenResult", self._caller._call("tickets.reopen", [ticket_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def picture(
+        self,
+        ticket_id: str,
+        name: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> File:
+        """**Get a ticket's picture**
+
+        A picture sent in the conversation: a PNG, JPEG or WebP of up to 5 MB, read out of the picture itself when it was sent.
+
+        Needs the `tickets.read` permission (Read Support Tickets).
+
+        Docs: https://docs.shoply.gg/api-reference/support-tickets/get-a-tickets-picture
+        """
+        return cast("File", self._caller._call("tickets.picture", [ticket_id, name], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+
 class Blacklist:
 
     def __init__(self, caller: Any) -> None:
@@ -8364,6 +8563,7 @@ class ClientResources:
     customerTags: CustomerTags
     affiliates: Affiliates
     affiliateProgramme: AffiliateProgramme
+    tickets: Tickets
     blacklist: Blacklist
     fraudEvents: FraudEvents
     fraudSettings: FraudSettings
@@ -8417,6 +8617,7 @@ class ClientResources:
         self.customerTags = CustomerTags(self)
         self.affiliates = Affiliates(self)
         self.affiliateProgramme = AffiliateProgramme(self)
+        self.tickets = Tickets(self)
         self.blacklist = Blacklist(self)
         self.fraudEvents = FraudEvents(self)
         self.fraudSettings = FraudSettings(self)
@@ -8745,12 +8946,134 @@ class CustomerSubscriptions:
         return cast("Any", self._caller._call("customer.subscriptions.card", [subscription_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
 
+class CustomerTickets:
+
+    def __init__(self, caller: Any) -> None:
+        self._caller = caller
+
+    def list(
+        self,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> List[CustomerTicketsListResultItem]:
+        """**List support tickets**
+
+        The buyer's support tickets at the store, the latest message first. `status` is `open` (waiting on the store), `answered` or `resolved`. `meta.on` is whether the store takes tickets (off, the list is empty and nothing can be opened), `meta.canOpen` whether the buyer may open one now (one open ticket at a time), `meta.orders` the orders a ticket can be about, each with its `label`, and `meta.limits` what a message may hold.
+
+        Needs the buyer's token: `Authorization: Bearer shoply_ct_...`, from Sign in with the code.
+
+        It is counted for the buyer's token: 300 reads in ten minutes.
+
+        Docs: https://docs.shoply.gg/api-reference/customer-api/list-support-tickets
+        """
+        return cast("List[CustomerTicketsListResultItem]", self._caller._call("customer.tickets.list", [], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def create(
+        self,
+        *,
+        subject: str,
+        message: str,
+        order: Optional[str] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> CustomerTicketsCreateResult:
+        """**Open a support ticket**
+
+        Opens a ticket with its first message, which the store is told of. One open ticket a buyer at a time (`ticket_open`), 250 open at a store (`store_full`), and 100 messages a day a buyer (`daily_limit`). Refused with `tickets_off` where the store takes none. Pictures are sent from the customer panel. Answers the ticket as Get a support ticket does, and the list in `meta`.
+
+        Needs the buyer's token: `Authorization: Bearer shoply_ct_...`, from Sign in with the code.
+
+        It is counted for the buyer's token: 30 changes in ten minutes.
+
+        Args:
+            subject: What it is about, up to 100 characters. Required.
+            message: The first message, up to 500 characters. Required.
+            order: The order it is about, one of `meta.orders` on List support tickets. Left out, something else.
+
+        Docs: https://docs.shoply.gg/api-reference/customer-api/open-a-support-ticket
+        """
+        return cast("CustomerTicketsCreateResult", self._caller._call("customer.tickets.create", [], {"subject": subject, "message": message, "order": order}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def show(
+        self,
+        ticket_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> CustomerTicketsShowResult:
+        """**Get a support ticket**
+
+        A ticket with its `conversation`, oldest first: each message's `from` (`buyer` or `store`), `body`, `pictures` and `createdAt`. A picture is named here and shown in the customer panel. `canReopenUntil` is the last moment writing on a resolved ticket opens it again.
+
+        Needs the buyer's token: `Authorization: Bearer shoply_ct_...`, from Sign in with the code.
+
+        It is counted for the buyer's token: 300 reads in ten minutes.
+
+        Docs: https://docs.shoply.gg/api-reference/customer-api/get-a-support-ticket
+        """
+        return cast("CustomerTicketsShowResult", self._caller._call("customer.tickets.show", [ticket_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def reply(
+        self,
+        ticket_id: str,
+        *,
+        message: str,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> CustomerTicketsReplyResult:
+        """**Write on a support ticket**
+
+        Writes on the ticket as the buyer, which the store is told of. On a resolved ticket within 30 days it opens it again, if the buyer has no other open ticket; after that, `too_old`. Answers the ticket.
+
+        Needs the buyer's token: `Authorization: Bearer shoply_ct_...`, from Sign in with the code.
+
+        It is counted for the buyer's token: 30 changes in ten minutes.
+
+        Args:
+            message: The message, up to 500 characters. Required.
+
+        Docs: https://docs.shoply.gg/api-reference/customer-api/write-on-a-support-ticket
+        """
+        return cast("CustomerTicketsReplyResult", self._caller._call("customer.tickets.reply", [ticket_id], {"message": message}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def resolve(
+        self,
+        ticket_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> CustomerTicketsResolveResult:
+        """**Resolve a support ticket**
+
+        Marks the buyer's ticket resolved, as their "Mark as Resolved" does. Answers the ticket.
+
+        Needs the buyer's token: `Authorization: Bearer shoply_ct_...`, from Sign in with the code.
+
+        It is counted for the buyer's token: 30 changes in ten minutes.
+
+        Docs: https://docs.shoply.gg/api-reference/customer-api/resolve-a-support-ticket
+        """
+        return cast("CustomerTicketsResolveResult", self._caller._call("customer.tickets.resolve", [ticket_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+
 class CustomerResources:
     """The routes, as resources and methods.
     """
     orders: CustomerOrders
     affiliate: CustomerAffiliate
     subscriptions: CustomerSubscriptions
+    tickets: CustomerTickets
 
     def _call(self, id: str, path: List[str], fields: Dict[str, Any], options: Dict[str, Any]) -> Any:
         raise NotImplementedError
@@ -8759,6 +9082,7 @@ class CustomerResources:
         self.orders = CustomerOrders(self)
         self.affiliate = CustomerAffiliate(self)
         self.subscriptions = CustomerSubscriptions(self)
+        self.tickets = CustomerTickets(self)
 
     def login(
         self,

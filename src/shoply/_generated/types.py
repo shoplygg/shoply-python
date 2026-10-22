@@ -95,6 +95,7 @@ StoreShowResult = TypedDict("StoreShowResult", {
     "hasDynamicSecret": bool,
     "dynamicSecretEnd": str,
     "updatedAt": str,
+    "settingsVersion": str,
 })
 
 StoreUpdateResultSocialLinks = TypedDict("StoreUpdateResultSocialLinks", {
@@ -159,6 +160,7 @@ StoreUpdateResult = TypedDict("StoreUpdateResult", {
     "hasDynamicSecret": bool,
     "dynamicSecretEnd": str,
     "updatedAt": str,
+    "settingsVersion": str,
 })
 
 StoreEmailSettingsResultTestEmailEvery = TypedDict("StoreEmailSettingsResultTestEmailEvery", {
@@ -189,6 +191,7 @@ StoreEmailSettingsResult = TypedDict("StoreEmailSettingsResult", {
     "emailStockThreshold": float,
     "emailPayoutsEnabled": bool,
     "emailCustomPaidEnabled": bool,
+    "emailTicketsEnabled": bool,
     "emailDisputeOpenedEnabled": bool,
     "emailDisputeClosedEnabled": bool,
     "testEmailEvery": StoreEmailSettingsResultTestEmailEvery,
@@ -200,12 +203,14 @@ StoreEmailSettingsResult = TypedDict("StoreEmailSettingsResult", {
     "discordReviewsEnabled": bool,
     "discordPayoutsEnabled": bool,
     "discordCustomPaidEnabled": bool,
+    "discordTicketsEnabled": bool,
     "discordDisputesEnabled": bool,
     "discordStockThreshold": float,
     "discordFailure": Any,
     "storeName": str,
     "emailAccent": str,
     "updatedAt": str,
+    "version": str,
 })
 
 DomainShowResult = TypedDict("DomainShowResult", {
@@ -4553,6 +4558,287 @@ AffiliateProgrammeUpdateResult = TypedDict("AffiliateProgrammeUpdateResult", {
     "payouts": bool,
 })
 
+TicketsListItem = TypedDict("TicketsListItem", {
+    "id": str,
+    "email": str,
+    "customerId": Any,
+    "orderId": str,
+    "subject": str,
+    "status": str,
+    "messages": float,
+    "pictures": float,
+    "lastMessageAt": str,
+    "lastFrom": str,
+    "lastLine": str,
+    "unread": bool,
+    "firstReplyAt": Any,
+    "answeredAt": Any,
+    "resolvedAt": Any,
+    "resolvedBy": Any,
+    "createdAt": str,
+    "updatedAt": str,
+})
+
+TicketsSettingsResult = TypedDict("TicketsSettingsResult", {
+    "on": bool,
+})
+
+TicketsGetResultConversationItem = TypedDict("TicketsGetResultConversationItem", {
+    "id": str,
+    "from": str,
+    "body": str,
+    "pictures": Union[List[Any], Dict[str, Any]],
+    "createdAt": str,
+})
+
+TicketsGetResultLimits = TypedDict("TicketsGetResultLimits", {
+    "body": float,
+    "subject": float,
+    "picturesPerMessage": float,
+    "picturesPerTicket": float,
+    "pictureBytes": float,
+})
+
+TicketsGetResultCustomer = TypedDict("TicketsGetResultCustomer", {
+    "id": Any,
+    "email": str,
+    "tags": Union[List[Any], Dict[str, Any]],
+})
+
+TicketsGetResultOrder = TypedDict("TicketsGetResultOrder", {
+    "id": str,
+    "status": str,
+    "amount": str,
+})
+
+TicketsGetResultOrdersItem = TypedDict("TicketsGetResultOrdersItem", {
+    "id": str,
+    "status": str,
+    "amount": str,
+    "products": List[str],
+    "createdAt": str,
+})
+
+TicketsGetResult = TypedDict("TicketsGetResult", {
+    "id": str,
+    "email": str,
+    "customerId": Any,
+    "orderId": str,
+    "subject": str,
+    "status": str,
+    "messages": float,
+    "pictures": float,
+    "lastMessageAt": str,
+    "lastFrom": str,
+    "lastLine": str,
+    "unread": bool,
+    "firstReplyAt": Any,
+    "answeredAt": Any,
+    "resolvedAt": Any,
+    "resolvedBy": Any,
+    "createdAt": str,
+    "updatedAt": str,
+    "conversation": List[TicketsGetResultConversationItem],
+    "canReopenUntil": Any,
+    "limits": TicketsGetResultLimits,
+    "customer": TicketsGetResultCustomer,
+    "order": TicketsGetResultOrder,
+    "orders": List[TicketsGetResultOrdersItem],
+    "on": bool,
+})
+
+TicketsReplyResultConversationItem = TypedDict("TicketsReplyResultConversationItem", {
+    "id": str,
+    "from": str,
+    "body": str,
+    "pictures": Union[List[Any], Dict[str, Any]],
+    "createdAt": str,
+})
+
+TicketsReplyResultLimits = TypedDict("TicketsReplyResultLimits", {
+    "body": float,
+    "subject": float,
+    "picturesPerMessage": float,
+    "picturesPerTicket": float,
+    "pictureBytes": float,
+})
+
+TicketsReplyResultCustomer = TypedDict("TicketsReplyResultCustomer", {
+    "id": Any,
+    "email": str,
+    "tags": Union[List[Any], Dict[str, Any]],
+})
+
+TicketsReplyResultOrder = TypedDict("TicketsReplyResultOrder", {
+    "id": str,
+    "status": str,
+    "amount": str,
+})
+
+TicketsReplyResultOrdersItem = TypedDict("TicketsReplyResultOrdersItem", {
+    "id": str,
+    "status": str,
+    "amount": str,
+    "products": List[str],
+    "createdAt": str,
+})
+
+TicketsReplyResult = TypedDict("TicketsReplyResult", {
+    "id": str,
+    "email": str,
+    "customerId": Any,
+    "orderId": str,
+    "subject": str,
+    "status": str,
+    "messages": float,
+    "pictures": float,
+    "lastMessageAt": str,
+    "lastFrom": str,
+    "lastLine": str,
+    "unread": bool,
+    "firstReplyAt": str,
+    "answeredAt": str,
+    "resolvedAt": Any,
+    "resolvedBy": Any,
+    "createdAt": str,
+    "updatedAt": str,
+    "conversation": List[TicketsReplyResultConversationItem],
+    "canReopenUntil": Any,
+    "limits": TicketsReplyResultLimits,
+    "customer": TicketsReplyResultCustomer,
+    "order": TicketsReplyResultOrder,
+    "orders": List[TicketsReplyResultOrdersItem],
+    "on": bool,
+})
+
+TicketsResolveResultConversationItem = TypedDict("TicketsResolveResultConversationItem", {
+    "id": str,
+    "from": str,
+    "body": str,
+    "pictures": Union[List[Any], Dict[str, Any]],
+    "createdAt": str,
+})
+
+TicketsResolveResultLimits = TypedDict("TicketsResolveResultLimits", {
+    "body": float,
+    "subject": float,
+    "picturesPerMessage": float,
+    "picturesPerTicket": float,
+    "pictureBytes": float,
+})
+
+TicketsResolveResultCustomer = TypedDict("TicketsResolveResultCustomer", {
+    "id": Any,
+    "email": str,
+    "tags": Union[List[Any], Dict[str, Any]],
+})
+
+TicketsResolveResultOrder = TypedDict("TicketsResolveResultOrder", {
+    "id": str,
+    "status": str,
+    "amount": str,
+})
+
+TicketsResolveResultOrdersItem = TypedDict("TicketsResolveResultOrdersItem", {
+    "id": str,
+    "status": str,
+    "amount": str,
+    "products": List[str],
+    "createdAt": str,
+})
+
+TicketsResolveResult = TypedDict("TicketsResolveResult", {
+    "id": str,
+    "email": str,
+    "customerId": Any,
+    "orderId": str,
+    "subject": str,
+    "status": str,
+    "messages": float,
+    "pictures": float,
+    "lastMessageAt": str,
+    "lastFrom": str,
+    "lastLine": str,
+    "unread": bool,
+    "firstReplyAt": str,
+    "answeredAt": str,
+    "resolvedAt": str,
+    "resolvedBy": str,
+    "createdAt": str,
+    "updatedAt": str,
+    "conversation": List[TicketsResolveResultConversationItem],
+    "canReopenUntil": str,
+    "limits": TicketsResolveResultLimits,
+    "customer": TicketsResolveResultCustomer,
+    "order": TicketsResolveResultOrder,
+    "orders": List[TicketsResolveResultOrdersItem],
+    "on": bool,
+})
+
+TicketsReopenResultConversationItem = TypedDict("TicketsReopenResultConversationItem", {
+    "id": str,
+    "from": str,
+    "body": str,
+    "pictures": Union[List[Any], Dict[str, Any]],
+    "createdAt": str,
+})
+
+TicketsReopenResultLimits = TypedDict("TicketsReopenResultLimits", {
+    "body": float,
+    "subject": float,
+    "picturesPerMessage": float,
+    "picturesPerTicket": float,
+    "pictureBytes": float,
+})
+
+TicketsReopenResultCustomer = TypedDict("TicketsReopenResultCustomer", {
+    "id": Any,
+    "email": str,
+    "tags": Union[List[Any], Dict[str, Any]],
+})
+
+TicketsReopenResultOrder = TypedDict("TicketsReopenResultOrder", {
+    "id": str,
+    "status": str,
+    "amount": str,
+})
+
+TicketsReopenResultOrdersItem = TypedDict("TicketsReopenResultOrdersItem", {
+    "id": str,
+    "status": str,
+    "amount": str,
+    "products": List[str],
+    "createdAt": str,
+})
+
+TicketsReopenResult = TypedDict("TicketsReopenResult", {
+    "id": str,
+    "email": str,
+    "customerId": Any,
+    "orderId": str,
+    "subject": str,
+    "status": str,
+    "messages": float,
+    "pictures": float,
+    "lastMessageAt": str,
+    "lastFrom": str,
+    "lastLine": str,
+    "unread": bool,
+    "firstReplyAt": str,
+    "answeredAt": str,
+    "resolvedAt": Any,
+    "resolvedBy": Any,
+    "createdAt": str,
+    "updatedAt": str,
+    "conversation": List[TicketsReopenResultConversationItem],
+    "canReopenUntil": Any,
+    "limits": TicketsReopenResultLimits,
+    "customer": TicketsReopenResultCustomer,
+    "order": TicketsReopenResultOrder,
+    "orders": List[TicketsReopenResultOrdersItem],
+    "on": bool,
+})
+
 BlacklistListItem = TypedDict("BlacklistListItem", {
     "id": str,
     "type": str,
@@ -8056,6 +8342,184 @@ CustomerSubscriptionsResumeResultItem = TypedDict("CustomerSubscriptionsResumeRe
     "pausesLeft": float,
 })
 
+CustomerTicketsListResultItem = TypedDict("CustomerTicketsListResultItem", {
+    "id": str,
+    "orderId": str,
+    "subject": str,
+    "status": str,
+    "messages": float,
+    "pictures": float,
+    "lastMessageAt": str,
+    "lastFrom": str,
+    "lastLine": str,
+    "firstReplyAt": str,
+    "answeredAt": str,
+    "resolvedAt": Any,
+    "resolvedBy": Any,
+    "createdAt": str,
+    "updatedAt": str,
+})
+
+CustomerTicketsCreateResultConversationItem = TypedDict("CustomerTicketsCreateResultConversationItem", {
+    "id": str,
+    "from": str,
+    "body": str,
+    "pictures": Union[List[Any], Dict[str, Any]],
+    "createdAt": str,
+})
+
+CustomerTicketsCreateResultLimits = TypedDict("CustomerTicketsCreateResultLimits", {
+    "body": float,
+    "subject": float,
+    "picturesPerMessage": float,
+    "picturesPerTicket": float,
+    "pictureBytes": float,
+})
+
+CustomerTicketsCreateResult = TypedDict("CustomerTicketsCreateResult", {
+    "id": str,
+    "orderId": str,
+    "subject": str,
+    "status": str,
+    "messages": float,
+    "pictures": float,
+    "lastMessageAt": str,
+    "lastFrom": str,
+    "lastLine": str,
+    "firstReplyAt": Any,
+    "answeredAt": Any,
+    "resolvedAt": Any,
+    "resolvedBy": Any,
+    "createdAt": str,
+    "updatedAt": str,
+    "conversation": List[CustomerTicketsCreateResultConversationItem],
+    "canReopenUntil": Any,
+    "limits": CustomerTicketsCreateResultLimits,
+    "orderLabel": str,
+    "orderProducts": List[str],
+    "orderMore": float,
+})
+
+CustomerTicketsShowResultConversationItem = TypedDict("CustomerTicketsShowResultConversationItem", {
+    "id": str,
+    "from": str,
+    "body": str,
+    "pictures": Union[List[Any], Dict[str, Any]],
+    "createdAt": str,
+})
+
+CustomerTicketsShowResultLimits = TypedDict("CustomerTicketsShowResultLimits", {
+    "body": float,
+    "subject": float,
+    "picturesPerMessage": float,
+    "picturesPerTicket": float,
+    "pictureBytes": float,
+})
+
+CustomerTicketsShowResult = TypedDict("CustomerTicketsShowResult", {
+    "id": str,
+    "orderId": str,
+    "subject": str,
+    "status": str,
+    "messages": float,
+    "pictures": float,
+    "lastMessageAt": str,
+    "lastFrom": str,
+    "lastLine": str,
+    "firstReplyAt": str,
+    "answeredAt": str,
+    "resolvedAt": Any,
+    "resolvedBy": Any,
+    "createdAt": str,
+    "updatedAt": str,
+    "conversation": List[CustomerTicketsShowResultConversationItem],
+    "canReopenUntil": Any,
+    "limits": CustomerTicketsShowResultLimits,
+    "orderLabel": str,
+    "orderProducts": List[str],
+    "orderMore": float,
+})
+
+CustomerTicketsReplyResultConversationItem = TypedDict("CustomerTicketsReplyResultConversationItem", {
+    "id": str,
+    "from": str,
+    "body": str,
+    "pictures": Union[List[Any], Dict[str, Any]],
+    "createdAt": str,
+})
+
+CustomerTicketsReplyResultLimits = TypedDict("CustomerTicketsReplyResultLimits", {
+    "body": float,
+    "subject": float,
+    "picturesPerMessage": float,
+    "picturesPerTicket": float,
+    "pictureBytes": float,
+})
+
+CustomerTicketsReplyResult = TypedDict("CustomerTicketsReplyResult", {
+    "id": str,
+    "orderId": str,
+    "subject": str,
+    "status": str,
+    "messages": float,
+    "pictures": float,
+    "lastMessageAt": str,
+    "lastFrom": str,
+    "lastLine": str,
+    "firstReplyAt": str,
+    "answeredAt": str,
+    "resolvedAt": Any,
+    "resolvedBy": Any,
+    "createdAt": str,
+    "updatedAt": str,
+    "conversation": List[CustomerTicketsReplyResultConversationItem],
+    "canReopenUntil": Any,
+    "limits": CustomerTicketsReplyResultLimits,
+    "orderLabel": str,
+    "orderProducts": List[str],
+    "orderMore": float,
+})
+
+CustomerTicketsResolveResultConversationItem = TypedDict("CustomerTicketsResolveResultConversationItem", {
+    "id": str,
+    "from": str,
+    "body": str,
+    "pictures": Union[List[Any], Dict[str, Any]],
+    "createdAt": str,
+})
+
+CustomerTicketsResolveResultLimits = TypedDict("CustomerTicketsResolveResultLimits", {
+    "body": float,
+    "subject": float,
+    "picturesPerMessage": float,
+    "picturesPerTicket": float,
+    "pictureBytes": float,
+})
+
+CustomerTicketsResolveResult = TypedDict("CustomerTicketsResolveResult", {
+    "id": str,
+    "orderId": str,
+    "subject": str,
+    "status": str,
+    "messages": float,
+    "pictures": float,
+    "lastMessageAt": str,
+    "lastFrom": str,
+    "lastLine": str,
+    "firstReplyAt": str,
+    "answeredAt": str,
+    "resolvedAt": str,
+    "resolvedBy": str,
+    "createdAt": str,
+    "updatedAt": str,
+    "conversation": List[CustomerTicketsResolveResultConversationItem],
+    "canReopenUntil": str,
+    "limits": CustomerTicketsResolveResultLimits,
+    "orderLabel": str,
+    "orderProducts": List[str],
+    "orderMore": float,
+})
+
 CustomerLoginResult = TypedDict("CustomerLoginResult", {
     "email": str,
     "resendIn": float,
@@ -8114,6 +8578,7 @@ CustomerShowResult = TypedDict("CustomerShowResult", {
     "totals": CustomerShowResultTotals,
     "orders": List[CustomerShowResultOrdersItem],
     "subscriptions": bool,
+    "support": bool,
     "downloads": CustomerShowResultDownloads,
     "supportUrl": str,
 })
@@ -8180,6 +8645,10 @@ WebhookEventName = Literal[
     "dispute.closed",
     "app.connected",
     "app.disconnected",
+    "ticket.opened",
+    "ticket.message",
+    "ticket.resolved",
+    "ticket.reopened",
     "fraud.checkout_blocked",
     "webhook.test",
 ]
