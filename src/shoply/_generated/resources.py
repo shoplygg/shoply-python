@@ -36,6 +36,7 @@ from .types import (
     AnalyticsOverviewResultStatusTotalsCancelled,
     AnalyticsOverviewResultStatusTotalsChargeback,
     AnalyticsOverviewResultStatusTotalsCompleted,
+    AnalyticsOverviewResultStatusTotalsImported,
     AnalyticsOverviewResultStatusTotalsPending,
     AnalyticsOverviewResultStatusTotalsRefunded,
     AnalyticsOverviewResultStore,
@@ -281,6 +282,22 @@ from .types import (
     DisputesSettingsResult,
     DisputesUpdateSettingsResult,
     DomainShowResult,
+    EmailTemplatesListResultItem,
+    EmailTemplatesPreviewResult,
+    EmailTemplatesPreviewResultParts,
+    EmailTemplatesPreviewResultProblems,
+    EmailTemplatesPreviewResultValues,
+    EmailTemplatesRevertResult,
+    EmailTemplatesRevertResultPartsItem,
+    EmailTemplatesRevertResultVariablesItem,
+    EmailTemplatesSaveSharedResult,
+    EmailTemplatesSharedResult,
+    EmailTemplatesShowResult,
+    EmailTemplatesShowResultPartsItem,
+    EmailTemplatesShowResultVariablesItem,
+    EmailTemplatesUpdateResult,
+    EmailTemplatesUpdateResultPartsItem,
+    EmailTemplatesUpdateResultVariablesItem,
     ExpenseCategoriesCreateResult,
     ExpenseCategoriesDeleteResult,
     ExpenseCategoriesListResultItem,
@@ -368,6 +385,7 @@ from .types import (
     OrdersShowResultRefundRecord,
     OrdersShowResultRefundSource,
     OrdersShowResultTimelineItem,
+    OrdersShowResultTimelineItemBy,
     PaymentMethodsListResultItem,
     PaymentMethodsListResultItemFieldsItem,
     PaymentMethodsListResultItemTogglesItem,
@@ -865,6 +883,28 @@ from .types import (
     TaxUpdateResultStandardUA,
     TaxUpdateResultStandardVN,
     TaxUpdateResultStandardZA,
+    TeamActivityItem,
+    TeamActivityItemSubject,
+    TeamCancelInviteResult,
+    TeamGetResult,
+    TeamGetResultInvitesItem,
+    TeamGetResultLimits,
+    TeamGetResultMe,
+    TeamGetResultOwner,
+    TeamGetResultPermissions,
+    TeamGetResultPermissionsGroupsItem,
+    TeamGetResultPermissionsGroupsItemPermissionsItem,
+    TeamGetResultPermissionsPresetsItem,
+    TeamGetResultTeamsItem,
+    TeamGetResultTeamsItemPeopleItem,
+    TeamInviteResult,
+    TeamInviteResultInvitesItem,
+    TeamMoveMemberResult,
+    TeamRemoveMemberResult,
+    TeamResendInviteResult,
+    TeamsCreateResult,
+    TeamsDeleteResult,
+    TeamsUpdateResult,
     TicketsGetResult,
     TicketsGetResultConversationItem,
     TicketsGetResultCustomer,
@@ -2332,7 +2372,7 @@ class Products:
     def list(
         self,
         *,
-        visibility: Optional[Literal["public", "unlisted", "private"]] = None,
+        visibility: Optional[Literal["public", "unlisted", "private", "on_hold"]] = None,
         search: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
@@ -2360,7 +2400,7 @@ class Products:
         variants: List[Dict[str, Any]],
         slug: Optional[str] = None,
         description: Optional[str] = None,
-        visibility: Optional[Literal["public", "unlisted", "private"]] = None,
+        visibility: Optional[Literal["public", "unlisted", "private", "on_hold"]] = None,
         deliveryInstructions: Optional[str] = None,
         categoryIds: Optional[List[str]] = None,
         isBestSeller: Optional[bool] = None,
@@ -2390,7 +2430,7 @@ class Products:
             variants: The product's options, 1 to 100 of them, in the order buyers see them. A variant of the product that is not in this list is removed. Required.
             slug: The last part of its address on the storefront. Left out, it is made from the name.
             description: What the product page says. Plain text with a few marks: a line that starts with `#` is a heading, one that starts with `-` is a point of a list, a blank line ends a paragraph, and `**bold**` and backticks for code work inside a line.
-            visibility: `public` is listed and can be bought. `unlisted` can be bought by whoever has its link. `private` cannot be bought. Left out, it is "public".
+            visibility: `public` is listed and can be bought. `unlisted` can be bought by whoever has its link. `private` cannot be bought. `on_hold` is listed as a public product is and cannot be bought: its page says it is on hold, and every checkout refuses it. Left out, it is "public".
             deliveryInstructions: Text sent to the buyer with every variant of the product once the order is paid, whatever the variant delivers, up to 5,000 characters. A variant's own instructions are sent after it. Empty is none. Left out on an update, it stays as it is.
             categoryIds: The categories it is in. Left out on an update, they stay as they are.
             isBestSeller: Whether the storefront marks it as a best seller. Left out, it is false.
@@ -2434,7 +2474,7 @@ class Products:
         variants: List[Dict[str, Any]],
         slug: Optional[str] = None,
         description: Optional[str] = None,
-        visibility: Optional[Literal["public", "unlisted", "private"]] = None,
+        visibility: Optional[Literal["public", "unlisted", "private", "on_hold"]] = None,
         deliveryInstructions: Optional[str] = None,
         categoryIds: Optional[List[str]] = None,
         isBestSeller: Optional[bool] = None,
@@ -2465,7 +2505,7 @@ class Products:
             variants: The product's options, 1 to 100 of them, in the order buyers see them. A variant of the product that is not in this list is removed. Required.
             slug: The last part of its address on the storefront. Left out, it is made from the name.
             description: What the product page says. Plain text with a few marks: a line that starts with `#` is a heading, one that starts with `-` is a point of a list, a blank line ends a paragraph, and `**bold**` and backticks for code work inside a line.
-            visibility: `public` is listed and can be bought. `unlisted` can be bought by whoever has its link. `private` cannot be bought. Left out, it is "public".
+            visibility: `public` is listed and can be bought. `unlisted` can be bought by whoever has its link. `private` cannot be bought. `on_hold` is listed as a public product is and cannot be bought: its page says it is on hold, and every checkout refuses it. Left out, it is "public".
             deliveryInstructions: Text sent to the buyer with every variant of the product once the order is paid, whatever the variant delivers, up to 5,000 characters. A variant's own instructions are sent after it. Empty is none. Left out on an update, it stays as it is.
             categoryIds: The categories it is in. Left out on an update, they stay as they are.
             isBestSeller: Whether the storefront marks it as a best seller. Left out, it is false.
@@ -2506,7 +2546,7 @@ class Products:
         self,
         product_id: str,
         *,
-        visibility: Literal["public", "unlisted", "private"],
+        visibility: Literal["public", "unlisted", "private", "on_hold"],
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -2551,7 +2591,7 @@ class Products:
         self,
         *,
         productIds: List[str],
-        visibility: Optional[Literal["public", "unlisted", "private"]] = None,
+        visibility: Optional[Literal["public", "unlisted", "private", "on_hold"]] = None,
         isBestSeller: Optional[bool] = None,
         paymentMethods: Optional[Dict[str, Any]] = None,
         deliveryInstructions: Optional[str] = None,
@@ -3643,7 +3683,7 @@ class Orders:
         *,
         page: Optional[int] = None,
         perPage: Optional[int] = None,
-        status: Optional[Literal["pending", "completed", "refunded", "cancelled", "chargeback"]] = None,
+        status: Optional[Literal["pending", "completed", "refunded", "cancelled", "chargeback", "imported"]] = None,
         gateway: Optional[str] = None,
         search: Optional[str] = None,
         sort: Optional[Literal["created_at", "amount", "email", "status"]] = None,
@@ -3668,7 +3708,7 @@ class Orders:
             perPage: How many a page holds, up to 100. Left out, it is 20.
             status: Only orders in this status.
             gateway: Only orders paid with this payment method, by its name in the payment methods list.
-            search: An order's ID, or part of a buyer's email.
+            search: An order's ID, an imported order's ID on the platform it came from, or part of a buyer's email.
             sort: What the list is ordered by. Left out, it is "created_at".
             direction: Which way it is ordered. Left out, it is "desc".
             range: Only orders placed in this period.
@@ -3683,7 +3723,7 @@ class Orders:
     def export(
         self,
         *,
-        status: Optional[Literal["pending", "completed", "refunded", "cancelled", "chargeback"]] = None,
+        status: Optional[Literal["pending", "completed", "refunded", "cancelled", "chargeback", "imported"]] = None,
         gateway: Optional[str] = None,
         search: Optional[str] = None,
         sort: Optional[Literal["created_at", "amount", "email", "status"]] = None,
@@ -3708,7 +3748,7 @@ class Orders:
         Args:
             status: Only orders in this status.
             gateway: Only orders paid with this payment method, by its name in the payment methods list.
-            search: An order's ID, or part of a buyer's email.
+            search: An order's ID, an imported order's ID on the platform it came from, or part of a buyer's email.
             sort: What the list is ordered by. Left out, it is "created_at".
             direction: Which way it is ordered. Left out, it is "desc".
             range: Only orders placed in this period.
@@ -3733,7 +3773,7 @@ class Orders:
     ) -> OrdersShowResult:
         """**Get an order**
 
-        One order with everything its page shows: its lines and what each delivered, its payments, the buyer, its timeline, where it came from, `refund`, which says which ways it can be refunded, and `requests`: what Shoply sent your servers about it, each try of each webhook about the order and each line's dynamic delivery, newest first, with the first 300 characters of what came back. `customPayment` is for an order paid with one of your custom payment methods, and null for any other: the method's name, `status` (`open`, `review` while it waits for you to approve or reject it, `paid` or `rejected`), the amount, and `proof`, what the buyer sent when they said they paid (the reference, whether a proof of payment was sent, and when).
+        One order with everything its page shows: its lines and what each delivered, its payments, the buyer, its timeline, where it came from, `refund`, which says which ways it can be refunded, and `requests`: what Shoply sent your servers about it, each try of each webhook about the order and each line's dynamic delivery, newest first, with the first 300 characters of what came back. `customPayment` is for an order paid with one of your custom payment methods, and null for any other: the method's name, `status` (`open`, `review` while it waits for you to approve or reject it, `paid` or `rejected`), the amount, and `proof`, what the buyer sent when they said they paid (the reference, whether a proof of payment was sent, and when). An order brought across by Platform Migration is found by its ID on the platform it came from as well, and answers with its own `id`; what it delivered there is in its items' `deliveredKeys`, a line of it each, where that platform says.
 
         Needs the `orders.read` permission (Read Orders).
 
@@ -4238,6 +4278,7 @@ class Coupons:
         categoryId: Optional[str] = None,
         appliesTo: Optional[Literal["all", "some"]] = None,
         targets: Optional[List[Dict[str, Any]]] = None,
+        customerTag: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -4261,10 +4302,11 @@ class Coupons:
             categoryId: The coupon category it is filed in. Left out, it goes in the store's Default category.
             appliesTo: Every product, or only the ones in `targets`. Left out, it is "all".
             targets: The products it works on when `appliesTo` is `some`. Each names a product, and optionally one variant of it.
+            customerTag: Who may use it: empty for anybody with the code, `vip`, or the ID of one of the store's tags. The buyer's email has to wear the tag when the code is applied and when they pay.
 
         Docs: https://docs.shoply.gg/api-reference/coupons/create-a-coupon
         """
-        return cast("CouponsCreateResult", self._caller._call("coupons.create", [], {"code": code, "value": value, "tz": tz, "discountType": discountType, "maxUses": maxUses, "minSubtotal": minSubtotal, "expiresAt": expiresAt, "active": active, "categoryId": categoryId, "appliesTo": appliesTo, "targets": targets}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("CouponsCreateResult", self._caller._call("coupons.create", [], {"code": code, "value": value, "tz": tz, "discountType": discountType, "maxUses": maxUses, "minSubtotal": minSubtotal, "expiresAt": expiresAt, "active": active, "categoryId": categoryId, "appliesTo": appliesTo, "targets": targets, "customerTag": customerTag}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def update(
         self,
@@ -4281,6 +4323,7 @@ class Coupons:
         categoryId: Optional[str] = None,
         appliesTo: Optional[Literal["all", "some"]] = None,
         targets: Optional[List[Dict[str, Any]]] = None,
+        customerTag: Optional[str] = None,
         expectedUpdatedAt: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
@@ -4289,7 +4332,7 @@ class Coupons:
     ) -> CouponsUpdateResult:
         """**Update a coupon**
 
-        Saves the coupon whole: send every field as it should be, not only what changed. A field left out goes back to its default. The exceptions are `appliesTo` and `targets`, which stay as they are when `appliesTo` is left out.
+        Saves the coupon whole: send every field as it should be, not only what changed. A field left out goes back to its default. The exceptions are `appliesTo` and `targets`, which stay as they are when `appliesTo` is left out, and `customerTag`, which stays as it is when left out.
 
         Needs the `coupons.write` permission (Change Coupons).
 
@@ -4305,11 +4348,12 @@ class Coupons:
             categoryId: The coupon category it is filed in. Left out, it goes in the store's Default category.
             appliesTo: Every product, or only the ones in `targets`. Left out, it is "all".
             targets: The products it works on when `appliesTo` is `some`. Each names a product, and optionally one variant of it.
+            customerTag: Who may use it: empty for anybody with the code, `vip`, or the ID of one of the store's tags. The buyer's email has to wear the tag when the code is applied and when they pay.
             expectedUpdatedAt: The `updatedAt` you last read. Sent, the change is refused with `stale_write` if the record has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/coupons/update-a-coupon
         """
-        return cast("CouponsUpdateResult", self._caller._call("coupons.update", [coupon_id], {"code": code, "value": value, "tz": tz, "discountType": discountType, "maxUses": maxUses, "minSubtotal": minSubtotal, "expiresAt": expiresAt, "active": active, "categoryId": categoryId, "appliesTo": appliesTo, "targets": targets, "expectedUpdatedAt": expectedUpdatedAt}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("CouponsUpdateResult", self._caller._call("coupons.update", [coupon_id], {"code": code, "value": value, "tz": tz, "discountType": discountType, "maxUses": maxUses, "minSubtotal": minSubtotal, "expiresAt": expiresAt, "active": active, "categoryId": categoryId, "appliesTo": appliesTo, "targets": targets, "customerTag": customerTag, "expectedUpdatedAt": expectedUpdatedAt}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -5417,13 +5461,13 @@ class CartRecovery:
             enabled: Whether Cart Recovery writes to buyers at all.
             firstOn: Whether the first email is sent.
             firstMinutes: Minutes after the buyer left. One of 30, 60, 120, 240.
-            firstSubject: Its subject, up to 150 characters.
+            firstSubject: Its subject, up to 150 characters. It may hold the email's variables, such as `{{ store.name }}`; one whose marks cannot be read is refused.
             declinedOn: Whether the declined card email takes the first one's place after a card was turned down.
             declinedMinutes: Minutes after the decline. One of 5, 15, 30, 60.
-            declinedSubject: Its subject, up to 150 characters.
+            declinedSubject: Its subject, up to 150 characters. It may hold the email's variables, such as `{{ store.name }}`; one whose marks cannot be read is refused.
             secondOn: Whether the second email is sent.
             secondMinutes: Minutes after the buyer left. One of 720, 1200, 1440, 2880.
-            secondSubject: Its subject, up to 150 characters.
+            secondSubject: Its subject, up to 150 characters. It may hold the email's variables, such as `{{ store.name }}`; one whose marks cannot be read is refused.
             secondPercent: The percent off its coupon. One of 0, 5, 10, 15, 20, 25. 0 sends it with no coupon.
 
         Docs: https://docs.shoply.gg/api-reference/cart-recovery/change-cart-recovery
@@ -5544,10 +5588,10 @@ class WinBack:
             enabled: Whether Win-Back writes to anybody.
             firstOn: Whether the first email is sent.
             firstDays: Days after a buyer's last order. One of 14, 21, 30, 45, 60, 90.
-            firstSubject: Its subject, up to 150 characters.
+            firstSubject: Its subject, up to 150 characters. It may hold the email's variables, such as `{{ store.name }}`; one whose marks cannot be read is refused.
             secondOn: Whether the second email is sent.
             secondDays: Days after the first. One of 3, 7, 14, 21, 30.
-            secondSubject: Its subject, up to 150 characters.
+            secondSubject: Its subject, up to 150 characters. It may hold the email's variables, such as `{{ store.name }}`; one whose marks cannot be read is refused.
             secondPercent: The percent off its coupon. One of 0, 5, 10, 15, 20, 25. 0 sends it with no coupon.
             audience: Who is written to: empty for every subscriber, `vip`, or the ID of one of the store's tags.
 
@@ -5729,6 +5773,168 @@ class Subscribers:
         Docs: https://docs.shoply.gg/api-reference/email-marketing/unsubscribe-a-subscriber
         """
         return cast("SubscribersUnsubscribeResult", self._caller._call("subscribers.unsubscribe", [], {"email": email}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+
+class EmailTemplates:
+
+    def __init__(self, caller: Any) -> None:
+        self._caller = caller
+
+    def list(
+        self,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> List[EmailTemplatesListResultItem]:
+        """**List email templates**
+
+        Every email a store can write, in the order the dashboard lists them: its `kind`, `group`, `name`, `when` it is sent, whether the store has `edited` it (and which of `html`, `css` and `subject`), and `updatedAt`. `meta.shared` is the CSS every email gets (`css`, null where it is Shoply's look, `baseCss`), and `meta.sendable` whether the store can send email at all.
+
+        Needs the `emails.read` permission (Read Email Templates).
+
+        Docs: https://docs.shoply.gg/api-reference/email-templates/list-email-templates
+        """
+        return cast("List[EmailTemplatesListResultItem]", self._caller._call("emailTemplates.list", [], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def shared(
+        self,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> EmailTemplatesSharedResult:
+        """**Get the shared email CSS**
+
+        The look every email gets but one with a `css` of its own, as `css` (null where it is Shoply's look), `updatedAt`, and Shoply's look as `baseCss`, `var(--accent)` in it for the shop's colour.
+
+        Needs the `emails.read` permission (Read Email Templates).
+
+        Docs: https://docs.shoply.gg/api-reference/email-templates/get-the-shared-email-css
+        """
+        return cast("EmailTemplatesSharedResult", self._caller._call("emailTemplates.shared", [], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def saveShared(
+        self,
+        *,
+        css: str,
+        expectedUpdatedAt: Optional[str] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> EmailTemplatesSaveSharedResult:
+        """**Change the shared email CSS**
+
+        The look every email gets but one with a `css` of its own, a whole sheet, checked as an email's own is; empty, null or `baseCss` as it is for none, which is Shoply's look. Saving one draws every email from its template, Shoply's original where the store has not written one.
+
+        Needs the `emails.write` permission (Change Email Templates).
+
+        Args:
+            css: The whole look, or null for Shoply's. Required.
+            expectedUpdatedAt: The `updatedAt` you read; one changed since is refused with `stale_write`.
+
+        Docs: https://docs.shoply.gg/api-reference/email-templates/change-the-shared-email-css
+        """
+        return cast("EmailTemplatesSaveSharedResult", self._caller._call("emailTemplates.saveShared", [], {"css": css, "expectedUpdatedAt": expectedUpdatedAt}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def show(
+        self,
+        kind: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> EmailTemplatesShowResult:
+        """**Get an email template**
+
+        One email: what it is, its `variables` and `parts` (each a `name` and what it is), the marks it must hold (`required`), its `original` HTML, what the store has saved, `shared` (the CSS every email gets), `baseCss` (Shoply's look for the classes the originals are written with) and `accent` (the shop's colour, which `var(--accent)` is). The email is drawn with `css`, else `shared`, else `baseCss`. Each of `html`, `css` and `subject` is the store's own, or null where it is Shoply's original. A CSS is a whole look, never rules over another: an email is drawn with its own `css`, else the shared CSS, else Shoply's look (`baseCss`), where `var(--accent)` is the shop's colour. The HTML is the email's card and the lines under it, with Liquid's marks for what changes from one buyer to the next: `{{ order.id }}` prints a value, escaped, and `{{ parts.delivery }}` a part only Shoply writes. `variables` and `parts` say which an email has. Shoply writes the page round it, its dark look, and a last line under it, "Sent with Shoply", which no template changes. `originalSubject` is the original subject as a sample buyer would get it, and `originalSubjectSource` the same written with its variables.
+
+        Needs the `emails.read` permission (Read Email Templates).
+
+        Docs: https://docs.shoply.gg/api-reference/email-templates/get-an-email-template
+        """
+        return cast("EmailTemplatesShowResult", self._caller._call("emailTemplates.show", [kind], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def update(
+        self,
+        kind: str,
+        *,
+        html: Optional[str] = None,
+        css: Optional[str] = None,
+        subject: Optional[str] = None,
+        expectedUpdatedAt: Optional[str] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> EmailTemplatesUpdateResult:
+        """**Change an email template**
+
+        Changes each of `html`, `css` and `subject` sent, and keeps the rest; null, an empty string, or the original's own HTML puts that one back to the original. Answers the email as Get an email template does. Refused with `template_problems` while anything would stop it, `problems` saying what and on which line, for `html`, `css` and `subject`. The HTML may hold the tags an email is made of, never a script, a form, a frame or <style>, and its links go to https, http, mailto or #, its pictures to https; up to 64 KB. Comments are taken out when it is sent, which `problems` says as a warning. The CSS is the email's whole look, and the shared CSS no longer changes an email that has one: start from `shared`, or `baseCss` where it is null. It sets how things look, with type, class, id and attribute selectors, and @media; no url(), no position, and no < or backslash; up to 32 KB. A subject is one line of up to 150 characters, and may hold the email's variables. Before it is saved the email is drawn for a sample buyer, and refused where it closes a <div> it never opened, where a mark it must hold is in its code but not in what it draws (inside a comment, or under a condition that is false), or where its subject comes out empty. Cart Recovery's and Win-Back's emails must hold `{{ links.unsubscribe }}`, and their subjects are those Change Cart Recovery and Change Win-Back set.
+
+        Needs the `emails.write` permission (Change Email Templates).
+
+        Args:
+            html: The email's HTML, or null for the original.
+            css: Its whole look, or null to follow the shared CSS. The look it would get anyway is saved as null.
+            subject: Its subject, or null for the original.
+            expectedUpdatedAt: The `updatedAt` you read; a template changed since is refused with `stale_write`.
+
+        Docs: https://docs.shoply.gg/api-reference/email-templates/change-an-email-template
+        """
+        return cast("EmailTemplatesUpdateResult", self._caller._call("emailTemplates.update", [kind], {"html": html, "css": css, "subject": subject, "expectedUpdatedAt": expectedUpdatedAt}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def preview(
+        self,
+        kind: str,
+        *,
+        html: Optional[str] = None,
+        css: Optional[str] = None,
+        subject: Optional[str] = None,
+        shared: Optional[str] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> EmailTemplatesPreviewResult:
+        """**Preview an email template**
+
+        The email for a sample buyer as it would be sent with what you send in place of what is saved: its `subject`, the whole page as `html`, its plain `text`, the `values` its variables had, and `problems` as Change an email template would say them. Nothing is saved and nothing is sent.
+
+        Needs the `emails.read` permission (Read Email Templates).
+
+        Args:
+            html: HTML to preview in place of what is saved; null for the original.
+            css: Its whole look, to preview in place of what is saved.
+            subject: A subject to preview in place of what is saved.
+            shared: The look every email gets, in place of what is saved.
+
+        Docs: https://docs.shoply.gg/api-reference/email-templates/preview-an-email-template
+        """
+        return cast("EmailTemplatesPreviewResult", self._caller._call("emailTemplates.preview", [kind], {"html": html, "css": css, "subject": subject, "shared": shared}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def revert(
+        self,
+        kind: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> EmailTemplatesRevertResult:
+        """**Revert an email template**
+
+        Puts the email back as Shoply wrote it: its HTML, CSS and subject. Answers it as Get an email template does.
+
+        Needs the `emails.write` permission (Change Email Templates).
+
+        Docs: https://docs.shoply.gg/api-reference/email-templates/revert-an-email-template
+        """
+        return cast("EmailTemplatesRevertResult", self._caller._call("emailTemplates.revert", [kind], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
 
 class Customers:
@@ -6653,6 +6859,236 @@ class Tickets:
         Docs: https://docs.shoply.gg/api-reference/support-tickets/get-a-tickets-picture
         """
         return cast("File", self._caller._call("tickets.picture", [ticket_id, name], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+
+class Team:
+
+    def __init__(self, caller: Any) -> None:
+        self._caller = caller
+
+    def get(
+        self,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> TeamGetResult:
+        """**Get the team**
+
+        The store's teams, each with its `permissions`, how many of them are `sensitive`, the parts of the dashboard it `reach`es, its `people` and how many invites are `waiting`; every `invite` not yet taken up; the store's `owner`, who is on no team and can do everything; and `permissions`, every permission there is in its `groups`, each with its `label`, what it lets a person do (`about`), whether it is `sensitive` and what it `needs`, and the `presets` a team can start from. `limits` says how many teams a store and people a team may have (10 and 30, invites not yet taken up counted among the people), how long a team's `name` may be, how many addresses one invite takes (`perInvite`) and how many days an invite lasts (`inviteDays`).
+
+        Needs the `team.read` permission (Read the Team).
+
+        Docs: https://docs.shoply.gg/api-reference/teams/get-the-team
+        """
+        return cast("TeamGetResult", self._caller._call("team.get", [], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def activity(
+        self,
+        *,
+        person: Optional[str] = None,
+        area: Optional[str] = None,
+        page: Optional[int] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> Page[TeamActivityItem]:
+        """**List activity**
+
+        Who did what at the store on the dashboard, the newest first, fifty a page: each line's `summary` ("Refunded order ..."), who did it as they were then (`name`, `email`, `team`, which is null for the owner), its `area` of the dashboard, and what it was about (`subject`). Every change and every export is a line, the owner's included; what a key does is not, and is in List API requests. Kept 365 days.
+
+        Needs the `team.read` permission (Read the Team).
+
+        Args:
+            person: Only one person's, by their `userId`.
+            area: Only one part of the dashboard, by its group's `id` in Get the team's `permissions`.
+            page: Which page of the list. The first is 1. Left out, it is 1.
+
+        Docs: https://docs.shoply.gg/api-reference/teams/list-activity
+        """
+        return cast("Page[TeamActivityItem]", self._caller._call("team.activity", [], {"person": person, "area": area, "page": page}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def invite(
+        self,
+        *,
+        teamId: str,
+        emails: Optional[List[str]] = None,
+        kind: Optional[Literal["email", "link"]] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> TeamInviteResult:
+        """**Invite people**
+
+        Emails an invite to each address in `emails`, up to 10 at a time, from Shoply. An invite is taken up only by an account with that address, which they sign in with or make, and the store is then in their store switcher. Each runs out in 7 days. `skipped` names an address left out and why: the owner's, one on the team already, or one invited already. With `kind` set to `link` instead, it makes a one-time link anybody can take up, answered in `url` here and never again. Not to a team that holds a sensitive permission: invite to one of those on the dashboard. The store's owner is emailed when somebody joins.
+
+        Needs the `team.write` permission (Manage the Team). It sends an email, and is counted against a budget of its own: 60 in ten minutes for each key.
+
+        Args:
+            teamId: The team they join. Required.
+            emails: The addresses to invite.
+            kind: `link` for a one-time link in place of emails. Left out, it is "email".
+
+        Docs: https://docs.shoply.gg/api-reference/teams/invite-people
+        """
+        return cast("TeamInviteResult", self._caller._call("team.invite", [], {"teamId": teamId, "emails": emails, "kind": kind}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def resendInvite(
+        self,
+        invite_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> TeamResendInviteResult:
+        """**Send an invite again**
+
+        Sends an email invite again, or makes a link again (answered in `meta.url`), with 7 days from now. The address or link sent before stops working.
+
+        Needs the `team.write` permission (Manage the Team). It sends an email, and is counted against a budget of its own: 60 in ten minutes for each key.
+
+        Docs: https://docs.shoply.gg/api-reference/teams/send-an-invite-again
+        """
+        return cast("TeamResendInviteResult", self._caller._call("team.resendInvite", [invite_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def cancelInvite(
+        self,
+        invite_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> TeamCancelInviteResult:
+        """**Cancel an invite**
+
+        Takes an invite back. Its email or link stops working.
+
+        Needs the `team.write` permission (Manage the Team).
+
+        Docs: https://docs.shoply.gg/api-reference/teams/cancel-an-invite
+        """
+        return cast("TeamCancelInviteResult", self._caller._call("team.cancelInvite", [invite_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def moveMember(
+        self,
+        member_id: str,
+        *,
+        teamId: str,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> TeamMoveMemberResult:
+        """**Move somebody to another team**
+
+        They can do what the other team can from their next request. Not onto a team that holds a sensitive permission: do that on the dashboard.
+
+        Needs the `team.write` permission (Manage the Team).
+
+        Args:
+            teamId: The team they move to. Required.
+
+        Docs: https://docs.shoply.gg/api-reference/teams/move-somebody-to-another-team
+        """
+        return cast("TeamMoveMemberResult", self._caller._call("team.moveMember", [member_id], {"teamId": teamId}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def removeMember(
+        self,
+        member_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> TeamRemoveMemberResult:
+        """**Remove somebody from the team**
+
+        They can no longer reach the store. The API keys they made and the apps they connected stop working with them (`keysStopped` says how many), and the webhooks those made are deleted.
+
+        Needs the `team.write` permission (Manage the Team).
+
+        Docs: https://docs.shoply.gg/api-reference/teams/remove-somebody-from-the-team
+        """
+        return cast("TeamRemoveMemberResult", self._caller._call("team.removeMember", [member_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+
+class Teams:
+
+    def __init__(self, caller: Any) -> None:
+        self._caller = caller
+
+    def create(
+        self,
+        *,
+        name: str,
+        permissions: List[str],
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> TeamsCreateResult:
+        """**Create a team**
+
+        A store holds up to 10 teams. A permission marked `sensitive` that the team did not hold before cannot be given with a key: give it on the dashboard, which asks the person to confirm it is them.
+
+        Needs the `team.write` permission (Manage the Team).
+
+        Args:
+            name: What the team is called, up to 40 characters, once a store. Required.
+            permissions: What its people may do, by name (List the team answers every permission in `permissions`). What a permission leans on is added with it: `stock.edit` brings `stock.view` and `products.view`. Required.
+
+        Docs: https://docs.shoply.gg/api-reference/teams/create-a-team
+        """
+        return cast("TeamsCreateResult", self._caller._call("teams.create", [], {"name": name, "permissions": permissions}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def update(
+        self,
+        team_id: str,
+        *,
+        name: str,
+        permissions: List[str],
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> TeamsUpdateResult:
+        """**Update a team**
+
+        Saves the team whole: its name and its permissions. Its people can do what it now holds from their next request. A permission marked `sensitive` that the team did not hold before cannot be given with a key: give it on the dashboard, which asks the person to confirm it is them.
+
+        Needs the `team.write` permission (Manage the Team).
+
+        Args:
+            name: What the team is called, up to 40 characters, once a store. Required.
+            permissions: What its people may do, by name (List the team answers every permission in `permissions`). What a permission leans on is added with it: `stock.edit` brings `stock.view` and `products.view`. Required.
+
+        Docs: https://docs.shoply.gg/api-reference/teams/update-a-team
+        """
+        return cast("TeamsUpdateResult", self._caller._call("teams.update", [team_id], {"name": name, "permissions": permissions}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def delete(
+        self,
+        team_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> TeamsDeleteResult:
+        """**Delete a team**
+
+        Refused with `team_not_empty` while anybody is on it: move or remove them first. Its invites not yet taken up go with it.
+
+        Needs the `team.write` permission (Manage the Team).
+
+        Docs: https://docs.shoply.gg/api-reference/teams/delete-a-team
+        """
+        return cast("TeamsDeleteResult", self._caller._call("teams.delete", [team_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
 
 class Blacklist:
@@ -8562,11 +8998,14 @@ class ClientResources:
     cartRecovery: CartRecovery
     winBack: WinBack
     subscribers: Subscribers
+    emailTemplates: EmailTemplates
     customers: Customers
     customerTags: CustomerTags
     affiliates: Affiliates
     affiliateProgramme: AffiliateProgramme
     tickets: Tickets
+    team: Team
+    teams: Teams
     blacklist: Blacklist
     fraudEvents: FraudEvents
     fraudSettings: FraudSettings
@@ -8616,11 +9055,14 @@ class ClientResources:
         self.cartRecovery = CartRecovery(self)
         self.winBack = WinBack(self)
         self.subscribers = Subscribers(self)
+        self.emailTemplates = EmailTemplates(self)
         self.customers = Customers(self)
         self.customerTags = CustomerTags(self)
         self.affiliates = Affiliates(self)
         self.affiliateProgramme = AffiliateProgramme(self)
         self.tickets = Tickets(self)
+        self.team = Team(self)
+        self.teams = Teams(self)
         self.blacklist = Blacklist(self)
         self.fraudEvents = FraudEvents(self)
         self.fraudSettings = FraudSettings(self)

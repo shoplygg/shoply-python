@@ -531,6 +531,7 @@ AnalyticsOverviewResultStatusCounts = TypedDict("AnalyticsOverviewResultStatusCo
     "refunded": float,
     "cancelled": float,
     "chargeback": float,
+    "imported": float,
 })
 
 AnalyticsOverviewResultStatusTotalsCompleted = TypedDict("AnalyticsOverviewResultStatusTotalsCompleted", {
@@ -558,12 +559,18 @@ AnalyticsOverviewResultStatusTotalsChargeback = TypedDict("AnalyticsOverviewResu
     "amount": float,
 })
 
+AnalyticsOverviewResultStatusTotalsImported = TypedDict("AnalyticsOverviewResultStatusTotalsImported", {
+    "orders": float,
+    "amount": float,
+})
+
 AnalyticsOverviewResultStatusTotals = TypedDict("AnalyticsOverviewResultStatusTotals", {
     "completed": AnalyticsOverviewResultStatusTotalsCompleted,
     "pending": AnalyticsOverviewResultStatusTotalsPending,
     "refunded": AnalyticsOverviewResultStatusTotalsRefunded,
     "cancelled": AnalyticsOverviewResultStatusTotalsCancelled,
     "chargeback": AnalyticsOverviewResultStatusTotalsChargeback,
+    "imported": AnalyticsOverviewResultStatusTotalsImported,
 })
 
 AnalyticsOverviewResultTopCountriesItem = TypedDict("AnalyticsOverviewResultTopCountriesItem", {
@@ -3153,6 +3160,7 @@ OrdersListItem = TypedDict("OrdersListItem", {
     "paidAt": Any,
     "note": str,
     "customFields": Union[List[Any], Dict[str, Any]],
+    "imported": Any,
     "emailState": str,
     "emailError": str,
     "emailAttempts": float,
@@ -3237,11 +3245,17 @@ OrdersShowResultCustomer = TypedDict("OrdersShowResultCustomer", {
     "dateCreated": str,
 })
 
+OrdersShowResultTimelineItemBy = TypedDict("OrdersShowResultTimelineItemBy", {
+    "name": str,
+    "kind": str,
+})
+
 OrdersShowResultTimelineItem = TypedDict("OrdersShowResultTimelineItem", {
     "id": str,
     "kind": str,
     "detail": str,
     "actor": str,
+    "by": OrdersShowResultTimelineItemBy,
     "at": str,
 })
 
@@ -3293,6 +3307,7 @@ OrdersShowResult = TypedDict("OrdersShowResult", {
     "paidAt": str,
     "note": str,
     "customFields": Union[List[Any], Dict[str, Any]],
+    "imported": Any,
     "emailState": str,
     "emailError": str,
     "emailAttempts": float,
@@ -3441,6 +3456,7 @@ ReviewsListItem = TypedDict("ReviewsListItem", {
     "rating": float,
     "message": str,
     "automatic": bool,
+    "imported": bool,
     "dateCreated": str,
     "items": List[ReviewsListItemItemsItem],
     "orderId": str,
@@ -3466,6 +3482,7 @@ CouponsListItem = TypedDict("CouponsListItem", {
     "active": bool,
     "appliesTo": str,
     "targets": Union[List[Any], Dict[str, Any]],
+    "customerTag": Any,
     "sort": float,
     "discountGiven": float,
     "revenue": float,
@@ -3488,6 +3505,7 @@ CouponsCreateResult = TypedDict("CouponsCreateResult", {
     "active": bool,
     "appliesTo": str,
     "targets": Union[List[Any], Dict[str, Any]],
+    "customerTag": Any,
     "sort": float,
     "discountGiven": float,
     "revenue": float,
@@ -3510,6 +3528,7 @@ CouponsUpdateResult = TypedDict("CouponsUpdateResult", {
     "active": bool,
     "appliesTo": str,
     "targets": Union[List[Any], Dict[str, Any]],
+    "customerTag": Any,
     "sort": float,
     "discountGiven": float,
     "revenue": float,
@@ -4158,6 +4177,160 @@ SubscribersUnsubscribeResult = TypedDict("SubscribersUnsubscribeResult", {
     "unsubscribedBy": str,
 })
 
+EmailTemplatesListResultItem = TypedDict("EmailTemplatesListResultItem", {
+    "kind": str,
+    "group": str,
+    "name": str,
+    "when": str,
+    "edited": bool,
+    "html": bool,
+    "css": bool,
+    "subject": bool,
+    "updatedAt": Any,
+})
+
+EmailTemplatesSharedResult = TypedDict("EmailTemplatesSharedResult", {
+    "css": str,
+    "updatedAt": str,
+    "baseCss": str,
+})
+
+EmailTemplatesSaveSharedResult = TypedDict("EmailTemplatesSaveSharedResult", {
+    "css": str,
+    "updatedAt": str,
+    "baseCss": str,
+})
+
+EmailTemplatesShowResultVariablesItem = TypedDict("EmailTemplatesShowResultVariablesItem", {
+    "name": str,
+    "about": str,
+})
+
+EmailTemplatesShowResultPartsItem = TypedDict("EmailTemplatesShowResultPartsItem", {
+    "name": str,
+    "about": str,
+})
+
+EmailTemplatesShowResult = TypedDict("EmailTemplatesShowResult", {
+    "kind": str,
+    "group": str,
+    "name": str,
+    "when": str,
+    "marketing": bool,
+    "required": List[str],
+    "variables": List[EmailTemplatesShowResultVariablesItem],
+    "parts": List[EmailTemplatesShowResultPartsItem],
+    "original": str,
+    "originalSubject": str,
+    "originalSubjectSource": str,
+    "html": Any,
+    "css": Any,
+    "subject": Any,
+    "updatedAt": Any,
+    "shared": Any,
+    "baseCss": str,
+    "accent": str,
+})
+
+EmailTemplatesUpdateResultVariablesItem = TypedDict("EmailTemplatesUpdateResultVariablesItem", {
+    "name": str,
+    "about": str,
+})
+
+EmailTemplatesUpdateResultPartsItem = TypedDict("EmailTemplatesUpdateResultPartsItem", {
+    "name": str,
+    "about": str,
+})
+
+EmailTemplatesUpdateResult = TypedDict("EmailTemplatesUpdateResult", {
+    "kind": str,
+    "group": str,
+    "name": str,
+    "when": str,
+    "marketing": bool,
+    "required": List[str],
+    "variables": List[EmailTemplatesUpdateResultVariablesItem],
+    "parts": List[EmailTemplatesUpdateResultPartsItem],
+    "original": str,
+    "originalSubject": str,
+    "originalSubjectSource": str,
+    "html": Any,
+    "css": str,
+    "subject": str,
+    "updatedAt": str,
+    "shared": Any,
+    "baseCss": str,
+    "accent": str,
+})
+
+EmailTemplatesPreviewResultParts = TypedDict("EmailTemplatesPreviewResultParts", {
+    "delivery": str,
+    "buttons": str,
+    "summary": str,
+    "reply_note": str,
+})
+
+EmailTemplatesPreviewResultValues = TypedDict("EmailTemplatesPreviewResultValues", {
+    "store.name": str,
+    "store.url": str,
+    "store.panel_url": str,
+    "buyer.email": str,
+    "order.id": str,
+    "order.paid_at": str,
+    "order.total": str,
+    "order.paid_with": str,
+    "order.invoice_attached": bool,
+    "links.order": str,
+    "links.review": str,
+    "year": str,
+})
+
+EmailTemplatesPreviewResultProblems = TypedDict("EmailTemplatesPreviewResultProblems", {
+    "html": Union[List[Any], Dict[str, Any]],
+    "css": Union[List[Any], Dict[str, Any]],
+    "subject": Union[List[Any], Dict[str, Any]],
+})
+
+EmailTemplatesPreviewResult = TypedDict("EmailTemplatesPreviewResult", {
+    "subject": str,
+    "html": str,
+    "text": str,
+    "parts": EmailTemplatesPreviewResultParts,
+    "values": EmailTemplatesPreviewResultValues,
+    "problems": EmailTemplatesPreviewResultProblems,
+})
+
+EmailTemplatesRevertResultVariablesItem = TypedDict("EmailTemplatesRevertResultVariablesItem", {
+    "name": str,
+    "about": str,
+})
+
+EmailTemplatesRevertResultPartsItem = TypedDict("EmailTemplatesRevertResultPartsItem", {
+    "name": str,
+    "about": str,
+})
+
+EmailTemplatesRevertResult = TypedDict("EmailTemplatesRevertResult", {
+    "kind": str,
+    "group": str,
+    "name": str,
+    "when": str,
+    "marketing": bool,
+    "required": List[str],
+    "variables": List[EmailTemplatesRevertResultVariablesItem],
+    "parts": List[EmailTemplatesRevertResultPartsItem],
+    "original": str,
+    "originalSubject": str,
+    "originalSubjectSource": str,
+    "html": Any,
+    "css": Any,
+    "subject": Any,
+    "updatedAt": Any,
+    "shared": Any,
+    "baseCss": str,
+    "accent": str,
+})
+
 CustomersListItemTagsItem = TypedDict("CustomersListItemTagsItem", {
     "id": str,
     "name": str,
@@ -4392,6 +4565,7 @@ CustomerTagsListResultItem = TypedDict("CustomerTagsListResultItem", {
     "tone": str,
     "automatic": bool,
     "customers": float,
+    "coupons": float,
 })
 
 CustomerTagsCreateResult = TypedDict("CustomerTagsCreateResult", {
@@ -4407,6 +4581,7 @@ CustomerTagsAutomaticResultItem = TypedDict("CustomerTagsAutomaticResultItem", {
     "tone": str,
     "automatic": bool,
     "customers": float,
+    "coupons": float,
 })
 
 CustomerTagsUpdateResult = TypedDict("CustomerTagsUpdateResult", {
@@ -4841,6 +5016,200 @@ TicketsReopenResult = TypedDict("TicketsReopenResult", {
     "order": TicketsReopenResultOrder,
     "orders": List[TicketsReopenResultOrdersItem],
     "on": bool,
+})
+
+TeamGetResultTeamsItemPeopleItem = TypedDict("TeamGetResultTeamsItemPeopleItem", {
+    "id": str,
+    "userId": str,
+    "teamId": str,
+    "name": str,
+    "email": str,
+    "avatarUrl": Any,
+    "invitedBy": str,
+    "joinedAt": str,
+    "lastSeenAt": Any,
+    "keys": float,
+    "me": bool,
+})
+
+TeamGetResultTeamsItem = TypedDict("TeamGetResultTeamsItem", {
+    "id": str,
+    "name": str,
+    "permissions": List[str],
+    "sensitive": float,
+    "reach": List[str],
+    "people": List[TeamGetResultTeamsItemPeopleItem],
+    "waiting": float,
+    "createdAt": str,
+    "updatedAt": str,
+})
+
+TeamGetResultInvitesItem = TypedDict("TeamGetResultInvitesItem", {
+    "id": str,
+    "kind": str,
+    "email": str,
+    "teamId": str,
+    "team": str,
+    "invitedBy": str,
+    "sends": float,
+    "sentAt": str,
+    "expiresAt": str,
+    "expired": bool,
+})
+
+TeamGetResultOwner = TypedDict("TeamGetResultOwner", {
+    "userId": str,
+    "name": Any,
+    "email": str,
+    "avatarUrl": Any,
+})
+
+TeamGetResultMe = TypedDict("TeamGetResultMe", {
+    "role": str,
+    "teamId": Any,
+    "permissions": List[str],
+})
+
+TeamGetResultPermissionsGroupsItemPermissionsItem = TypedDict("TeamGetResultPermissionsGroupsItemPermissionsItem", {
+    "id": Any,
+    "label": Any,
+    "about": Any,
+    "sensitive": Any,
+    "needs": Any,
+})
+
+TeamGetResultPermissionsGroupsItem = TypedDict("TeamGetResultPermissionsGroupsItem", {
+    "id": str,
+    "title": str,
+    "permissions": List[TeamGetResultPermissionsGroupsItemPermissionsItem],
+})
+
+TeamGetResultPermissionsPresetsItem = TypedDict("TeamGetResultPermissionsPresetsItem", {
+    "id": str,
+    "name": str,
+    "about": str,
+    "permissions": List[str],
+})
+
+TeamGetResultPermissions = TypedDict("TeamGetResultPermissions", {
+    "groups": List[TeamGetResultPermissionsGroupsItem],
+    "presets": List[TeamGetResultPermissionsPresetsItem],
+})
+
+TeamGetResultLimits = TypedDict("TeamGetResultLimits", {
+    "teams": float,
+    "people": float,
+    "name": float,
+    "perInvite": float,
+    "inviteDays": float,
+})
+
+TeamGetResult = TypedDict("TeamGetResult", {
+    "teams": List[TeamGetResultTeamsItem],
+    "invites": List[TeamGetResultInvitesItem],
+    "owner": TeamGetResultOwner,
+    "me": TeamGetResultMe,
+    "permissions": TeamGetResultPermissions,
+    "limits": TeamGetResultLimits,
+})
+
+TeamActivityItemSubject = TypedDict("TeamActivityItemSubject", {
+    "kind": str,
+    "id": str,
+})
+
+TeamActivityItem = TypedDict("TeamActivityItem", {
+    "id": str,
+    "userId": str,
+    "name": str,
+    "email": str,
+    "team": str,
+    "area": str,
+    "summary": str,
+    "subject": TeamActivityItemSubject,
+    "at": str,
+})
+
+TeamInviteResultInvitesItem = TypedDict("TeamInviteResultInvitesItem", {
+    "id": str,
+    "kind": str,
+    "email": str,
+    "teamId": str,
+    "team": str,
+    "invitedBy": str,
+    "sends": float,
+    "sentAt": str,
+    "expiresAt": str,
+    "expired": bool,
+})
+
+TeamInviteResult = TypedDict("TeamInviteResult", {
+    "invites": List[TeamInviteResultInvitesItem],
+    "skipped": Union[List[Any], Dict[str, Any]],
+})
+
+TeamResendInviteResult = TypedDict("TeamResendInviteResult", {
+    "id": str,
+    "kind": str,
+    "email": str,
+    "teamId": str,
+    "team": str,
+    "invitedBy": str,
+    "sends": float,
+    "sentAt": str,
+    "expiresAt": str,
+    "expired": bool,
+})
+
+TeamCancelInviteResult = TypedDict("TeamCancelInviteResult", {
+    "deleted": str,
+})
+
+TeamMoveMemberResult = TypedDict("TeamMoveMemberResult", {
+    "id": str,
+    "userId": str,
+    "teamId": str,
+    "name": str,
+    "email": str,
+    "avatarUrl": Any,
+    "invitedBy": str,
+    "joinedAt": str,
+    "lastSeenAt": Any,
+    "keys": float,
+    "me": bool,
+})
+
+TeamRemoveMemberResult = TypedDict("TeamRemoveMemberResult", {
+    "deleted": str,
+    "keysStopped": float,
+})
+
+TeamsCreateResult = TypedDict("TeamsCreateResult", {
+    "id": str,
+    "name": str,
+    "permissions": List[str],
+    "sensitive": float,
+    "reach": List[str],
+    "people": Union[List[Any], Dict[str, Any]],
+    "waiting": float,
+    "createdAt": str,
+    "updatedAt": str,
+})
+
+TeamsUpdateResult = TypedDict("TeamsUpdateResult", {
+    "id": str,
+    "name": str,
+    "permissions": List[str],
+    "sensitive": float,
+    "reach": List[str],
+    "people": Union[List[Any], Dict[str, Any]],
+    "waiting": float,
+    "createdAt": str,
+    "updatedAt": str,
+})
+
+TeamsDeleteResult = TypedDict("TeamsDeleteResult", {
+    "deleted": str,
 })
 
 BlacklistListItem = TypedDict("BlacklistListItem", {
@@ -8679,6 +9048,12 @@ WebhookEventName = Literal[
     "ticket.message",
     "ticket.resolved",
     "ticket.reopened",
+    "team.created",
+    "team.updated",
+    "team.deleted",
+    "team.member_joined",
+    "team.member_moved",
+    "team.member_left",
     "fraud.checkout_blocked",
     "webhook.test",
 ]
