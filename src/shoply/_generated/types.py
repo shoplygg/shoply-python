@@ -2224,18 +2224,18 @@ CustomMethodsSortResultItem = TypedDict("CustomMethodsSortResultItem", {
     "enabled": bool,
 })
 
-ProductsListResultItemBadgesItem = TypedDict("ProductsListResultItemBadgesItem", {
+ProductsListItemBadgesItem = TypedDict("ProductsListItemBadgesItem", {
     "label": str,
     "color": str,
     "kind": str,
 })
 
-ProductsListResultItemFeaturesItem = TypedDict("ProductsListResultItemFeaturesItem", {
+ProductsListItemFeaturesItem = TypedDict("ProductsListItemFeaturesItem", {
     "type": str,
     "name": str,
 })
 
-ProductsListResultItemVariantsItem = TypedDict("ProductsListResultItemVariantsItem", {
+ProductsListItemVariantsItem = TypedDict("ProductsListItemVariantsItem", {
     "id": str,
     "label": str,
     "price": float,
@@ -2256,7 +2256,7 @@ ProductsListResultItemVariantsItem = TypedDict("ProductsListResultItemVariantsIt
     "blockedPaymentMethods": Union[List[Any], Dict[str, Any]],
 })
 
-ProductsListResultItem = TypedDict("ProductsListResultItem", {
+ProductsListItem = TypedDict("ProductsListItem", {
     "id": str,
     "storeId": str,
     "name": str,
@@ -2269,8 +2269,8 @@ ProductsListResultItem = TypedDict("ProductsListResultItem", {
     "visibility": str,
     "sort": float,
     "isBestSeller": bool,
-    "badges": List[ProductsListResultItemBadgesItem],
-    "features": List[ProductsListResultItemFeaturesItem],
+    "badges": List[ProductsListItemBadgesItem],
+    "features": List[ProductsListItemFeaturesItem],
     "deliveryInstructions": str,
     "blockedPaymentMethods": Union[List[Any], Dict[str, Any]],
     "paymentFees": Union[List[Any], Dict[str, Any]],
@@ -2290,7 +2290,7 @@ ProductsListResultItem = TypedDict("ProductsListResultItem", {
     "untrackedVariants": float,
     "imageCount": float,
     "images": Union[List[Any], Dict[str, Any]],
-    "variants": List[ProductsListResultItemVariantsItem],
+    "variants": List[ProductsListItemVariantsItem],
     "runningSubscriptions": float,
 })
 
