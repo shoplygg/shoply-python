@@ -2267,6 +2267,7 @@ ProductsListItem = TypedDict("ProductsListItem", {
     "image": str,
     "imageUrl": Any,
     "visibility": str,
+    "planPaused": bool,
     "sort": float,
     "isBestSeller": bool,
     "badges": List[ProductsListItemBadgesItem],
@@ -2337,6 +2338,7 @@ ProductsCreateResult = TypedDict("ProductsCreateResult", {
     "image": str,
     "imageUrl": Any,
     "visibility": str,
+    "planPaused": bool,
     "sort": float,
     "isBestSeller": bool,
     "badges": List[ProductsCreateResultBadgesItem],
@@ -2407,6 +2409,7 @@ ProductsShowResult = TypedDict("ProductsShowResult", {
     "image": str,
     "imageUrl": Any,
     "visibility": str,
+    "planPaused": bool,
     "sort": float,
     "isBestSeller": bool,
     "badges": List[ProductsShowResultBadgesItem],
@@ -2477,6 +2480,7 @@ ProductsUpdateResult = TypedDict("ProductsUpdateResult", {
     "image": str,
     "imageUrl": Any,
     "visibility": str,
+    "planPaused": bool,
     "sort": float,
     "isBestSeller": bool,
     "badges": List[ProductsUpdateResultBadgesItem],
@@ -3434,6 +3438,11 @@ InvoicesLinkResult = TypedDict("InvoicesLinkResult", {
     "paidAt": Any,
 })
 
+ReviewsListItemReply = TypedDict("ReviewsListItemReply", {
+    "message": str,
+    "dateReplied": str,
+})
+
 ReviewsListItemItemsItem = TypedDict("ReviewsListItemItemsItem", {
     "productId": str,
     "productName": str,
@@ -3458,6 +3467,7 @@ ReviewsListItem = TypedDict("ReviewsListItem", {
     "automatic": bool,
     "imported": bool,
     "dateCreated": str,
+    "reply": ReviewsListItemReply,
     "items": List[ReviewsListItemItemsItem],
     "orderId": str,
     "customerId": str,
@@ -3465,6 +3475,87 @@ ReviewsListItem = TypedDict("ReviewsListItem", {
     "orderAmount": float,
     "currencyCode": str,
     "flag": ReviewsListItemFlag,
+})
+
+ReviewsReplyResultReviewReply = TypedDict("ReviewsReplyResultReviewReply", {
+    "message": str,
+    "dateReplied": str,
+})
+
+ReviewsReplyResultReviewItemsItem = TypedDict("ReviewsReplyResultReviewItemsItem", {
+    "productId": str,
+    "productName": str,
+    "variantName": str,
+})
+
+ReviewsReplyResultReviewFlag = TypedDict("ReviewsReplyResultReviewFlag", {
+    "id": str,
+    "status": str,
+    "reason": str,
+    "reasonLabel": str,
+    "note": str,
+    "answer": str,
+    "dateCreated": str,
+    "dateDecided": Any,
+})
+
+ReviewsReplyResultReview = TypedDict("ReviewsReplyResultReview", {
+    "id": str,
+    "rating": float,
+    "message": str,
+    "automatic": bool,
+    "imported": bool,
+    "dateCreated": str,
+    "reply": ReviewsReplyResultReviewReply,
+    "items": List[ReviewsReplyResultReviewItemsItem],
+    "orderId": str,
+    "customerId": str,
+    "email": str,
+    "orderAmount": float,
+    "currencyCode": str,
+    "flag": ReviewsReplyResultReviewFlag,
+})
+
+ReviewsReplyResult = TypedDict("ReviewsReplyResult", {
+    "review": ReviewsReplyResultReview,
+})
+
+ReviewsRemoveReplyResultReviewItemsItem = TypedDict("ReviewsRemoveReplyResultReviewItemsItem", {
+    "productId": str,
+    "productName": str,
+    "variantName": str,
+})
+
+ReviewsRemoveReplyResultReviewFlag = TypedDict("ReviewsRemoveReplyResultReviewFlag", {
+    "id": str,
+    "status": str,
+    "reason": str,
+    "reasonLabel": str,
+    "note": str,
+    "answer": str,
+    "dateCreated": str,
+    "dateDecided": Any,
+})
+
+ReviewsRemoveReplyResultReview = TypedDict("ReviewsRemoveReplyResultReview", {
+    "id": str,
+    "rating": float,
+    "message": str,
+    "automatic": bool,
+    "imported": bool,
+    "dateCreated": str,
+    "reply": Any,
+    "items": List[ReviewsRemoveReplyResultReviewItemsItem],
+    "orderId": str,
+    "customerId": str,
+    "email": str,
+    "orderAmount": float,
+    "currencyCode": str,
+    "flag": ReviewsRemoveReplyResultReviewFlag,
+})
+
+ReviewsRemoveReplyResult = TypedDict("ReviewsRemoveReplyResult", {
+    "review": ReviewsRemoveReplyResultReview,
 })
 
 CouponsListItem = TypedDict("CouponsListItem", {
@@ -4431,6 +4522,7 @@ CustomersShowResult = TypedDict("CustomersShowResult", {
     "blacklistedBy": Union[List[Any], Dict[str, Any]],
     "blacklistRules": float,
     "knownAddresses": float,
+    "trusted": bool,
     "id": str,
     "emailAddress": str,
     "dateCreated": str,
@@ -4472,6 +4564,7 @@ CustomersSetBalanceResult = TypedDict("CustomersSetBalanceResult", {
     "blacklistedBy": Union[List[Any], Dict[str, Any]],
     "blacklistRules": float,
     "knownAddresses": float,
+    "trusted": bool,
 })
 
 CustomersBlacklistResultTagsItem = TypedDict("CustomersBlacklistResultTagsItem", {
@@ -4510,6 +4603,7 @@ CustomersBlacklistResult = TypedDict("CustomersBlacklistResult", {
     "blacklistedBy": List[CustomersBlacklistResultBlacklistedByItem],
     "blacklistRules": float,
     "knownAddresses": float,
+    "trusted": bool,
     "added": float,
 })
 
@@ -4542,6 +4636,73 @@ CustomersUnblacklistResult = TypedDict("CustomersUnblacklistResult", {
     "blacklistedBy": Union[List[Any], Dict[str, Any]],
     "blacklistRules": float,
     "knownAddresses": float,
+    "trusted": bool,
+    "removed": float,
+})
+
+CustomersTrustResultTagsItem = TypedDict("CustomersTrustResultTagsItem", {
+    "id": str,
+    "name": str,
+    "tone": str,
+    "automatic": bool,
+})
+
+CustomersTrustResultBalanceHistoryItem = TypedDict("CustomersTrustResultBalanceHistoryItem", {
+    "id": str,
+    "kind": str,
+    "amount": float,
+    "balanceAfter": float,
+    "currencyCode": str,
+    "note": str,
+    "orderId": Any,
+    "by": str,
+    "dateCreated": str,
+})
+
+CustomersTrustResult = TypedDict("CustomersTrustResult", {
+    "balance": float,
+    "balanceAtCheckout": bool,
+    "tags": List[CustomersTrustResultTagsItem],
+    "balanceHistory": List[CustomersTrustResultBalanceHistoryItem],
+    "affiliate": Any,
+    "blacklisted": bool,
+    "blacklistedBy": Union[List[Any], Dict[str, Any]],
+    "blacklistRules": float,
+    "knownAddresses": float,
+    "trusted": bool,
+    "added": bool,
+})
+
+CustomersUntrustResultTagsItem = TypedDict("CustomersUntrustResultTagsItem", {
+    "id": str,
+    "name": str,
+    "tone": str,
+    "automatic": bool,
+})
+
+CustomersUntrustResultBalanceHistoryItem = TypedDict("CustomersUntrustResultBalanceHistoryItem", {
+    "id": str,
+    "kind": str,
+    "amount": float,
+    "balanceAfter": float,
+    "currencyCode": str,
+    "note": str,
+    "orderId": Any,
+    "by": str,
+    "dateCreated": str,
+})
+
+CustomersUntrustResult = TypedDict("CustomersUntrustResult", {
+    "balance": float,
+    "balanceAtCheckout": bool,
+    "tags": List[CustomersUntrustResultTagsItem],
+    "balanceHistory": List[CustomersUntrustResultBalanceHistoryItem],
+    "affiliate": Any,
+    "blacklisted": bool,
+    "blacklistedBy": Union[List[Any], Dict[str, Any]],
+    "blacklistRules": float,
+    "knownAddresses": float,
+    "trusted": bool,
     "removed": float,
 })
 
@@ -5274,6 +5435,66 @@ BlacklistSetEnabledResult = TypedDict("BlacklistSetEnabledResult", {
     "source": str,
     "customerId": Any,
     "orderId": Any,
+    "hits": float,
+    "lastHitAt": Any,
+    "dateCreated": str,
+    "updatedAt": str,
+})
+
+AllowlistListItem = TypedDict("AllowlistListItem", {
+    "id": str,
+    "type": str,
+    "value": str,
+    "note": str,
+    "enabled": bool,
+    "source": str,
+    "customerId": Any,
+    "hits": float,
+    "lastHitAt": Any,
+    "dateCreated": str,
+    "updatedAt": str,
+})
+
+AllowlistCreateResult = TypedDict("AllowlistCreateResult", {
+    "id": str,
+    "type": str,
+    "value": str,
+    "note": str,
+    "enabled": bool,
+    "source": str,
+    "customerId": Any,
+    "hits": float,
+    "lastHitAt": Any,
+    "dateCreated": str,
+    "updatedAt": str,
+})
+
+AllowlistUpdateResult = TypedDict("AllowlistUpdateResult", {
+    "id": str,
+    "type": str,
+    "value": str,
+    "note": str,
+    "enabled": bool,
+    "source": str,
+    "customerId": Any,
+    "hits": float,
+    "lastHitAt": Any,
+    "dateCreated": str,
+    "updatedAt": str,
+})
+
+AllowlistDeleteResult = TypedDict("AllowlistDeleteResult", {
+    "id": str,
+})
+
+AllowlistSetEnabledResult = TypedDict("AllowlistSetEnabledResult", {
+    "id": str,
+    "type": str,
+    "value": str,
+    "note": str,
+    "enabled": bool,
+    "source": str,
+    "customerId": Any,
     "hits": float,
     "lastHitAt": Any,
     "dateCreated": str,
@@ -9008,6 +9229,8 @@ WebhookEventName = Literal[
     "review.created",
     "review.removed",
     "review.flag_declined",
+    "review.replied",
+    "review.reply_removed",
     "stock.low",
     "stock.out",
     "product.created",
@@ -9055,6 +9278,7 @@ WebhookEventName = Literal[
     "team.member_moved",
     "team.member_left",
     "fraud.checkout_blocked",
+    "fraud.checkout_allowed",
     "webhook.test",
 ]
 

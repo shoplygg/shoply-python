@@ -15,6 +15,11 @@ from .types import (
     AffiliatesListResultItem,
     AffiliatesSetBalanceResult,
     AffiliatesUpdateResult,
+    AllowlistCreateResult,
+    AllowlistDeleteResult,
+    AllowlistListItem,
+    AllowlistSetEnabledResult,
+    AllowlistUpdateResult,
     AnalyticsLiveResult,
     AnalyticsLiveResultHome,
     AnalyticsLiveResultNow,
@@ -227,9 +232,15 @@ from .types import (
     CustomersStatsResultRange,
     CustomersStatsResultReturning,
     CustomersTagResultItem,
+    CustomersTrustResult,
+    CustomersTrustResultBalanceHistoryItem,
+    CustomersTrustResultTagsItem,
     CustomersUnblacklistResult,
     CustomersUnblacklistResultBalanceHistoryItem,
     CustomersUnblacklistResultTagsItem,
+    CustomersUntrustResult,
+    CustomersUntrustResultBalanceHistoryItem,
+    CustomersUntrustResultTagsItem,
     DisputesAccessResult,
     DisputesAccessResultAfterItem,
     DisputesAccessResultAnswer,
@@ -433,6 +444,16 @@ from .types import (
     ReviewsListItem,
     ReviewsListItemFlag,
     ReviewsListItemItemsItem,
+    ReviewsListItemReply,
+    ReviewsRemoveReplyResult,
+    ReviewsRemoveReplyResultReview,
+    ReviewsRemoveReplyResultReviewFlag,
+    ReviewsRemoveReplyResultReviewItemsItem,
+    ReviewsReplyResult,
+    ReviewsReplyResultReview,
+    ReviewsReplyResultReviewFlag,
+    ReviewsReplyResultReviewItemsItem,
+    ReviewsReplyResultReviewReply,
     RoutingAddProcessorResult,
     RoutingAddProcessorResultAvailableItem,
     RoutingAddProcessorResultFigures,
@@ -3745,7 +3766,7 @@ class Orders:
     ) -> File:
         """**Export orders**
 
-        The orders the same filters would list, as a CSV file: a row an order with every field its page shows (when it was paid, the fee, tax, balance and affiliate in it, the currency it was charged in, the billing address), or a row a product line with `rows=lines`. The first thirteen columns are always Order ID, Created, Email, Status, Payment, Currency, Subtotal, Discount, Total, Coupon, Country, Items and Products, in that order. No delivered key is in it. Every order the filters match is in the file, however many: it is sent as it is read, with no length given. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, orders, customers, fraud events and blacklist rules together, whoever asks: after that the answer is 429.
+        The orders the same filters would list, as a CSV file: a row an order with every field its page shows (when it was paid, the fee, tax, balance and affiliate in it, the currency it was charged in, the billing address), or a row a product line with `rows=lines`. The first thirteen columns are always Order ID, Created, Email, Status, Payment, Currency, Subtotal, Discount, Total, Coupon, Country, Items and Products, in that order. No delivered key is in it. Every order the filters match is in the file, however many: it is sent as it is read, with no length given. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, orders, customers, fraud events, blacklist rules and allowlist entries together, whoever asks: after that the answer is 429.
 
         Needs the `orders.read` permission (Read Orders). It is one of the heavier reads, and is counted against a smaller budget of its own: 60 a minute for each key.
 
@@ -4210,6 +4231,7 @@ class Reviews:
         rating: Optional[int] = None,
         type: Optional[Literal["buyer", "automatic"]] = None,
         search: Optional[str] = None,
+        reply: Optional[Literal["replied", "none"]] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -4217,7 +4239,7 @@ class Reviews:
     ) -> Page[ReviewsListItem]:
         """**List reviews**
 
-        The reviews left on the store's orders, a page at a time, newest first. A buyer leaves one for a paid order; an order nobody reviewed is given five stars by itself after seven days. `meta.summary` is the whole store's average and counts, whatever the filters. A review the store flagged for removal carries `flag`: how it stands (`open`, or `kept` with the answer given) and why it was flagged. One that was removed is no longer listed.
+        The reviews left on the store's orders, a page at a time, newest first. A buyer leaves one for a paid order; an order nobody reviewed is given five stars by itself after seven days. `meta.summary` is the whole store's average and counts, whatever the filters. A review the store flagged for removal carries `flag`: how it stands (`open`, or `kept` with the answer given) and why it was flagged. One that was removed is no longer listed. The store's reply, where it wrote one, is `reply`, and `meta.summary.replied` counts them.
 
         Needs the `reviews.read` permission (Read Reviews).
 
@@ -4226,11 +4248,56 @@ class Reviews:
             perPage: How many a page holds. Left out, it is 20.
             rating: Only reviews of this many stars: 1 to 5.
             type: Only reviews a buyer wrote, or only the ones given by themselves.
-            search: A buyer's email, an order's ID, or words from a review.
+            search: A buyer's email, an order's ID, or words from a review or its reply.
+            reply: Only reviews the store has replied to, or only buyers' reviews it has not (an automatic review cannot be replied to).
 
         Docs: https://docs.shoply.gg/api-reference/reviews/list-reviews
         """
-        return cast("Page[ReviewsListItem]", self._caller._call("reviews.list", [], {"page": page, "perPage": perPage, "rating": rating, "type": type, "search": search}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("Page[ReviewsListItem]", self._caller._call("reviews.list", [], {"page": page, "perPage": perPage, "rating": rating, "type": type, "search": search, "reply": reply}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def reply(
+        self,
+        review_id: str,
+        *,
+        message: str,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ReviewsReplyResult:
+        """**Reply to a review**
+
+        Writes the store's reply to a review, shown under it on the store, to its buyer on their order's page, and on the dashboard. A review has one reply: sent again, it takes the place of the one there. Plain words, line breaks kept.
+
+        Refused for an automatic review, which has no words to reply to (`automatic_review`). The buyer is not emailed. Answers the review as [List reviews](https://docs.shoply.gg/api-reference/reviews/list-reviews) has it, with `reply`.
+
+        Needs the `reviews.write` permission (Reply to Reviews).
+
+        Args:
+            message: The reply, up to 1,000 characters. Required.
+
+        Docs: https://docs.shoply.gg/api-reference/reviews/reply-to-a-review
+        """
+        return cast("ReviewsReplyResult", self._caller._call("reviews.reply", [review_id], {"message": message}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def removeReply(
+        self,
+        review_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ReviewsRemoveReplyResult:
+        """**Remove a reply to a review**
+
+        Takes the store's reply off a review. A review with no reply is answered as it is. Answers the review as [List reviews](https://docs.shoply.gg/api-reference/reviews/list-reviews) has it, its `reply` null.
+
+        Needs the `reviews.write` permission (Reply to Reviews).
+
+        Docs: https://docs.shoply.gg/api-reference/reviews/remove-a-reply-to-a-review
+        """
+        return cast("ReviewsRemoveReplyResult", self._caller._call("reviews.removeReply", [review_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
 
 class Coupons:
@@ -6027,7 +6094,7 @@ class Customers:
     ) -> File:
         """**Export customers**
 
-        The customers the same filters would list, as a CSV file: each one's email, when they were first seen, the orders they paid for and what they spent, their first and last paid order, their store balance, their affiliate code and balance where they have one, their tags, and whether they are subscribed to the store's news and offers. Every customer the filters match is in the file, however many: it is sent as it is read. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, orders, customers, fraud events and blacklist rules together, whoever asks: after that the answer is 429.
+        The customers the same filters would list, as a CSV file: each one's email, when they were first seen, the orders they paid for and what they spent, their first and last paid order, their store balance, their affiliate code and balance where they have one, their tags, and whether they are subscribed to the store's news and offers. Every customer the filters match is in the file, however many: it is sent as it is read. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, orders, customers, fraud events, blacklist rules and allowlist entries together, whoever asks: after that the answer is 429.
 
         Needs the `customers.read` permission (Read Customers). It is one of the heavier reads, and is counted against a smaller budget of its own: 60 a minute for each key.
 
@@ -6167,6 +6234,48 @@ class Customers:
         Docs: https://docs.shoply.gg/api-reference/customers/clear-a-customer-from-the-blacklist
         """
         return cast("CustomersUnblacklistResult", self._caller._call("customers.unblacklist", [customer_id], {"addresses": addresses}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def trust(
+        self,
+        customer_id: str,
+        *,
+        note: Optional[str] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> CustomersTrustResult:
+        """**Trust a customer**
+
+        Puts the customer's email on the store's allowlist, so its blacklist, blocked countries and VPN rule let them through. An entry already on their email is switched on. Answers the customer, with `trusted`.
+
+        Needs the `customers.write` permission (Change Customers).
+
+        Args:
+            note: Why. Kept with the entry.
+
+        Docs: https://docs.shoply.gg/api-reference/customers/trust-a-customer
+        """
+        return cast("CustomersTrustResult", self._caller._call("customers.trust", [customer_id], {"note": note}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def untrust(
+        self,
+        customer_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> CustomersUntrustResult:
+        """**Stop trusting a customer**
+
+        Takes the allowlist entries on the customer's email, and any made from their page, off. An IP address or range allowed by hand stays.
+
+        Needs the `customers.write` permission (Change Customers).
+
+        Docs: https://docs.shoply.gg/api-reference/customers/stop-trusting-a-customer
+        """
+        return cast("CustomersUntrustResult", self._caller._call("customers.untrust", [customer_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def setTags(
         self,
@@ -7172,7 +7281,7 @@ class Blacklist:
     ) -> File:
         """**Export blacklist rules**
 
-        The rules the same filters would list, as a CSV file, newest first: each one's type, value and note, whether it is in force, when and how it was added, the customer or order it came from, and how many checkouts it has stopped. Every rule the filters match is in the file. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, orders, customers, fraud events and blacklist rules together, whoever asks: after that the answer is 429.
+        The rules the same filters would list, as a CSV file, newest first: each one's type, value and note, whether it is in force, when and how it was added, the customer or order it came from, and how many checkouts it has stopped. Every rule the filters match is in the file. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, orders, customers, fraud events, blacklist rules and allowlist entries together, whoever asks: after that the answer is 429.
 
         Needs the `fraud.read` permission (Read Fraud Protection). It is one of the heavier reads, and is counted against a smaller budget of its own: 60 a minute for each key.
 
@@ -7258,6 +7367,169 @@ class Blacklist:
         return cast("BlacklistSetEnabledResult", self._caller._call("blacklist.setEnabled", [rule_id], {"enabled": enabled}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
 
+class Allowlist:
+
+    def __init__(self, caller: Any) -> None:
+        self._caller = caller
+
+    def list(
+        self,
+        *,
+        page: Optional[int] = None,
+        perPage: Optional[int] = None,
+        status: Optional[Literal["enabled", "disabled"]] = None,
+        type: Optional[Literal["email", "ip", "cidr"]] = None,
+        search: Optional[str] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> Page[AllowlistListItem]:
+        """**List allowlist entries**
+
+        The store's allowlist, a page at a time: the buyers and addresses its fraud rules always let through. A buyer who matches an entry in force is let past the blacklist, the store's blocked countries and its VPN rule, even where a rule names them. The limit on unpaid orders still applies. An email entry lets through anybody who types that address at a checkout; an IP address or range is the stronger of the two. `hits` is how many checkouts an entry let through that a rule would have stopped. A store holds up to 1,000 entries.
+
+        Needs the `fraud.read` permission (Read Fraud Protection).
+
+        Args:
+            page: Which page of the list. The first is 1. Left out, it is 1.
+            perPage: How many a page holds. Left out, it is 20.
+            status: Only entries that are in force, or only ones switched off.
+            type: Only entries of this type.
+            search: Part of an entry's value or note.
+
+        Docs: https://docs.shoply.gg/api-reference/allowlist/list-allowlist-entries
+        """
+        return cast("Page[AllowlistListItem]", self._caller._call("allowlist.list", [], {"page": page, "perPage": perPage, "status": status, "type": type, "search": search}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def create(
+        self,
+        *,
+        type: Literal["email", "ip", "cidr"],
+        value: str,
+        note: Optional[str] = None,
+        enabled: Optional[bool] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> AllowlistCreateResult:
+        """**Create an allowlist entry**
+
+        Adds an entry. Something already on the allowlist is refused, and so is a store's 1,001st (`allowlist_full`).
+
+        Needs the `fraud.write` permission (Change Fraud Protection).
+
+        Args:
+            type: What the entry lets through: an email address, an IP address, or a range of them (`cidr`). Required.
+            value: What to match. Required.
+            note: Why, up to 500 characters.
+            enabled: Whether the entry is in force. Left out, it is true.
+
+        Docs: https://docs.shoply.gg/api-reference/allowlist/create-an-allowlist-entry
+        """
+        return cast("AllowlistCreateResult", self._caller._call("allowlist.create", [], {"type": type, "value": value, "note": note, "enabled": enabled}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def export(
+        self,
+        *,
+        status: Optional[Literal["enabled", "disabled"]] = None,
+        type: Optional[Literal["email", "ip", "cidr"]] = None,
+        search: Optional[str] = None,
+        check: Optional[Literal["1"]] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> File:
+        """**Export allowlist entries**
+
+        The entries the same filters would list, as a CSV file, newest first: each one's type, value and note, whether it is in force, when and how it was added, and how many checkouts it has let through. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, orders, customers, fraud events, blacklist rules and allowlist entries together, whoever asks: after that the answer is 429.
+
+        Needs the `fraud.read` permission (Read Fraud Protection). It is one of the heavier reads, and is counted against a smaller budget of its own: 60 a minute for each key.
+
+        Args:
+            status: Only entries that are in force, or only ones switched off.
+            type: Only entries of this type.
+            search: Part of an entry's value or note.
+            check: `1` for how many rows the file would have, as `{ rows }`, in place of the file. Not counted against the store's exports, and refused with 429 where none are left.
+
+        Docs: https://docs.shoply.gg/api-reference/allowlist/export-allowlist-entries
+        """
+        return cast("File", self._caller._call("allowlist.export", [], {"status": status, "type": type, "search": search, "check": check}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def update(
+        self,
+        entry_id: str,
+        *,
+        type: Literal["email", "ip", "cidr"],
+        value: str,
+        note: Optional[str] = None,
+        enabled: Optional[bool] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> AllowlistUpdateResult:
+        """**Update an allowlist entry**
+
+        Saves the entry whole: send every field as it should be.
+
+        Needs the `fraud.write` permission (Change Fraud Protection).
+
+        Args:
+            type: What the entry lets through: an email address, an IP address, or a range of them (`cidr`). Required.
+            value: What to match. Required.
+            note: Why, up to 500 characters.
+            enabled: Whether the entry is in force. Left out, it is true.
+
+        Docs: https://docs.shoply.gg/api-reference/allowlist/update-an-allowlist-entry
+        """
+        return cast("AllowlistUpdateResult", self._caller._call("allowlist.update", [entry_id], {"type": type, "value": value, "note": note, "enabled": enabled}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def delete(
+        self,
+        entry_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> AllowlistDeleteResult:
+        """**Delete an allowlist entry**
+
+        Removes the entry.
+
+        Needs the `fraud.write` permission (Change Fraud Protection).
+
+        Docs: https://docs.shoply.gg/api-reference/allowlist/delete-an-allowlist-entry
+        """
+        return cast("AllowlistDeleteResult", self._caller._call("allowlist.delete", [entry_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def setEnabled(
+        self,
+        entry_id: str,
+        *,
+        enabled: bool,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> AllowlistSetEnabledResult:
+        """**Switch an allowlist entry on or off**
+
+        Changes whether the entry is in force, without sending the rest of it.
+
+        Needs the `fraud.write` permission (Change Fraud Protection).
+
+        Args:
+            enabled: Whether the entry is in force. Required.
+
+        Docs: https://docs.shoply.gg/api-reference/allowlist/switch-an-allowlist-entry-on-or-off
+        """
+        return cast("AllowlistSetEnabledResult", self._caller._call("allowlist.setEnabled", [entry_id], {"enabled": enabled}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+
 class FraudEvents:
 
     def __init__(self, caller: Any) -> None:
@@ -7268,7 +7540,7 @@ class FraudEvents:
         *,
         page: Optional[int] = None,
         perPage: Optional[int] = None,
-        reason: Optional[Literal["blacklist", "vpn", "country", "unpaid_limit", "dispute", "refund", "changes"]] = None,
+        reason: Optional[Literal["blacklist", "vpn", "country", "unpaid_limit", "dispute", "allowed", "refund", "changes"]] = None,
         search: Optional[str] = None,
         range: Optional[Literal["today", "yesterday", "7d", "30d", "this_week", "last_week", "this_month", "last_month", "this_year"]] = None,
         from_: Optional[str] = None,
@@ -7302,7 +7574,7 @@ class FraudEvents:
     def export(
         self,
         *,
-        reason: Optional[Literal["blacklist", "vpn", "country", "unpaid_limit", "dispute", "refund", "changes"]] = None,
+        reason: Optional[Literal["blacklist", "vpn", "country", "unpaid_limit", "dispute", "allowed", "refund", "changes"]] = None,
         search: Optional[str] = None,
         check: Optional[Literal["1"]] = None,
         range: Optional[Literal["today", "yesterday", "7d", "30d", "this_week", "last_week", "this_month", "last_month", "this_year"]] = None,
@@ -7316,7 +7588,7 @@ class FraudEvents:
     ) -> File:
         """**Export fraud events**
 
-        The events the same filters would list, as a CSV file, newest first: when each happened and how many attempts it gathered, what it was, the email, IP address, country and order, the rule it matched or the change that was made and by whom, and what a lookup of the address already knew (its provider and network, where it is, and whether it looked like a VPN, a data centre or a phone). Nothing is looked up to write the file: an address never looked up has those empty. Every event the filters match is in the file, however many: it is sent as it is read. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, orders, customers, fraud events and blacklist rules together, whoever asks: after that the answer is 429.
+        The events the same filters would list, as a CSV file, newest first: when each happened and how many attempts it gathered, what it was, the email, IP address, country and order, the rule it matched or the change that was made and by whom, and what a lookup of the address already knew (its provider and network, where it is, and whether it looked like a VPN, a data centre or a phone). Nothing is looked up to write the file: an address never looked up has those empty. Every event the filters match is in the file, however many: it is sent as it is read. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, orders, customers, fraud events, blacklist rules and allowlist entries together, whoever asks: after that the answer is 429.
 
         Needs the `fraud.read` permission (Read Fraud Protection). It is one of the heavier reads, and is counted against a smaller budget of its own: 60 a minute for each key.
 
@@ -9011,6 +9283,7 @@ class ClientResources:
     team: Team
     teams: Teams
     blacklist: Blacklist
+    allowlist: Allowlist
     fraudEvents: FraudEvents
     fraudSettings: FraudSettings
     disputes: Disputes
@@ -9068,6 +9341,7 @@ class ClientResources:
         self.team = Team(self)
         self.teams = Teams(self)
         self.blacklist = Blacklist(self)
+        self.allowlist = Allowlist(self)
         self.fraudEvents = FraudEvents(self)
         self.fraudSettings = FraudSettings(self)
         self.disputes = Disputes(self)
