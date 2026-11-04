@@ -371,6 +371,7 @@ from .types import (
     FraudSettingsUpdateResult,
     InvoicesLinkResult,
     InvoicesListItem,
+    KeyDestroyResult,
     KeyShowResult,
     KeyShowResultKey,
     KeyShowResultStore,
@@ -1001,6 +1002,28 @@ class Key:
         Docs: https://docs.shoply.gg/api-reference/api-key/get-the-current-key
         """
         return cast("KeyShowResult", self._caller._call("key.show", [], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def destroy(
+        self,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> KeyDestroyResult:
+        """**Revoke the current key**
+
+        Revokes the key in the request, for good: from the next request on it is refused as any revoked key is, and it is listed as revoked under Developers, API Keys. Answers the key as it now is. This is how a program that was handed a key gives it back when it is done with it, as `shoply logout` does.
+
+        An app's token is not revoked here: an app gives its token back at `POST /v1/oauth/revoke`.
+
+        Any live key may ask it, whatever its permissions.
+
+        Any live API key may call this, whatever its permissions.
+
+        Docs: https://docs.shoply.gg/api-reference/api-key/revoke-the-current-key
+        """
+        return cast("KeyDestroyResult", self._caller._call("key.destroy", [], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
 
 class Store:
@@ -1723,7 +1746,7 @@ class Storefronts:
     ) -> StorefrontsCodeResult:
         """**Get a storefront's code**
 
-        Whether this storefront can be edited as code (`available`), whether it has files of its own yet (`started`), and when it has: every file with its SHA-256 `hash`, what is wrong in the templates (`code.problems`), the count of changes to its files (`code.rev`) and to its design (`version`), which "Publish a storefront's code" takes, and a link to look at the draft on the store's own address for an hour (`preview`: its `url`, with `param` set to `token` in the query string). A file's text is "Get a file", or every file at once in "Export a storefront".
+        Whether this storefront can be edited as code (`available`), whether it has files of its own yet (`started`), and when it has: every file with its SHA-256 `hash`, what is wrong in the templates (`code.problems`), the count of changes to its files (`code.rev`) and to its design (`version`), which "Publish a storefront's code" takes, and a link to look at the draft on the store's own address for an hour (`preview`: its `url`, with `param` set to `token` in the query string). A file you changed that a later release of the theme changed too has `behind`, the release you edited it on (null on every other file), and the storefront says how many in `storefront.themeChanged`; "Get a file" answers what the release changed in it. A file's text is "Get a file", or every file at once in "Export a storefront".
 
         Needs the `storefronts.read` permission (Read Storefronts).
 
@@ -1742,7 +1765,7 @@ class Storefronts:
     ) -> StorefrontsCodeStartResult:
         """**Give a storefront files**
 
-        Gives a storefront files of its own, copied from its theme's, as opening the code studio does. Until then it is drawn from its theme's files and follows them as they change. Nothing buyers see changes. Refused with `code_needs_copy` for a storefront from before its theme could be edited as code: make a copy of it ("Create a storefront" with `from`) and work on that. Answers as "Get a storefront's code".
+        Gives a storefront files of its own, copied from its theme's, as opening the code studio does. Until then it is drawn from its theme's files and follows them as they change; from then on a file of the theme's you never change goes on following the theme's releases, in the draft and in what is live, and only the files you change stay as you wrote them. Nothing buyers see changes. Refused with `code_needs_copy` for a storefront from before its theme could be edited as code: make a copy of it ("Create a storefront" with `from`) and work on that. Answers as "Get a storefront's code".
 
         Needs the `storefronts.write` permission (Change Storefronts).
 
@@ -1762,7 +1785,7 @@ class Storefronts:
     ) -> StorefrontsCodeFileResult:
         """**Get a file**
 
-        One file of the storefront's draft, with its text in `content` and its SHA-256 in `hash`. `file_not_found` for a path it does not have.
+        One file of the storefront's draft, with its text in `content` and its SHA-256 in `hash`. `file_not_found` for a path it does not have. For a file you changed that a later release of the theme changed too (`behind` is the release you edited it on), `themeChange` has the theme's text on either side of that release: `before`, from the release in `from`, and `now`. Saving the theme's text into the file, or resetting it in the code studio, clears `behind`, as Keep Mine there does.
 
         Needs the `storefronts.read` permission (Read Storefronts).
 

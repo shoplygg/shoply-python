@@ -6,6 +6,7 @@ from typing import Any, Dict
 
 ROUTES: Dict[str, Dict[str, Any]] = {
     "key.show": {"method": "GET", "path": "/key", "params": [], "query": [], "body": False, "upload": None, "file": False, "paged": False, "customer": False, "signed_in": True, "idempotent": False},
+    "key.destroy": {"method": "DELETE", "path": "/key", "params": [], "query": [], "body": False, "upload": None, "file": False, "paged": False, "customer": False, "signed_in": True, "idempotent": True},
     "store.show": {"method": "GET", "path": "/stores/{storeId}", "params": [], "query": [], "body": False, "upload": None, "file": False, "paged": False, "customer": False, "signed_in": True, "idempotent": False},
     "store.update": {"method": "PUT", "path": "/stores/{storeId}", "params": [], "query": [], "body": True, "upload": None, "file": False, "paged": False, "customer": False, "signed_in": True, "idempotent": True},
     "store.setAddress": {"method": "PUT", "path": "/stores/{storeId}/url", "params": [], "query": [], "body": True, "upload": None, "file": False, "paged": False, "customer": False, "signed_in": True, "idempotent": True},

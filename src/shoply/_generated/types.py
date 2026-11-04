@@ -33,6 +33,20 @@ KeyShowResult = TypedDict("KeyShowResult", {
     "api": str,
 })
 
+KeyDestroyResult = TypedDict("KeyDestroyResult", {
+    "id": str,
+    "name": str,
+    "prefix": str,
+    "scopes": List[str],
+    "allowedIps": Union[List[Any], Dict[str, Any]],
+    "allowedDomains": Union[List[Any], Dict[str, Any]],
+    "expiresAt": Any,
+    "expired": bool,
+    "createdAt": str,
+    "lastUsedAt": str,
+    "revokedAt": str,
+})
+
 StoreShowResultSocialLinks = TypedDict("StoreShowResultSocialLinks", {
     "discord": str,
     "youtube": str,
@@ -842,6 +856,7 @@ StorefrontsListResultItem = TypedDict("StorefrontsListResultItem", {
     "code": bool,
     "engine": str,
     "codeOnCopy": Any,
+    "themeChanged": Any,
     "unpublished": bool,
     "accent": Any,
     "headingFont": Any,
@@ -861,6 +876,7 @@ StorefrontsCreateResultItem = TypedDict("StorefrontsCreateResultItem", {
     "code": bool,
     "engine": str,
     "codeOnCopy": Any,
+    "themeChanged": Any,
     "unpublished": bool,
     "accent": Any,
     "headingFont": Any,
@@ -1005,6 +1021,7 @@ StorefrontsRenameResultItem = TypedDict("StorefrontsRenameResultItem", {
     "code": bool,
     "engine": str,
     "codeOnCopy": Any,
+    "themeChanged": Any,
     "unpublished": bool,
     "accent": Any,
     "headingFont": Any,
@@ -1024,6 +1041,7 @@ StorefrontsDeleteResultItem = TypedDict("StorefrontsDeleteResultItem", {
     "code": bool,
     "engine": str,
     "codeOnCopy": Any,
+    "themeChanged": Any,
     "unpublished": bool,
     "accent": Any,
     "headingFont": Any,
@@ -1043,6 +1061,7 @@ StorefrontsSetLiveResultItem = TypedDict("StorefrontsSetLiveResultItem", {
     "code": bool,
     "engine": str,
     "codeOnCopy": Any,
+    "themeChanged": Any,
     "unpublished": bool,
     "accent": Any,
     "headingFont": Any,
@@ -1062,6 +1081,7 @@ StorefrontsCodeResultStorefront = TypedDict("StorefrontsCodeResultStorefront", {
     "code": bool,
     "engine": str,
     "codeOnCopy": Any,
+    "themeChanged": Any,
     "unpublished": bool,
     "accent": Any,
     "headingFont": Any,
@@ -1092,6 +1112,7 @@ StorefrontsCodeStartResultStorefront = TypedDict("StorefrontsCodeStartResultStor
     "code": bool,
     "engine": str,
     "codeOnCopy": Any,
+    "themeChanged": Any,
     "unpublished": bool,
     "accent": Any,
     "headingFont": Any,
@@ -1104,6 +1125,7 @@ StorefrontsCodeStartResultCodeFilesItem = TypedDict("StorefrontsCodeStartResultC
     "size": float,
     "added": bool,
     "changed": bool,
+    "behind": Any,
     "updatedAt": str,
 })
 
@@ -1165,6 +1187,7 @@ StorefrontsCodeFileResult = TypedDict("StorefrontsCodeFileResult", {
     "size": float,
     "added": bool,
     "changed": bool,
+    "behind": Any,
     "updatedAt": str,
     "content": str,
 })
@@ -1175,6 +1198,7 @@ StorefrontsCodeSaveResultFile = TypedDict("StorefrontsCodeSaveResultFile", {
     "size": float,
     "added": bool,
     "changed": bool,
+    "behind": Any,
     "updatedAt": str,
     "content": str,
 })
@@ -1185,6 +1209,7 @@ StorefrontsCodeSaveResultCodeFilesItem = TypedDict("StorefrontsCodeSaveResultCod
     "size": float,
     "added": bool,
     "changed": bool,
+    "behind": Any,
     "updatedAt": str,
 })
 
@@ -1228,6 +1253,7 @@ StorefrontsCodeAddResultFile = TypedDict("StorefrontsCodeAddResultFile", {
     "size": float,
     "added": bool,
     "changed": bool,
+    "behind": Any,
     "updatedAt": str,
     "content": str,
 })
@@ -1238,6 +1264,7 @@ StorefrontsCodeAddResultCodeFilesItem = TypedDict("StorefrontsCodeAddResultCodeF
     "size": float,
     "added": bool,
     "changed": bool,
+    "behind": Any,
     "updatedAt": str,
 })
 
@@ -1285,6 +1312,7 @@ StorefrontsCodeRenameResultFile = TypedDict("StorefrontsCodeRenameResultFile", {
     "size": float,
     "added": bool,
     "changed": bool,
+    "behind": Any,
     "updatedAt": str,
 })
 
@@ -1306,6 +1334,7 @@ StorefrontsCodePublishResultStorefront = TypedDict("StorefrontsCodePublishResult
     "code": bool,
     "engine": str,
     "codeOnCopy": Any,
+    "themeChanged": Any,
     "unpublished": bool,
     "accent": Any,
     "headingFont": Any,
@@ -1318,6 +1347,7 @@ StorefrontsCodePublishResultCodeFilesItem = TypedDict("StorefrontsCodePublishRes
     "size": float,
     "added": bool,
     "changed": bool,
+    "behind": Any,
     "updatedAt": str,
 })
 
