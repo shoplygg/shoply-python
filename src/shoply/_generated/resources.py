@@ -442,6 +442,62 @@ from .types import (
     RequestsListItemApiKey,
     RequestsShowResult,
     RequestsShowResultApiKey,
+    ResellerAnnouncementsCreateResult,
+    ResellerAnnouncementsListResultItem,
+    ResellerAnnouncementsUpdateResult,
+    ResellerInvitesCreateResult,
+    ResellerInvitesListResultItem,
+    ResellerInvitesUpdateResult,
+    ResellerOrdersListItem,
+    ResellerProductsBadgesResult,
+    ResellerProductsBadgesResultF052e845Eeca4497AefbC59dea7f3d27Item,
+    ResellerProductsListResultItem,
+    ResellerProductsPickableResultItem,
+    ResellerProductsSaveResultItem,
+    ResellerTiersCreateResult,
+    ResellerTiersListResultItem,
+    ResellerTiersUpdateResult,
+    ResellerTopUpsApproveResult,
+    ResellerTopUpsListItem,
+    ResellerTopUpsMarkPaidResult,
+    ResellerTopUpsPaymentResult,
+    ResellerTopUpsPaymentResultProof,
+    ResellerTopUpsRejectResult,
+    ResellersDeleteResult,
+    ResellersDomainResult,
+    ResellersGetResult,
+    ResellersGetResultCatalogueItem,
+    ResellersGetResultCatalogueItemPermissionsItem,
+    ResellersGetResultTeamItem,
+    ResellersGetResultTeamItemAccess,
+    ResellersListResultItem,
+    ResellersOverviewResult,
+    ResellersOverviewResultFigures,
+    ResellersOverviewResultPanel,
+    ResellersOverviewResultTopItem,
+    ResellersOverviewResultWaitingItem,
+    ResellersRemoveMemberResult,
+    ResellersRemoveMemberResultCatalogueItem,
+    ResellersRemoveMemberResultCatalogueItemPermissionsItem,
+    ResellersRemoveMemberResultTeamItem,
+    ResellersRemoveMemberResultTeamItemAccess,
+    ResellersSetBalanceResult,
+    ResellersSetBalanceResultCatalogueItem,
+    ResellersSetBalanceResultCatalogueItemPermissionsItem,
+    ResellersSetBalanceResultTeamItem,
+    ResellersSetBalanceResultTeamItemAccess,
+    ResellersSettingsResult,
+    ResellersUpdateMemberResult,
+    ResellersUpdateMemberResultCatalogueItem,
+    ResellersUpdateMemberResultCatalogueItemPermissionsItem,
+    ResellersUpdateMemberResultTeamItem,
+    ResellersUpdateMemberResultTeamItemAccess,
+    ResellersUpdateResult,
+    ResellersUpdateResultCatalogueItem,
+    ResellersUpdateResultCatalogueItemPermissionsItem,
+    ResellersUpdateResultTeamItem,
+    ResellersUpdateResultTeamItemAccess,
+    ResellersUpdateSettingsResult,
     ReviewsListItem,
     ReviewsListItemFlag,
     ReviewsListItemItemsItem,
@@ -7227,6 +7283,903 @@ class Teams:
         return cast("TeamsDeleteResult", self._caller._call("teams.delete", [team_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
 
+class Resellers:
+
+    def __init__(self, caller: Any) -> None:
+        self._caller = caller
+
+    def overview(
+        self,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellersOverviewResult:
+        """**Get the reseller overview**
+
+        What the workspace's Overview shows: the panel (`panel`: whether it is on, its currency and smallest top-up), its address, the last 30 days' figures (`figures`: sales, orders and top-ups, and `balanceHeld`, every reseller's balance added up), what waits on the store (`waiting`, most pressing first: the panel off, nothing for sale, no invite link on, a product running out of keys) and the five resellers who spent most in 30 days (`top`). None of it is in the store's own figures: a reseller's purchases and top-ups are never its orders or revenue.
+
+        Needs the `resellers.read` permission (Read Resellers). It is one of the heavier reads, and is counted against a smaller budget of its own: 60 a minute for each key.
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/get-the-reseller-overview
+        """
+        return cast("ResellersOverviewResult", self._caller._call("resellers.overview", [], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def settings(
+        self,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellersSettingsResult:
+        """**Get the panel's settings**
+
+        Whether the panel is on, its currency and its smallest top-up. `meta` has its addresses (`address`, its own domain once it is live; `shoplyAddress`, always its store's myshoply.gg one; `joinAddress`, what an invite link starts with), the invite links and tiers, `balanceHeld`, the bounds a smallest top-up is held to, and the currencies it can be in.
+
+        Needs the `resellers.read` permission (Read Resellers).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/get-the-panels-settings
+        """
+        return cast("ResellersSettingsResult", self._caller._call("resellers.settings", [], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def updateSettings(
+        self,
+        *,
+        enabled: Optional[bool] = None,
+        currency: Optional[str] = None,
+        minTopup: Optional[float] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellersUpdateSettingsResult:
+        """**Update the panel's settings**
+
+        Only what is sent changes. Switched off, nobody can join, sign in or buy, and every balance and order is kept. The currency changes only while every reseller's balance is zero.
+
+        Needs the `resellers.write` permission (Change Resellers).
+
+        Args:
+            enabled: Whether the panel is on.
+            currency: The currency its prices and balances are in, as a three-letter code.
+            minTopup: The smallest top-up a reseller can make, 5.00 to 100,000.00.
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/update-the-panels-settings
+        """
+        return cast("ResellersUpdateSettingsResult", self._caller._call("resellers.updateSettings", [], {"enabled": enabled, "currency": currency, "minTopup": minTopup}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def domain(
+        self,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellersDomainResult:
+        """**Get the panel's domain**
+
+        The panel's own domain, if it has one, with where it stands (`status`, and `checks`: whether it points here, whether its TXT record has proved it the store's, and whether its certificate is issued), and `cnameTarget`. The panel has a domain of its own as the store does: point a CNAME record for it at `cnameTarget`, and it goes live once that is seen and its certificate is issued. Its store's myshoply.gg address answers too, always.
+
+        Needs the `resellers.read` permission (Read Resellers).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/get-the-panels-domain
+        """
+        return cast("ResellersDomainResult", self._caller._call("resellers.domain", [], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def connectDomain(
+        self,
+        *,
+        hostname: str,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> Any:
+        """**Connect a domain to the panel**
+
+        The panel has a domain of its own as the store does: point a CNAME record for it at `cnameTarget`, and it goes live once that is seen and its certificate is issued. Its store's myshoply.gg address answers too, always. A panel has one domain: remove it to connect another. Only a key the store's owner made can do this.
+
+        Needs the `resellers.write` permission (Change Resellers). Only a key the store's owner made, or an app the owner connected, can call it: one made by somebody on the store's team is refused (`owner_only`).
+
+        Args:
+            hostname: The domain, with no `https://` in front. Required.
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/connect-a-domain-to-the-panel
+        """
+        return cast("Any", self._caller._call("resellers.connectDomain", [], {"hostname": hostname}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def removeDomain(
+        self,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> Any:
+        """**Remove the panel's domain**
+
+        Disconnects the panel's own domain. It goes on answering at its store's myshoply.gg address. Only a key the store's owner made can do this.
+
+        Needs the `resellers.write` permission (Change Resellers). Only a key the store's owner made, or an app the owner connected, can call it: one made by somebody on the store's team is refused (`owner_only`).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/remove-the-panels-domain
+        """
+        return cast("Any", self._caller._call("resellers.removeDomain", [], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def list(
+        self,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> List[ResellersListResultItem]:
+        """**List resellers**
+
+        Every reseller of the store, the newest first, but those removed: a business, by the website it joined with (`name`), with its owner's email address, its tier and its own discount (`paysOff` is what it pays off every Reseller Price), its `balance`, whether it is `active` or `paused`, how many are on its team, and what it spent in 30 days. `meta.limit` is how many resellers the store's plan holds, so the list is not paged.
+
+        Needs the `resellers.read` permission (Read Resellers).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/list-resellers
+        """
+        return cast("List[ResellersListResultItem]", self._caller._call("resellers.list", [], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def get(
+        self,
+        reseller_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellersGetResult:
+        """**Get a reseller**
+
+        One reseller as the list has them, with the invite link they joined by (`inviteName`) and their `team`: each member's email address, whether they are its owner, and what they may do (`permissions`, from `catalogue`). `meta.history` is their balance line by line, the newest 50 first. A reseller the store removed is still answered, with `removedAt` and no team.
+
+        Needs the `resellers.read` permission (Read Resellers).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/get-a-reseller
+        """
+        return cast("ResellersGetResult", self._caller._call("resellers.get", [reseller_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def update(
+        self,
+        reseller_id: str,
+        *,
+        tierId: Optional[str] = None,
+        discount: Optional[float] = None,
+        status: Optional[Literal["active", "paused"]] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellersUpdateResult:
+        """**Update a reseller**
+
+        Only what is sent changes. A paused reseller signs in and reads their orders, and cannot buy or top up. Refused with `reseller_removed` for one the store removed.
+
+        Needs the `resellers.write` permission (Change Resellers).
+
+        Args:
+            tierId: Their tier. Empty, none.
+            discount: Their own discount off every Reseller Price, in percent, 0.01 to 99.99, in place of their tier's. Null or empty, none.
+            status: Whether they can buy and top up.
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/update-a-reseller
+        """
+        return cast("ResellersUpdateResult", self._caller._call("resellers.update", [reseller_id], {"tierId": tierId, "discount": discount, "status": status}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def delete(
+        self,
+        reseller_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellersDeleteResult:
+        """**Remove a reseller**
+
+        Removes a reseller from the store: their team can no longer sign in, and their API keys, delivery URLs and team invites are deleted. Their records are kept: their orders and top-ups stay in List reseller orders and List top-ups, and Get a reseller still answers them, with `removedAt` and their balance history. Refused with `reseller_has_balance` while they hold a balance: set it to zero first. A removed reseller is in no list of resellers, and does not count against the store's plan.
+
+        Needs the `resellers.write` permission (Change Resellers).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/remove-a-reseller
+        """
+        return cast("ResellersDeleteResult", self._caller._call("resellers.delete", [reseller_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def setBalance(
+        self,
+        reseller_id: str,
+        *,
+        mode: Literal["add", "subtract", "set"],
+        amount: float,
+        note: Optional[str] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellersSetBalanceResult:
+        """**Change a reseller's balance**
+
+        Adds to, takes from or sets a reseller's balance, which never goes below zero or past 1,000,000. Shoply moves no money: this is for what you settled with them yourself. The note is what they read in their own history. A removed reseller's balance does not move. Send an `Idempotency-Key` with this request.
+
+        Needs the `resellers.balance` permission (Change Reseller Balances).
+
+        Args:
+            mode: Add to it, take from it, or set it to exactly this. Required.
+            amount: How much, in the panel's currency, with at most 2 decimals. Required.
+            note: Why, up to 500 characters. The reseller reads it.
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/change-a-resellers-balance
+        """
+        return cast("ResellersSetBalanceResult", self._caller._call("resellers.setBalance", [reseller_id], {"mode": mode, "amount": amount, "note": note}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def updateMember(
+        self,
+        reseller_id: str,
+        member_id: str,
+        *,
+        permissions: List[str],
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellersUpdateMemberResult:
+        """**Change what a reseller's member may do**
+
+        Saves a member's permissions whole. What a permission leans on is added with it. The team's owner can always do everything, so theirs is refused.
+
+        Needs the `resellers.write` permission (Change Resellers).
+
+        Args:
+            permissions: What they may do, by name: `products.view`, `products.buy`, `orders.view`, `orders.keys`, `balance.view`, `balance.topup`, `api.keys`, `api.urls`, `team.view`, `team.manage`, `alerts.manage`. Required.
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/change-what-a-resellers-member-may-do
+        """
+        return cast("ResellersUpdateMemberResult", self._caller._call("resellers.updateMember", [reseller_id, member_id], {"permissions": permissions}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def removeMember(
+        self,
+        reseller_id: str,
+        member_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellersRemoveMemberResult:
+        """**Remove a reseller's member**
+
+        Takes one person off a reseller's team. Their sessions and the API keys they made stop working. The team's owner cannot be removed.
+
+        Needs the `resellers.write` permission (Change Resellers).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/remove-a-resellers-member
+        """
+        return cast("ResellersRemoveMemberResult", self._caller._call("resellers.removeMember", [reseller_id, member_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+
+class ResellerProducts:
+
+    def __init__(self, caller: Any) -> None:
+        self._caller = caller
+
+    def list(
+        self,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> List[ResellerProductsListResultItem]:
+        """**List what the panel sells**
+
+        Every option of the store's products the panel sells, a row an option: its Reseller Price (`price`), the fewest bought at once (`minQty`), the most one reseller may buy of it in a day (`dailyCap`), the most a tier or a reseller's own discount may take off it (`maxDiscount`), whether it is on sale (`enabled`) and its stock. `meta.badges` is each product's status and labels on the panel, by its ID, and `meta.tiers` the tiers.
+
+        Needs the `resellers.read` permission (Read Resellers).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/list-what-the-panel-sells
+        """
+        return cast("List[ResellerProductsListResultItem]", self._caller._call("resellerProducts.list", [], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def save(
+        self,
+        *,
+        rows: List[Dict[str, Any]],
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> List[ResellerProductsSaveResultItem]:
+        """**Sell products on the panel**
+
+        Puts options on the panel or changes them, up to 1,000 at once, all or none: one row refused leaves every row as it was, and the errors are keyed by the option and the field (`<variantId>.price`). An option not sent is left as it is. Answers every row the panel sells.
+
+        Needs the `resellers.write` permission (Change Resellers).
+
+        Args:
+            rows: One a product option: `variantId`; `price`, its Reseller Price, above 0 and up to 1,000,000; `minQty`, the fewest bought at once, 1 to 1,000 (1 when left out); `dailyCap`, the most one reseller may buy of it in a day, or null for no cap; `maxDiscount`, the most off it in percent, or null for no limit (left out, as it was); `enabled`, whether it is on sale (true when left out). Required.
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/sell-products-on-the-panel
+        """
+        return cast("List[ResellerProductsSaveResultItem]", self._caller._call("resellerProducts.save", [], {"rows": rows}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def pickable(
+        self,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> List[ResellerProductsPickableResultItem]:
+        """**List what the panel can sell**
+
+        The store's products with the options a panel can sell: those delivered as license keys or by dynamic delivery. A file is never sold to resellers. `meta.categories` is the store's categories they are in.
+
+        Needs the `resellers.read` permission (Read Resellers).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/list-what-the-panel-can-sell
+        """
+        return cast("List[ResellerProductsPickableResultItem]", self._caller._call("resellerProducts.pickable", [], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def remove(
+        self,
+        variant_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> Union[List[Any], Dict[str, Any]]:
+        """**Stop selling an option on the panel**
+
+        Takes one option off the panel. What resellers bought of it stays on record. Answers every row the panel still sells.
+
+        Needs the `resellers.write` permission (Change Resellers).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/stop-selling-an-option-on-the-panel
+        """
+        return cast("Union[List[Any], Dict[str, Any]]", self._caller._call("resellerProducts.remove", [variant_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def badges(
+        self,
+        product_id: str,
+        *,
+        badges: List[Dict[str, Any]],
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellerProductsBadgesResult:
+        """**Set a product's status and labels on the panel**
+
+        What resellers read beside a product on the panel, never the product's own badges: one status and labels, as a product's badges are written. An empty list takes them off. 404 for a product the panel does not sell. Answers every product's, by its ID.
+
+        Needs the `resellers.write` permission (Change Resellers).
+
+        Args:
+            badges: Up to 3, each `{ label, color, kind }`: `label` 1 to 32 characters; `color` one of `blue`, `green`, `amber`, `red`, `purple` and `gray`, a `#rrggbb` colour, or empty for the plain look; `kind` `label`, or `status` for one at most. Required.
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/set-a-products-status-and-labels-on-the-panel
+        """
+        return cast("ResellerProductsBadgesResult", self._caller._call("resellerProducts.badges", [product_id], {"badges": badges}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+
+class ResellerTiers:
+
+    def __init__(self, caller: Any) -> None:
+        self._caller = caller
+
+    def list(
+        self,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> List[ResellerTiersListResultItem]:
+        """**List tiers**
+
+        The panel's tiers, each a discount off every Reseller Price, with how many resellers are in it. A reseller pays their own discount where they have one, else their tier's. `meta.limit` is how many tiers the store's plan holds.
+
+        Needs the `resellers.read` permission (Read Resellers).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/list-tiers
+        """
+        return cast("List[ResellerTiersListResultItem]", self._caller._call("resellerTiers.list", [], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def create(
+        self,
+        *,
+        name: str,
+        discount: float,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellerTiersCreateResult:
+        """**Create a tier**
+
+        Adds a tier, up to as many as the store's plan holds. A name is used once a panel.
+
+        Needs the `resellers.write` permission (Change Resellers).
+
+        Args:
+            name: What the tier is called, up to 40 characters. Required.
+            discount: What it takes off every Reseller Price, in percent: 0.01 to 99.99. Required.
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/create-a-tier
+        """
+        return cast("ResellerTiersCreateResult", self._caller._call("resellerTiers.create", [], {"name": name, "discount": discount}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def update(
+        self,
+        tier_id: str,
+        *,
+        name: str,
+        discount: float,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellerTiersUpdateResult:
+        """**Update a tier**
+
+        Saves the tier whole: its name and discount. Its resellers pay the new discount from their next purchase.
+
+        Needs the `resellers.write` permission (Change Resellers).
+
+        Args:
+            name: What the tier is called, up to 40 characters. Required.
+            discount: What it takes off every Reseller Price, in percent: 0.01 to 99.99. Required.
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/update-a-tier
+        """
+        return cast("ResellerTiersUpdateResult", self._caller._call("resellerTiers.update", [tier_id], {"name": name, "discount": discount}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def delete(
+        self,
+        tier_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> Union[List[Any], Dict[str, Any]]:
+        """**Delete a tier**
+
+        Its resellers and invite links are left in no tier, which is the Reseller Price. Answers the tiers that are left.
+
+        Needs the `resellers.write` permission (Change Resellers).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/delete-a-tier
+        """
+        return cast("Union[List[Any], Dict[str, Any]]", self._caller._call("resellerTiers.delete", [tier_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+
+class ResellerInvites:
+
+    def __init__(self, caller: Any) -> None:
+        self._caller = caller
+
+    def list(
+        self,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> List[ResellerInvitesListResultItem]:
+        """**List invite links**
+
+        The links a business joins the panel by, the newest first, each with its `code` (the link is `meta.joinAddress` followed by it), the tier it starts them in, how many have joined through it (`uses`) and how many may, when it ends, whether it is switched on (`enabled`) and whether it can still be used (`live`). `meta.limits` says how many may be live at once on the store's plan, and how many are.
+
+        Needs the `resellers.read` permission (Read Resellers).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/list-invite-links
+        """
+        return cast("List[ResellerInvitesListResultItem]", self._caller._call("resellerInvites.list", [], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def create(
+        self,
+        *,
+        name: Optional[str] = None,
+        tierId: Optional[str] = None,
+        maxUses: Optional[int] = None,
+        endsAt: Optional[str] = None,
+        enabled: Optional[bool] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellerInvitesCreateResult:
+        """**Create an invite link**
+
+        Makes a link a business joins the panel by, with their website, an email address and a password, and no approval. Refused with `reseller_invite_limit` where the store's plan has as many on as it holds.
+
+        Needs the `resellers.write` permission (Change Resellers).
+
+        Args:
+            name: What the link is called on the dashboard, up to 60 characters. Resellers never see it. Needed to make one.
+            tierId: The tier whoever joins through it starts in. Empty or left out, none: they pay the Reseller Price.
+            maxUses: How many may join through it, 1 to 100,000. Empty or left out, no limit.
+            endsAt: When it stops working, as a date and time. Empty or left out, never.
+            enabled: Whether it works. Left out, it is true.
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/create-an-invite-link
+        """
+        return cast("ResellerInvitesCreateResult", self._caller._call("resellerInvites.create", [], {"name": name, "tierId": tierId, "maxUses": maxUses, "endsAt": endsAt, "enabled": enabled}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def update(
+        self,
+        invite_id: str,
+        *,
+        name: Optional[str] = None,
+        tierId: Optional[str] = None,
+        maxUses: Optional[int] = None,
+        endsAt: Optional[str] = None,
+        enabled: Optional[bool] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellerInvitesUpdateResult:
+        """**Update an invite link**
+
+        Only what is sent changes: send `enabled: false` to switch a link off. Its address stays the same.
+
+        Needs the `resellers.write` permission (Change Resellers).
+
+        Args:
+            name: What the link is called on the dashboard, up to 60 characters. Resellers never see it. Needed to make one.
+            tierId: The tier whoever joins through it starts in. Empty or left out, none: they pay the Reseller Price.
+            maxUses: How many may join through it, 1 to 100,000. Empty or left out, no limit.
+            endsAt: When it stops working, as a date and time. Empty or left out, never.
+            enabled: Whether it works. Left out, it is true.
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/update-an-invite-link
+        """
+        return cast("ResellerInvitesUpdateResult", self._caller._call("resellerInvites.update", [invite_id], {"name": name, "tierId": tierId, "maxUses": maxUses, "endsAt": endsAt, "enabled": enabled}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def delete(
+        self,
+        invite_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> Union[List[Any], Dict[str, Any]]:
+        """**Delete an invite link**
+
+        Whoever joined through it stays a reseller; only the link goes. Answers the links that are left.
+
+        Needs the `resellers.write` permission (Change Resellers).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/delete-an-invite-link
+        """
+        return cast("Union[List[Any], Dict[str, Any]]", self._caller._call("resellerInvites.delete", [invite_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+
+class ResellerAnnouncements:
+
+    def __init__(self, caller: Any) -> None:
+        self._caller = caller
+
+    def list(
+        self,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> List[ResellerAnnouncementsListResultItem]:
+        """**List announcements**
+
+        What the store tells its resellers, in a bar on every page of the panel, pinned ones first, then the newest. `meta.resellers` is how many people can read them (everybody on every reseller's team), and `meta.bounds` the lengths and how many a panel keeps.
+
+        Needs the `resellers.read` permission (Read Resellers).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/list-announcements
+        """
+        return cast("List[ResellerAnnouncementsListResultItem]", self._caller._call("resellerAnnouncements.list", [], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def create(
+        self,
+        *,
+        title: str,
+        body: str,
+        pinned: Optional[bool] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellerAnnouncementsCreateResult:
+        """**Post an announcement**
+
+        Every reseller sees it on the panel from their next page. Nobody is emailed. A panel keeps up to 100: past that, a new one is refused with `announcement_limit`.
+
+        Needs the `resellers.write` permission (Change Resellers).
+
+        Args:
+            title: Its title, up to 100 characters. Required.
+            body: What it says, up to 1,000 characters. Required.
+            pinned: Whether it is shown first, before the newer ones. Left out, it is false.
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/post-an-announcement
+        """
+        return cast("ResellerAnnouncementsCreateResult", self._caller._call("resellerAnnouncements.create", [], {"title": title, "body": body, "pinned": pinned}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def update(
+        self,
+        announcement_id: str,
+        *,
+        title: str,
+        body: str,
+        pinned: Optional[bool] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellerAnnouncementsUpdateResult:
+        """**Update an announcement**
+
+        Saves it whole: its title, what it says and whether it is pinned.
+
+        Needs the `resellers.write` permission (Change Resellers).
+
+        Args:
+            title: Its title, up to 100 characters. Required.
+            body: What it says, up to 1,000 characters. Required.
+            pinned: Whether it is shown first, before the newer ones. Left out, it is false.
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/update-an-announcement
+        """
+        return cast("ResellerAnnouncementsUpdateResult", self._caller._call("resellerAnnouncements.update", [announcement_id], {"title": title, "body": body, "pinned": pinned}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def delete(
+        self,
+        announcement_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> Union[List[Any], Dict[str, Any]]:
+        """**Delete an announcement**
+
+        Takes it off the panel. Answers the announcements that are left.
+
+        Needs the `resellers.write` permission (Change Resellers).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/delete-an-announcement
+        """
+        return cast("Union[List[Any], Dict[str, Any]]", self._caller._call("resellerAnnouncements.delete", [announcement_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+
+class ResellerOrders:
+
+    def __init__(self, caller: Any) -> None:
+        self._caller = caller
+
+    def list(
+        self,
+        *,
+        q: Optional[str] = None,
+        reseller: Optional[str] = None,
+        via: Optional[Literal["panel", "api", "url"]] = None,
+        page: Optional[int] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> Page[ResellerOrdersListItem]:
+        """**List reseller orders**
+
+        What resellers bought, newest first, 25 a page: who (`reseller`, and `boughtBy`, the member of their team), what and how many, the `total` taken off their balance, and how it was bought (`via`: `panel`, `api` for their own API, or `url` for a delivery URL). These are never the store's orders: List orders does not have them, and no order webhook is sent for them. `meta.counts` is how many each way, and `meta.figures` the last 30 days'.
+
+        Needs the `resellers.read` permission (Read Resellers).
+
+        Args:
+            q: Only what matches this text: an order's ID, a reseller's website, or who bought or paid.
+            reseller: Only one reseller's, by their ID.
+            via: Only those bought one way.
+            page: Which page of the list. The first is 1. Left out, it is 1.
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/list-reseller-orders
+        """
+        return cast("Page[ResellerOrdersListItem]", self._caller._call("resellerOrders.list", [], {"q": q, "reseller": reseller, "via": via, "page": page}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def export(
+        self,
+        *,
+        q: Optional[str] = None,
+        reseller: Optional[str] = None,
+        via: Optional[Literal["panel", "api", "url"]] = None,
+        check: Optional[Literal["1"]] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> File:
+        """**Export reseller orders**
+
+        The orders the same filters would list, as a CSV file: Order ID, Reseller, Bought By, Product, Variant, Quantity, Total, Currency, Bought With and Date. No delivered key is in it. Every row the filters match is in the file, up to 50,000, sent as it is read. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, whatever they are of, whoever asks: after that the answer is 429.
+
+        Needs the `resellers.read` permission (Read Resellers). It is one of the heavier reads, and is counted against a smaller budget of its own: 60 a minute for each key.
+
+        Args:
+            q: Only what matches this text: an order's ID, a reseller's website, or who bought or paid.
+            reseller: Only one reseller's, by their ID.
+            via: Only those bought one way.
+            check: `1` for how many rows the file would have, as `{ rows }`, in place of the file.
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/export-reseller-orders
+        """
+        return cast("File", self._caller._call("resellerOrders.export", [], {"q": q, "reseller": reseller, "via": via, "check": check}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+
+class ResellerTopUps:
+
+    def __init__(self, caller: Any) -> None:
+        self._caller = caller
+
+    def list(
+        self,
+        *,
+        q: Optional[str] = None,
+        reseller: Optional[str] = None,
+        status: Optional[Literal["paid", "waiting", "checking", "expired", "taken_back"]] = None,
+        page: Optional[int] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> Page[ResellerTopUpsListItem]:
+        """**List top-ups**
+
+        Money resellers put on their balance, paid on the store's checkout with its own payment methods, newest first, 25 a page. `state` is `paid`, `waiting` (for the reseller to pay), `checking` (paid with one of the store's custom methods, and waiting for the store), `expired` (not paid in the store's unpaid order time) or `taken_back` (its payment was taken back by the bank, and came off the balance). A top-up's `id` is the order it is paid with. `meta.counts` is how many in each state, and `meta.figures` the last 30 days'.
+
+        Needs the `resellers.read` permission (Read Resellers).
+
+        Args:
+            q: Only what matches this text: an order's ID, a reseller's website, or who bought or paid.
+            reseller: Only one reseller's, by their ID.
+            status: Only those in one state.
+            page: Which page of the list. The first is 1. Left out, it is 1.
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/list-top-ups
+        """
+        return cast("Page[ResellerTopUpsListItem]", self._caller._call("resellerTopUps.list", [], {"q": q, "reseller": reseller, "status": status, "page": page}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def export(
+        self,
+        *,
+        q: Optional[str] = None,
+        reseller: Optional[str] = None,
+        status: Optional[Literal["paid", "waiting", "checking", "expired", "taken_back"]] = None,
+        check: Optional[Literal["1"]] = None,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> File:
+        """**Export top-ups**
+
+        The top-ups the same filters would list, as a CSV file: Top-up ID, Reseller, Paid By, Amount, Currency, Paid With, Status, Opened and Paid. Every row the filters match is in the file, up to 50,000, sent as it is read. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, whatever they are of, whoever asks: after that the answer is 429.
+
+        Needs the `resellers.read` permission (Read Resellers). It is one of the heavier reads, and is counted against a smaller budget of its own: 60 a minute for each key.
+
+        Args:
+            q: Only what matches this text: an order's ID, a reseller's website, or who bought or paid.
+            reseller: Only one reseller's, by their ID.
+            status: Only those in one state.
+            check: `1` for how many rows the file would have, as `{ rows }`, in place of the file.
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/export-top-ups
+        """
+        return cast("File", self._caller._call("resellerTopUps.export", [], {"q": q, "reseller": reseller, "status": status, "check": check}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def payment(
+        self,
+        top_up_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellerTopUpsPaymentResult:
+        """**Get a top-up's custom payment**
+
+        A top-up paid with one of the store's custom methods: the method, what the reseller sent with it (a reference, a picture) and where it stands (`status` `review` while it waits for the store). Null for a top-up paid any other way. `meta.gateway` is the method.
+
+        Needs the `resellers.read` permission (Read Resellers).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/get-a-top-ups-custom-payment
+        """
+        return cast("ResellerTopUpsPaymentResult", self._caller._call("resellerTopUps.payment", [top_up_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def proof(
+        self,
+        top_up_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> File:
+        """**Get a top-up's proof of payment**
+
+        The picture a reseller sent with a custom payment, as the file itself: a PNG, JPEG or WebP. 404 where the top-up has none.
+
+        Needs the `resellers.read` permission (Read Resellers).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/get-a-top-ups-proof-of-payment
+        """
+        return cast("File", self._caller._call("resellerTopUps.proof", [top_up_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def approve(
+        self,
+        top_up_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellerTopUpsApproveResult:
+        """**Approve a top-up's custom payment**
+
+        Says the money a reseller sent with one of the store's custom methods arrived, and puts the top-up on their balance. Shoply never sees that money: check it reached you first. Refused with `payment_not_approved` where there is nothing to approve. Send an `Idempotency-Key` with this request.
+
+        Needs the `resellers.balance` permission (Change Reseller Balances).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/approve-a-top-ups-custom-payment
+        """
+        return cast("ResellerTopUpsApproveResult", self._caller._call("resellerTopUps.approve", [top_up_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def reject(
+        self,
+        top_up_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellerTopUpsRejectResult:
+        """**Reject a top-up's custom payment**
+
+        Cancels the top-up, and nothing goes on the balance. The reseller is not emailed. Refused with `payment_not_rejected` where there is nothing to reject.
+
+        Needs the `resellers.balance` permission (Change Reseller Balances).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/reject-a-top-ups-custom-payment
+        """
+        return cast("ResellerTopUpsRejectResult", self._caller._call("resellerTopUps.reject", [top_up_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def markPaid(
+        self,
+        top_up_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellerTopUpsMarkPaidResult:
+        """**Mark a top-up as paid**
+
+        A top-up waiting for payment or expired goes onto the reseller's balance as if its payment had arrived, for money that reached you another way. It cannot be undone. Refused with `top_up_not_payable` for one paid already or taken back, and for one whose custom payment waits for you: approve or reject that instead. Send an `Idempotency-Key` with this request.
+
+        Needs the `resellers.balance` permission (Change Reseller Balances).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/mark-a-top-up-as-paid
+        """
+        return cast("ResellerTopUpsMarkPaidResult", self._caller._call("resellerTopUps.markPaid", [top_up_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+
 class Blacklist:
 
     def __init__(self, caller: Any) -> None:
@@ -9305,6 +10258,13 @@ class ClientResources:
     tickets: Tickets
     team: Team
     teams: Teams
+    resellers: Resellers
+    resellerProducts: ResellerProducts
+    resellerTiers: ResellerTiers
+    resellerInvites: ResellerInvites
+    resellerAnnouncements: ResellerAnnouncements
+    resellerOrders: ResellerOrders
+    resellerTopUps: ResellerTopUps
     blacklist: Blacklist
     allowlist: Allowlist
     fraudEvents: FraudEvents
@@ -9363,6 +10323,13 @@ class ClientResources:
         self.tickets = Tickets(self)
         self.team = Team(self)
         self.teams = Teams(self)
+        self.resellers = Resellers(self)
+        self.resellerProducts = ResellerProducts(self)
+        self.resellerTiers = ResellerTiers(self)
+        self.resellerInvites = ResellerInvites(self)
+        self.resellerAnnouncements = ResellerAnnouncements(self)
+        self.resellerOrders = ResellerOrders(self)
+        self.resellerTopUps = ResellerTopUps(self)
         self.blacklist = Blacklist(self)
         self.allowlist = Allowlist(self)
         self.fraudEvents = FraudEvents(self)

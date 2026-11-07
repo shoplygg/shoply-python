@@ -206,6 +206,7 @@ StoreEmailSettingsResult = TypedDict("StoreEmailSettingsResult", {
     "emailPayoutsEnabled": bool,
     "emailCustomPaidEnabled": bool,
     "emailTicketsEnabled": bool,
+    "emailResellersEnabled": bool,
     "emailDisputeOpenedEnabled": bool,
     "emailDisputeClosedEnabled": bool,
     "testEmailEvery": StoreEmailSettingsResultTestEmailEvery,
@@ -218,6 +219,7 @@ StoreEmailSettingsResult = TypedDict("StoreEmailSettingsResult", {
     "discordPayoutsEnabled": bool,
     "discordCustomPaidEnabled": bool,
     "discordTicketsEnabled": bool,
+    "discordResellersEnabled": bool,
     "discordDisputesEnabled": bool,
     "discordStockThreshold": float,
     "discordFailure": Any,
@@ -5403,6 +5405,573 @@ TeamsDeleteResult = TypedDict("TeamsDeleteResult", {
     "deleted": str,
 })
 
+ResellersOverviewResultPanel = TypedDict("ResellersOverviewResultPanel", {
+    "enabled": bool,
+    "currency": str,
+    "minTopup": float,
+})
+
+ResellersOverviewResultFigures = TypedDict("ResellersOverviewResultFigures", {
+    "resellers": float,
+    "paused": float,
+    "sales30": float,
+    "orders30": float,
+    "topups30": float,
+    "topupCount30": float,
+    "balanceHeld": float,
+})
+
+ResellersOverviewResultWaitingItem = TypedDict("ResellersOverviewResultWaitingItem", {
+    "kind": str,
+    "line": str,
+    "hint": str,
+    "productId": str,
+})
+
+ResellersOverviewResultTopItem = TypedDict("ResellersOverviewResultTopItem", {
+    "id": str,
+    "name": str,
+    "website": str,
+    "email": str,
+    "tierId": str,
+    "tierName": str,
+    "tierDiscount": float,
+    "discount": Any,
+    "paysOff": float,
+    "balance": float,
+    "status": str,
+    "members": float,
+    "spent30": float,
+    "lastOrderAt": str,
+    "joinedAt": str,
+    "removedAt": Any,
+})
+
+ResellersOverviewResult = TypedDict("ResellersOverviewResult", {
+    "panel": ResellersOverviewResultPanel,
+    "address": str,
+    "figures": ResellersOverviewResultFigures,
+    "waiting": List[ResellersOverviewResultWaitingItem],
+    "top": List[ResellersOverviewResultTopItem],
+})
+
+ResellersSettingsResult = TypedDict("ResellersSettingsResult", {
+    "enabled": bool,
+    "currency": str,
+    "minTopup": float,
+})
+
+ResellersUpdateSettingsResult = TypedDict("ResellersUpdateSettingsResult", {
+    "enabled": bool,
+    "currency": str,
+    "minTopup": float,
+})
+
+ResellersDomainResult = TypedDict("ResellersDomainResult", {
+    "domain": Any,
+    "cnameTarget": str,
+    "available": bool,
+})
+
+ResellersListResultItem = TypedDict("ResellersListResultItem", {
+    "id": str,
+    "name": str,
+    "website": str,
+    "email": str,
+    "tierId": Any,
+    "tierName": Any,
+    "tierDiscount": Any,
+    "discount": Any,
+    "paysOff": float,
+    "balance": float,
+    "status": str,
+    "members": float,
+    "spent30": float,
+    "lastOrderAt": Any,
+    "joinedAt": str,
+    "removedAt": Any,
+})
+
+ResellersGetResultTeamItemAccess = TypedDict("ResellersGetResultTeamItemAccess", {
+    "buy": bool,
+    "topup": bool,
+    "keys": bool,
+    "api": bool,
+})
+
+ResellersGetResultTeamItem = TypedDict("ResellersGetResultTeamItem", {
+    "id": str,
+    "email": str,
+    "owner": bool,
+    "permissions": List[str],
+    "access": ResellersGetResultTeamItemAccess,
+    "twoFactor": bool,
+    "verified": bool,
+    "lastSeenAt": Any,
+    "joinedAt": str,
+})
+
+ResellersGetResultCatalogueItemPermissionsItem = TypedDict("ResellersGetResultCatalogueItemPermissionsItem", {
+    "key": str,
+    "label": str,
+    "about": str,
+    "needs": Union[List[Any], Dict[str, Any]],
+})
+
+ResellersGetResultCatalogueItem = TypedDict("ResellersGetResultCatalogueItem", {
+    "id": str,
+    "label": str,
+    "permissions": List[ResellersGetResultCatalogueItemPermissionsItem],
+})
+
+ResellersGetResult = TypedDict("ResellersGetResult", {
+    "id": str,
+    "name": str,
+    "website": str,
+    "email": str,
+    "tierId": str,
+    "tierName": str,
+    "tierDiscount": float,
+    "discount": Any,
+    "paysOff": float,
+    "balance": float,
+    "status": str,
+    "members": float,
+    "spent30": float,
+    "lastOrderAt": str,
+    "joinedAt": str,
+    "removedAt": Any,
+    "inviteName": Any,
+    "team": List[ResellersGetResultTeamItem],
+    "catalogue": List[ResellersGetResultCatalogueItem],
+})
+
+ResellersUpdateResultTeamItemAccess = TypedDict("ResellersUpdateResultTeamItemAccess", {
+    "buy": bool,
+    "topup": bool,
+    "keys": bool,
+    "api": bool,
+})
+
+ResellersUpdateResultTeamItem = TypedDict("ResellersUpdateResultTeamItem", {
+    "id": str,
+    "email": str,
+    "owner": bool,
+    "permissions": List[str],
+    "access": ResellersUpdateResultTeamItemAccess,
+    "twoFactor": bool,
+    "verified": bool,
+    "lastSeenAt": Any,
+    "joinedAt": str,
+})
+
+ResellersUpdateResultCatalogueItemPermissionsItem = TypedDict("ResellersUpdateResultCatalogueItemPermissionsItem", {
+    "key": str,
+    "label": str,
+    "about": str,
+    "needs": Union[List[Any], Dict[str, Any]],
+})
+
+ResellersUpdateResultCatalogueItem = TypedDict("ResellersUpdateResultCatalogueItem", {
+    "id": str,
+    "label": str,
+    "permissions": List[ResellersUpdateResultCatalogueItemPermissionsItem],
+})
+
+ResellersUpdateResult = TypedDict("ResellersUpdateResult", {
+    "id": str,
+    "name": str,
+    "website": str,
+    "email": str,
+    "tierId": str,
+    "tierName": str,
+    "tierDiscount": float,
+    "discount": Any,
+    "paysOff": float,
+    "balance": float,
+    "status": str,
+    "members": float,
+    "spent30": float,
+    "lastOrderAt": Any,
+    "joinedAt": str,
+    "removedAt": Any,
+    "inviteName": Any,
+    "team": List[ResellersUpdateResultTeamItem],
+    "catalogue": List[ResellersUpdateResultCatalogueItem],
+})
+
+ResellersDeleteResult = TypedDict("ResellersDeleteResult", {
+    "removed": bool,
+})
+
+ResellersSetBalanceResultTeamItemAccess = TypedDict("ResellersSetBalanceResultTeamItemAccess", {
+    "buy": bool,
+    "topup": bool,
+    "keys": bool,
+    "api": bool,
+})
+
+ResellersSetBalanceResultTeamItem = TypedDict("ResellersSetBalanceResultTeamItem", {
+    "id": str,
+    "email": str,
+    "owner": bool,
+    "permissions": List[str],
+    "access": ResellersSetBalanceResultTeamItemAccess,
+    "twoFactor": bool,
+    "verified": bool,
+    "lastSeenAt": Any,
+    "joinedAt": str,
+})
+
+ResellersSetBalanceResultCatalogueItemPermissionsItem = TypedDict("ResellersSetBalanceResultCatalogueItemPermissionsItem", {
+    "key": str,
+    "label": str,
+    "about": str,
+    "needs": Union[List[Any], Dict[str, Any]],
+})
+
+ResellersSetBalanceResultCatalogueItem = TypedDict("ResellersSetBalanceResultCatalogueItem", {
+    "id": str,
+    "label": str,
+    "permissions": List[ResellersSetBalanceResultCatalogueItemPermissionsItem],
+})
+
+ResellersSetBalanceResult = TypedDict("ResellersSetBalanceResult", {
+    "id": str,
+    "name": str,
+    "website": str,
+    "email": str,
+    "tierId": str,
+    "tierName": str,
+    "tierDiscount": float,
+    "discount": Any,
+    "paysOff": float,
+    "balance": float,
+    "status": str,
+    "members": float,
+    "spent30": float,
+    "lastOrderAt": Any,
+    "joinedAt": str,
+    "removedAt": Any,
+    "inviteName": Any,
+    "team": List[ResellersSetBalanceResultTeamItem],
+    "catalogue": List[ResellersSetBalanceResultCatalogueItem],
+})
+
+ResellersUpdateMemberResultTeamItemAccess = TypedDict("ResellersUpdateMemberResultTeamItemAccess", {
+    "buy": bool,
+    "topup": bool,
+    "keys": bool,
+    "api": bool,
+})
+
+ResellersUpdateMemberResultTeamItem = TypedDict("ResellersUpdateMemberResultTeamItem", {
+    "id": str,
+    "email": str,
+    "owner": bool,
+    "permissions": List[str],
+    "access": ResellersUpdateMemberResultTeamItemAccess,
+    "twoFactor": bool,
+    "verified": bool,
+    "lastSeenAt": Any,
+    "joinedAt": str,
+})
+
+ResellersUpdateMemberResultCatalogueItemPermissionsItem = TypedDict("ResellersUpdateMemberResultCatalogueItemPermissionsItem", {
+    "key": str,
+    "label": str,
+    "about": str,
+    "needs": Union[List[Any], Dict[str, Any]],
+})
+
+ResellersUpdateMemberResultCatalogueItem = TypedDict("ResellersUpdateMemberResultCatalogueItem", {
+    "id": str,
+    "label": str,
+    "permissions": List[ResellersUpdateMemberResultCatalogueItemPermissionsItem],
+})
+
+ResellersUpdateMemberResult = TypedDict("ResellersUpdateMemberResult", {
+    "id": str,
+    "name": str,
+    "website": str,
+    "email": str,
+    "tierId": str,
+    "tierName": str,
+    "tierDiscount": float,
+    "discount": Any,
+    "paysOff": float,
+    "balance": float,
+    "status": str,
+    "members": float,
+    "spent30": float,
+    "lastOrderAt": Any,
+    "joinedAt": str,
+    "removedAt": Any,
+    "inviteName": Any,
+    "team": List[ResellersUpdateMemberResultTeamItem],
+    "catalogue": List[ResellersUpdateMemberResultCatalogueItem],
+})
+
+ResellersRemoveMemberResultTeamItemAccess = TypedDict("ResellersRemoveMemberResultTeamItemAccess", {
+    "buy": bool,
+    "topup": bool,
+    "keys": bool,
+    "api": bool,
+})
+
+ResellersRemoveMemberResultTeamItem = TypedDict("ResellersRemoveMemberResultTeamItem", {
+    "id": str,
+    "email": str,
+    "owner": bool,
+    "permissions": List[str],
+    "access": ResellersRemoveMemberResultTeamItemAccess,
+    "twoFactor": bool,
+    "verified": bool,
+    "lastSeenAt": Any,
+    "joinedAt": str,
+})
+
+ResellersRemoveMemberResultCatalogueItemPermissionsItem = TypedDict("ResellersRemoveMemberResultCatalogueItemPermissionsItem", {
+    "key": str,
+    "label": str,
+    "about": str,
+    "needs": Union[List[Any], Dict[str, Any]],
+})
+
+ResellersRemoveMemberResultCatalogueItem = TypedDict("ResellersRemoveMemberResultCatalogueItem", {
+    "id": str,
+    "label": str,
+    "permissions": List[ResellersRemoveMemberResultCatalogueItemPermissionsItem],
+})
+
+ResellersRemoveMemberResult = TypedDict("ResellersRemoveMemberResult", {
+    "id": str,
+    "name": str,
+    "website": str,
+    "email": str,
+    "tierId": str,
+    "tierName": str,
+    "tierDiscount": float,
+    "discount": Any,
+    "paysOff": float,
+    "balance": float,
+    "status": str,
+    "members": float,
+    "spent30": float,
+    "lastOrderAt": str,
+    "joinedAt": str,
+    "removedAt": Any,
+    "inviteName": Any,
+    "team": List[ResellersRemoveMemberResultTeamItem],
+    "catalogue": List[ResellersRemoveMemberResultCatalogueItem],
+})
+
+ResellerProductsListResultItem = TypedDict("ResellerProductsListResultItem", {
+    "variantId": str,
+    "productId": str,
+    "productName": str,
+    "variantName": str,
+    "image": Any,
+    "delivery": str,
+    "stock": float,
+    "price": float,
+    "minQty": float,
+    "dailyCap": float,
+    "maxDiscount": Any,
+    "enabled": bool,
+})
+
+ResellerProductsSaveResultItem = TypedDict("ResellerProductsSaveResultItem", {
+    "variantId": str,
+    "productId": str,
+    "productName": str,
+    "variantName": str,
+    "image": Any,
+    "delivery": str,
+    "stock": float,
+    "price": float,
+    "minQty": float,
+    "dailyCap": float,
+    "maxDiscount": Any,
+    "enabled": bool,
+})
+
+ResellerProductsPickableResultItem = TypedDict("ResellerProductsPickableResultItem", {
+    "variantId": str,
+    "productId": str,
+    "productName": str,
+    "variantName": str,
+    "image": Any,
+    "delivery": str,
+    "inPanel": bool,
+    "price": float,
+})
+
+ResellerProductsBadgesResultF052e845Eeca4497AefbC59dea7f3d27Item = TypedDict("ResellerProductsBadgesResultF052e845Eeca4497AefbC59dea7f3d27Item", {
+    "label": str,
+    "color": str,
+    "kind": str,
+})
+
+ResellerProductsBadgesResult = TypedDict("ResellerProductsBadgesResult", {
+    "f052e845-eeca-4497-aefb-c59dea7f3d27": List[ResellerProductsBadgesResultF052e845Eeca4497AefbC59dea7f3d27Item],
+})
+
+ResellerTiersListResultItem = TypedDict("ResellerTiersListResultItem", {
+    "id": str,
+    "name": str,
+    "discount": float,
+    "resellers": float,
+    "spent30": float,
+})
+
+ResellerTiersCreateResult = TypedDict("ResellerTiersCreateResult", {
+    "id": str,
+    "name": str,
+    "discount": float,
+    "resellers": float,
+    "spent30": float,
+})
+
+ResellerTiersUpdateResult = TypedDict("ResellerTiersUpdateResult", {
+    "id": str,
+    "name": str,
+    "discount": float,
+    "resellers": float,
+    "spent30": float,
+})
+
+ResellerInvitesListResultItem = TypedDict("ResellerInvitesListResultItem", {
+    "id": str,
+    "name": str,
+    "code": str,
+    "tierId": str,
+    "tierName": str,
+    "maxUses": float,
+    "uses": float,
+    "endsAt": str,
+    "enabled": bool,
+    "live": bool,
+})
+
+ResellerInvitesCreateResult = TypedDict("ResellerInvitesCreateResult", {
+    "id": str,
+    "name": str,
+    "code": str,
+    "tierId": str,
+    "tierName": str,
+    "maxUses": float,
+    "uses": float,
+    "endsAt": Any,
+    "enabled": bool,
+    "live": bool,
+})
+
+ResellerInvitesUpdateResult = TypedDict("ResellerInvitesUpdateResult", {
+    "id": str,
+    "name": str,
+    "code": str,
+    "tierId": str,
+    "tierName": str,
+    "maxUses": float,
+    "uses": float,
+    "endsAt": str,
+    "enabled": bool,
+    "live": bool,
+})
+
+ResellerAnnouncementsListResultItem = TypedDict("ResellerAnnouncementsListResultItem", {
+    "id": str,
+    "title": str,
+    "body": str,
+    "pinned": bool,
+    "createdAt": str,
+    "updatedAt": str,
+    "closes": float,
+})
+
+ResellerAnnouncementsCreateResult = TypedDict("ResellerAnnouncementsCreateResult", {
+    "id": str,
+    "title": str,
+    "body": str,
+    "pinned": bool,
+    "createdAt": str,
+    "updatedAt": str,
+    "closes": float,
+})
+
+ResellerAnnouncementsUpdateResult = TypedDict("ResellerAnnouncementsUpdateResult", {
+    "id": str,
+    "title": str,
+    "body": str,
+    "pinned": bool,
+    "createdAt": str,
+    "updatedAt": str,
+    "closes": float,
+})
+
+ResellerOrdersListItem = TypedDict("ResellerOrdersListItem", {
+    "id": str,
+    "resellerId": str,
+    "reseller": str,
+    "resellerRemoved": bool,
+    "boughtBy": str,
+    "productName": str,
+    "variantName": str,
+    "quantity": float,
+    "total": float,
+    "currency": str,
+    "status": str,
+    "via": str,
+    "createdAt": str,
+})
+
+ResellerTopUpsListItem = TypedDict("ResellerTopUpsListItem", {
+    "id": str,
+    "resellerId": str,
+    "reseller": str,
+    "resellerRemoved": bool,
+    "paidBy": str,
+    "amount": float,
+    "currency": str,
+    "state": str,
+    "method": str,
+    "createdAt": str,
+    "paidAt": Any,
+})
+
+ResellerTopUpsPaymentResultProof = TypedDict("ResellerTopUpsPaymentResultProof", {
+    "reference": str,
+    "picture": bool,
+    "at": str,
+})
+
+ResellerTopUpsPaymentResult = TypedDict("ResellerTopUpsPaymentResult", {
+    "method": str,
+    "kind": str,
+    "status": str,
+    "asksProof": bool,
+    "requiresPicture": bool,
+    "amount": float,
+    "currency": str,
+    "proof": ResellerTopUpsPaymentResultProof,
+})
+
+ResellerTopUpsApproveResult = TypedDict("ResellerTopUpsApproveResult", {
+    "id": str,
+    "state": str,
+})
+
+ResellerTopUpsRejectResult = TypedDict("ResellerTopUpsRejectResult", {
+    "id": str,
+    "state": str,
+})
+
+ResellerTopUpsMarkPaidResult = TypedDict("ResellerTopUpsMarkPaidResult", {
+    "id": str,
+    "state": str,
+})
+
 BlacklistListItem = TypedDict("BlacklistListItem", {
     "id": str,
     "type": str,
@@ -9307,6 +9876,13 @@ WebhookEventName = Literal[
     "team.member_joined",
     "team.member_moved",
     "team.member_left",
+    "reseller.joined",
+    "reseller.updated",
+    "reseller.removed",
+    "reseller.balance_changed",
+    "reseller.top_up_paid",
+    "reseller.top_up_submitted",
+    "reseller.order_completed",
     "fraud.checkout_blocked",
     "fraud.checkout_allowed",
     "webhook.test",
