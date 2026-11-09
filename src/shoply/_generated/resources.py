@@ -448,9 +448,12 @@ from .types import (
     ResellerInvitesCreateResult,
     ResellerInvitesListResultItem,
     ResellerInvitesUpdateResult,
+    ResellerOrdersGetResult,
+    ResellerOrdersGetResultLinesItem,
+    ResellerOrdersGetResultReseller,
     ResellerOrdersListItem,
     ResellerProductsBadgesResult,
-    ResellerProductsBadgesResultF052e845Eeca4497AefbC59dea7f3d27Item,
+    ResellerProductsBadgesResult7626c760C6cd4b388344Cfbba0148a80Item,
     ResellerProductsListResultItem,
     ResellerProductsPickableResultItem,
     ResellerProductsSaveResultItem,
@@ -8021,6 +8024,25 @@ class ResellerOrders:
         Docs: https://docs.shoply.gg/api-reference/resellers/export-reseller-orders
         """
         return cast("File", self._caller._call("resellerOrders.export", [], {"q": q, "reseller": reseller, "via": via, "check": check}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def get(
+        self,
+        order_id: str,
+        *,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> ResellerOrdersGetResult:
+        """**Get a reseller order**
+
+        One reseller order whole, as the dashboard's page for it shows it: who bought it (`reseller`, and `boughtBy`, the member of their team), how (`via`), the `total` taken off their balance, `listTotal` (what it came to at the panel's list prices when bought) and `discount` (what their price took off it), both null for an order from before those were kept, and `balanceAfter`. Each of `lines` is an option it bought, with its `unitPrice` and `quantity` and what it delivered: `keys`, `items` (what a dynamic delivery's server handed back, a line each), `instructions`, and `waiting` while a dynamic line is still being fetched. A store's own order or a top-up answers 404.
+
+        Needs the `resellers.read` permission (Read Resellers).
+
+        Docs: https://docs.shoply.gg/api-reference/resellers/get-a-reseller-order
+        """
+        return cast("ResellerOrdersGetResult", self._caller._call("resellerOrders.get", [order_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
 
 class ResellerTopUps:

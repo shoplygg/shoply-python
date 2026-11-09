@@ -859,6 +859,7 @@ StorefrontsListResultItem = TypedDict("StorefrontsListResultItem", {
     "engine": str,
     "codeOnCopy": Any,
     "themeChanged": Any,
+    "pictures": Union[List[Any], Dict[str, Any]],
     "unpublished": bool,
     "accent": Any,
     "headingFont": Any,
@@ -879,6 +880,7 @@ StorefrontsCreateResultItem = TypedDict("StorefrontsCreateResultItem", {
     "engine": str,
     "codeOnCopy": Any,
     "themeChanged": Any,
+    "pictures": Union[List[Any], Dict[str, Any]],
     "unpublished": bool,
     "accent": Any,
     "headingFont": Any,
@@ -1024,6 +1026,7 @@ StorefrontsRenameResultItem = TypedDict("StorefrontsRenameResultItem", {
     "engine": str,
     "codeOnCopy": Any,
     "themeChanged": Any,
+    "pictures": Union[List[Any], Dict[str, Any]],
     "unpublished": bool,
     "accent": Any,
     "headingFont": Any,
@@ -1044,6 +1047,7 @@ StorefrontsDeleteResultItem = TypedDict("StorefrontsDeleteResultItem", {
     "engine": str,
     "codeOnCopy": Any,
     "themeChanged": Any,
+    "pictures": Union[List[Any], Dict[str, Any]],
     "unpublished": bool,
     "accent": Any,
     "headingFont": Any,
@@ -1064,6 +1068,7 @@ StorefrontsSetLiveResultItem = TypedDict("StorefrontsSetLiveResultItem", {
     "engine": str,
     "codeOnCopy": Any,
     "themeChanged": Any,
+    "pictures": Union[List[Any], Dict[str, Any]],
     "unpublished": bool,
     "accent": Any,
     "headingFont": Any,
@@ -1084,6 +1089,7 @@ StorefrontsCodeResultStorefront = TypedDict("StorefrontsCodeResultStorefront", {
     "engine": str,
     "codeOnCopy": Any,
     "themeChanged": Any,
+    "pictures": Union[List[Any], Dict[str, Any]],
     "unpublished": bool,
     "accent": Any,
     "headingFont": Any,
@@ -1115,6 +1121,7 @@ StorefrontsCodeStartResultStorefront = TypedDict("StorefrontsCodeStartResultStor
     "engine": str,
     "codeOnCopy": Any,
     "themeChanged": Any,
+    "pictures": Union[List[Any], Dict[str, Any]],
     "unpublished": bool,
     "accent": Any,
     "headingFont": Any,
@@ -1337,6 +1344,7 @@ StorefrontsCodePublishResultStorefront = TypedDict("StorefrontsCodePublishResult
     "engine": str,
     "codeOnCopy": Any,
     "themeChanged": Any,
+    "pictures": Union[List[Any], Dict[str, Any]],
     "unpublished": bool,
     "accent": Any,
     "headingFont": Any,
@@ -5807,14 +5815,14 @@ ResellerProductsPickableResultItem = TypedDict("ResellerProductsPickableResultIt
     "price": float,
 })
 
-ResellerProductsBadgesResultF052e845Eeca4497AefbC59dea7f3d27Item = TypedDict("ResellerProductsBadgesResultF052e845Eeca4497AefbC59dea7f3d27Item", {
+ResellerProductsBadgesResult7626c760C6cd4b388344Cfbba0148a80Item = TypedDict("ResellerProductsBadgesResult7626c760C6cd4b388344Cfbba0148a80Item", {
     "label": str,
     "color": str,
     "kind": str,
 })
 
 ResellerProductsBadgesResult = TypedDict("ResellerProductsBadgesResult", {
-    "f052e845-eeca-4497-aefb-c59dea7f3d27": List[ResellerProductsBadgesResultF052e845Eeca4497AefbC59dea7f3d27Item],
+    "7626c760-c6cd-4b38-8344-cfbba0148a80": List[ResellerProductsBadgesResult7626c760C6cd4b388344Cfbba0148a80Item],
 })
 
 ResellerTiersListResultItem = TypedDict("ResellerTiersListResultItem", {
@@ -5924,6 +5932,41 @@ ResellerOrdersListItem = TypedDict("ResellerOrdersListItem", {
     "status": str,
     "via": str,
     "createdAt": str,
+})
+
+ResellerOrdersGetResultReseller = TypedDict("ResellerOrdersGetResultReseller", {
+    "id": str,
+    "name": str,
+    "removed": bool,
+})
+
+ResellerOrdersGetResultLinesItem = TypedDict("ResellerOrdersGetResultLinesItem", {
+    "productId": str,
+    "productName": str,
+    "variantName": str,
+    "unitPrice": float,
+    "quantity": float,
+    "delivered": float,
+    "keys": List[str],
+    "items": Union[List[Any], Dict[str, Any]],
+    "waiting": bool,
+    "instructions": str,
+})
+
+ResellerOrdersGetResult = TypedDict("ResellerOrdersGetResult", {
+    "id": str,
+    "status": str,
+    "via": str,
+    "currency": str,
+    "total": float,
+    "listTotal": float,
+    "discount": float,
+    "balanceAfter": float,
+    "createdAt": str,
+    "reseller": ResellerOrdersGetResultReseller,
+    "boughtBy": str,
+    "goodsShown": bool,
+    "lines": List[ResellerOrdersGetResultLinesItem],
 })
 
 ResellerTopUpsListItem = TypedDict("ResellerTopUpsListItem", {
