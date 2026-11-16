@@ -207,6 +207,8 @@ StoreEmailSettingsResult = TypedDict("StoreEmailSettingsResult", {
     "emailCustomPaidEnabled": bool,
     "emailTicketsEnabled": bool,
     "emailResellersEnabled": bool,
+    "emailPaymentSetupEnabled": bool,
+    "emailDiscordSetupEnabled": bool,
     "emailDisputeOpenedEnabled": bool,
     "emailDisputeClosedEnabled": bool,
     "testEmailEvery": StoreEmailSettingsResultTestEmailEvery,
@@ -2294,6 +2296,8 @@ ProductsListItemVariantsItem = TypedDict("ProductsListItemVariantsItem", {
     "customFields": Union[List[Any], Dict[str, Any]],
     "sort": float,
     "blockedPaymentMethods": Union[List[Any], Dict[str, Any]],
+    "discordRoles": Union[List[Any], Dict[str, Any]],
+    "discordLinking": str,
 })
 
 ProductsListItem = TypedDict("ProductsListItem", {
@@ -2315,6 +2319,8 @@ ProductsListItem = TypedDict("ProductsListItem", {
     "deliveryInstructions": str,
     "blockedPaymentMethods": Union[List[Any], Dict[str, Any]],
     "paymentFees": Union[List[Any], Dict[str, Any]],
+    "discordRoles": Union[List[Any], Dict[str, Any]],
+    "discordLinking": str,
     "showViewers": bool,
     "showSales": bool,
     "salesWindow": str,
@@ -2365,6 +2371,8 @@ ProductsCreateResultVariantsItem = TypedDict("ProductsCreateResultVariantsItem",
     "customFields": Union[List[Any], Dict[str, Any]],
     "sort": float,
     "blockedPaymentMethods": Union[List[Any], Dict[str, Any]],
+    "discordRoles": Union[List[Any], Dict[str, Any]],
+    "discordLinking": str,
 })
 
 ProductsCreateResult = TypedDict("ProductsCreateResult", {
@@ -2386,6 +2394,8 @@ ProductsCreateResult = TypedDict("ProductsCreateResult", {
     "deliveryInstructions": str,
     "blockedPaymentMethods": Union[List[Any], Dict[str, Any]],
     "paymentFees": Union[List[Any], Dict[str, Any]],
+    "discordRoles": Union[List[Any], Dict[str, Any]],
+    "discordLinking": str,
     "showViewers": bool,
     "showSales": bool,
     "salesWindow": str,
@@ -2436,6 +2446,8 @@ ProductsShowResultVariantsItem = TypedDict("ProductsShowResultVariantsItem", {
     "customFields": Union[List[Any], Dict[str, Any]],
     "sort": float,
     "blockedPaymentMethods": Union[List[Any], Dict[str, Any]],
+    "discordRoles": Union[List[Any], Dict[str, Any]],
+    "discordLinking": str,
 })
 
 ProductsShowResult = TypedDict("ProductsShowResult", {
@@ -2457,6 +2469,8 @@ ProductsShowResult = TypedDict("ProductsShowResult", {
     "deliveryInstructions": str,
     "blockedPaymentMethods": Union[List[Any], Dict[str, Any]],
     "paymentFees": Union[List[Any], Dict[str, Any]],
+    "discordRoles": Union[List[Any], Dict[str, Any]],
+    "discordLinking": str,
     "showViewers": bool,
     "showSales": bool,
     "salesWindow": str,
@@ -2507,6 +2521,8 @@ ProductsUpdateResultVariantsItem = TypedDict("ProductsUpdateResultVariantsItem",
     "customFields": Union[List[Any], Dict[str, Any]],
     "sort": float,
     "blockedPaymentMethods": Union[List[Any], Dict[str, Any]],
+    "discordRoles": Union[List[Any], Dict[str, Any]],
+    "discordLinking": str,
 })
 
 ProductsUpdateResult = TypedDict("ProductsUpdateResult", {
@@ -2528,6 +2544,8 @@ ProductsUpdateResult = TypedDict("ProductsUpdateResult", {
     "deliveryInstructions": str,
     "blockedPaymentMethods": Union[List[Any], Dict[str, Any]],
     "paymentFees": Union[List[Any], Dict[str, Any]],
+    "discordRoles": Union[List[Any], Dict[str, Any]],
+    "discordLinking": str,
     "showViewers": bool,
     "showSales": bool,
     "salesWindow": str,
@@ -3373,6 +3391,7 @@ OrdersShowResult = TypedDict("OrdersShowResult", {
     "payments": Union[List[Any], Dict[str, Any]],
     "invoice": Any,
     "disputes": Union[List[Any], Dict[str, Any]],
+    "discord": Any,
     "review": Any,
     "requests": Union[List[Any], Dict[str, Any]],
     "customPayment": Any,
@@ -5815,14 +5834,14 @@ ResellerProductsPickableResultItem = TypedDict("ResellerProductsPickableResultIt
     "price": float,
 })
 
-ResellerProductsBadgesResult7626c760C6cd4b388344Cfbba0148a80Item = TypedDict("ResellerProductsBadgesResult7626c760C6cd4b388344Cfbba0148a80Item", {
+ResellerProductsBadgesResult17a715fc872e4907B0ecF6c1ca743380Item = TypedDict("ResellerProductsBadgesResult17a715fc872e4907B0ecF6c1ca743380Item", {
     "label": str,
     "color": str,
     "kind": str,
 })
 
 ResellerProductsBadgesResult = TypedDict("ResellerProductsBadgesResult", {
-    "7626c760-c6cd-4b38-8344-cfbba0148a80": List[ResellerProductsBadgesResult7626c760C6cd4b388344Cfbba0148a80Item],
+    "17a715fc-872e-4907-b0ec-f6c1ca743380": List[ResellerProductsBadgesResult17a715fc872e4907B0ecF6c1ca743380Item],
 })
 
 ResellerTiersListResultItem = TypedDict("ResellerTiersListResultItem", {
@@ -6684,6 +6703,8 @@ DisputesSettingsResult = TypedDict("DisputesSettingsResult", {
     "emailOpened": bool,
     "emailClosed": bool,
     "discord": bool,
+    "discordRoles": str,
+    "discordRolesBack": bool,
     "currency": str,
 })
 
@@ -6698,6 +6719,8 @@ DisputesUpdateSettingsResult = TypedDict("DisputesUpdateSettingsResult", {
     "emailOpened": bool,
     "emailClosed": bool,
     "discord": bool,
+    "discordRoles": str,
+    "discordRolesBack": bool,
     "currency": str,
 })
 
@@ -9018,6 +9041,7 @@ CustomerOrdersShowResult = TypedDict("CustomerOrdersShowResult", {
     "checkoutUrl": str,
     "lines": List[CustomerOrdersShowResultLinesItem],
     "general": str,
+    "discord": Any,
 })
 
 CustomerAffiliatePayoutsCreateResultOffered = TypedDict("CustomerAffiliatePayoutsCreateResultOffered", {
@@ -9868,6 +9892,9 @@ WebhookEventName = Literal[
     "order.chargeback",
     "order.payment_submitted",
     "order.rerouted",
+    "order.discord_linked",
+    "order.discord_roles_given",
+    "order.discord_roles_taken",
     "review.created",
     "review.removed",
     "review.flag_declined",

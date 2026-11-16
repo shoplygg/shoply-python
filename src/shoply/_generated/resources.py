@@ -453,7 +453,7 @@ from .types import (
     ResellerOrdersGetResultReseller,
     ResellerOrdersListItem,
     ResellerProductsBadgesResult,
-    ResellerProductsBadgesResult7626c760C6cd4b388344Cfbba0148a80Item,
+    ResellerProductsBadgesResult17a715fc872e4907B0ecF6c1ca743380Item,
     ResellerProductsListResultItem,
     ResellerProductsPickableResultItem,
     ResellerProductsSaveResultItem,
@@ -2514,6 +2514,8 @@ class Products:
         badges: Optional[List[Dict[str, Any]]] = None,
         features: Optional[List[Dict[str, Any]]] = None,
         blockedPaymentMethods: Optional[List[str]] = None,
+        discordRoles: Optional[List[str]] = None,
+        discordLinking: Optional[Literal["store", "required", "optional"]] = None,
         paymentFees: Optional[Dict[str, Any]] = None,
         salesWindow: Optional[Literal["all", "1h", "6h", "12h", "24h", "7d", "30d"]] = None,
         metadata: Optional[Dict[str, Any]] = None,
@@ -2544,6 +2546,8 @@ class Products:
             badges: Up to 3 short labels on the product. Left out on an update, they stay as they are.
             features: What the product does, as a list. Each entry is a feature on its own or a named group of features. Up to 500 features and 30 groups. Left out on an update, they stay as they are.
             blockedPaymentMethods: Payment methods the product cannot be bought with, by their names in the payment methods list. Left out on an update, they stay as they are.
+            discordRoles: Discord roles every variant of the product gives, each as `server ID:role ID`. A product and its variants give up to 25 in all. Left out on an update, they stay as they are.
+            discordLinking: Whether its buyers must link their Discord at checkout: `store` follows the store's setting, `required` holds Pay until they link, `optional` lets them skip it. Left out on an update, it stays as it is.
             paymentFees: What a payment method adds to this product's price: a payment method's name, and under it `percent` and `fixed`. A fee can only add. Left out on an update, the fees stay as they are.
             salesWindow: The period the storefront's "sold" figure for this product counts. Left out, it is "all".
             metadata: Anything of your own to keep with the product, as JSON. Shoply stores it and does nothing with it. It is answered as text.
@@ -2552,7 +2556,7 @@ class Products:
 
         Docs: https://docs.shoply.gg/api-reference/products/create-a-product
         """
-        return cast("ProductsCreateResult", self._caller._call("products.create", [], {"name": name, "variants": variants, "slug": slug, "description": description, "visibility": visibility, "deliveryInstructions": deliveryInstructions, "categoryIds": categoryIds, "isBestSeller": isBestSeller, "badges": badges, "features": features, "blockedPaymentMethods": blockedPaymentMethods, "paymentFees": paymentFees, "salesWindow": salesWindow, "metadata": metadata, "seoTitle": seoTitle, "seoDescription": seoDescription}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("ProductsCreateResult", self._caller._call("products.create", [], {"name": name, "variants": variants, "slug": slug, "description": description, "visibility": visibility, "deliveryInstructions": deliveryInstructions, "categoryIds": categoryIds, "isBestSeller": isBestSeller, "badges": badges, "features": features, "blockedPaymentMethods": blockedPaymentMethods, "discordRoles": discordRoles, "discordLinking": discordLinking, "paymentFees": paymentFees, "salesWindow": salesWindow, "metadata": metadata, "seoTitle": seoTitle, "seoDescription": seoDescription}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def show(
         self,
@@ -2588,6 +2592,8 @@ class Products:
         badges: Optional[List[Dict[str, Any]]] = None,
         features: Optional[List[Dict[str, Any]]] = None,
         blockedPaymentMethods: Optional[List[str]] = None,
+        discordRoles: Optional[List[str]] = None,
+        discordLinking: Optional[Literal["store", "required", "optional"]] = None,
         paymentFees: Optional[Dict[str, Any]] = None,
         salesWindow: Optional[Literal["all", "1h", "6h", "12h", "24h", "7d", "30d"]] = None,
         metadata: Optional[Dict[str, Any]] = None,
@@ -2619,6 +2625,8 @@ class Products:
             badges: Up to 3 short labels on the product. Left out on an update, they stay as they are.
             features: What the product does, as a list. Each entry is a feature on its own or a named group of features. Up to 500 features and 30 groups. Left out on an update, they stay as they are.
             blockedPaymentMethods: Payment methods the product cannot be bought with, by their names in the payment methods list. Left out on an update, they stay as they are.
+            discordRoles: Discord roles every variant of the product gives, each as `server ID:role ID`. A product and its variants give up to 25 in all. Left out on an update, they stay as they are.
+            discordLinking: Whether its buyers must link their Discord at checkout: `store` follows the store's setting, `required` holds Pay until they link, `optional` lets them skip it. Left out on an update, it stays as it is.
             paymentFees: What a payment method adds to this product's price: a payment method's name, and under it `percent` and `fixed`. A fee can only add. Left out on an update, the fees stay as they are.
             salesWindow: The period the storefront's "sold" figure for this product counts. Left out, it is "all".
             metadata: Anything of your own to keep with the product, as JSON. Shoply stores it and does nothing with it. It is answered as text.
@@ -2628,7 +2636,7 @@ class Products:
 
         Docs: https://docs.shoply.gg/api-reference/products/update-a-product
         """
-        return cast("ProductsUpdateResult", self._caller._call("products.update", [product_id], {"name": name, "variants": variants, "slug": slug, "description": description, "visibility": visibility, "deliveryInstructions": deliveryInstructions, "categoryIds": categoryIds, "isBestSeller": isBestSeller, "badges": badges, "features": features, "blockedPaymentMethods": blockedPaymentMethods, "paymentFees": paymentFees, "salesWindow": salesWindow, "metadata": metadata, "seoTitle": seoTitle, "seoDescription": seoDescription, "expectedUpdatedAt": expectedUpdatedAt}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("ProductsUpdateResult", self._caller._call("products.update", [product_id], {"name": name, "variants": variants, "slug": slug, "description": description, "visibility": visibility, "deliveryInstructions": deliveryInstructions, "categoryIds": categoryIds, "isBestSeller": isBestSeller, "badges": badges, "features": features, "blockedPaymentMethods": blockedPaymentMethods, "discordRoles": discordRoles, "discordLinking": discordLinking, "paymentFees": paymentFees, "salesWindow": salesWindow, "metadata": metadata, "seoTitle": seoTitle, "seoDescription": seoDescription, "expectedUpdatedAt": expectedUpdatedAt}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -2702,6 +2710,8 @@ class Products:
         isBestSeller: Optional[bool] = None,
         paymentMethods: Optional[Dict[str, Any]] = None,
         deliveryInstructions: Optional[str] = None,
+        discordRoles: Optional[Dict[str, Any]] = None,
+        discordLinking: Optional[Literal["store", "required", "optional"]] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -2719,10 +2729,12 @@ class Products:
             isBestSeller: Whether all of them are marked as best sellers.
             paymentMethods: A payment method's name, and `block` or `allow`. `block` adds the method to each product's blocked list. `allow` takes it off the product and off every variant of it.
             deliveryInstructions: Instructions for every variant of all of them, up to 5,000 characters, in place of what each has. Empty takes them off. A variant's own instructions are not touched.
+            discordRoles: A Discord role as `server ID:role ID`, and `give` or `stop`. `give` adds it to what every variant of each product gives. `stop` takes it off the product and off every variant of it.
+            discordLinking: Whether buyers of all of them must link their Discord at checkout, for the whole product.
 
         Docs: https://docs.shoply.gg/api-reference/products/change-many-products
         """
-        return cast("ProductsBulkUpdateResult", self._caller._call("products.bulkUpdate", [], {"productIds": productIds, "visibility": visibility, "isBestSeller": isBestSeller, "paymentMethods": paymentMethods, "deliveryInstructions": deliveryInstructions}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("ProductsBulkUpdateResult", self._caller._call("products.bulkUpdate", [], {"productIds": productIds, "visibility": visibility, "isBestSeller": isBestSeller, "paymentMethods": paymentMethods, "deliveryInstructions": deliveryInstructions, "discordRoles": discordRoles, "discordLinking": discordLinking}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def bulkDelete(
         self,
@@ -9009,6 +9021,8 @@ class Disputes:
         emailOpened: Optional[bool] = None,
         emailClosed: Optional[bool] = None,
         discord: Optional[bool] = None,
+        discordRoles: Optional[Literal["keep", "take", "kick", "ban"]] = None,
+        discordRolesBack: Optional[bool] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -9031,10 +9045,12 @@ class Disputes:
             emailOpened: Email the store when one opens, with its deadline.
             emailClosed: Email the store how one ended.
             discord: Post both to the store's Discord. Needs a webhook in its notification settings.
+            discordRoles: What an opened dispute does to a buyer who linked their Discord to the order: `keep` their roles, `take` them, `kick` (take them and remove the buyer from the server), or `ban` them from it.
+            discordRolesBack: Whether a dispute closed in the store's favour gives the roles back, adds a kicked buyer again and lifts a ban.
 
         Docs: https://docs.shoply.gg/api-reference/disputes/change-dispute-settings
         """
-        return cast("DisputesUpdateSettingsResult", self._caller._call("disputes.updateSettings", [], {"blacklist": blacklist, "takeBackAccess": takeBackAccess, "acceptSmall": acceptSmall, "acceptUnder": acceptUnder, "autoSubmit": autoSubmit, "askAboveOn": askAboveOn, "askAbove": askAbove, "emailOpened": emailOpened, "emailClosed": emailClosed, "discord": discord}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("DisputesUpdateSettingsResult", self._caller._call("disputes.updateSettings", [], {"blacklist": blacklist, "takeBackAccess": takeBackAccess, "acceptSmall": acceptSmall, "acceptUnder": acceptUnder, "autoSubmit": autoSubmit, "askAboveOn": askAboveOn, "askAbove": askAbove, "emailOpened": emailOpened, "emailClosed": emailClosed, "discord": discord, "discordRoles": discordRoles, "discordRolesBack": discordRolesBack}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
 
 class Finance:
