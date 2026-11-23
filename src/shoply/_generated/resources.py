@@ -453,7 +453,7 @@ from .types import (
     ResellerOrdersGetResultReseller,
     ResellerOrdersListItem,
     ResellerProductsBadgesResult,
-    ResellerProductsBadgesResult17a715fc872e4907B0ecF6c1ca743380Item,
+    ResellerProductsBadgesResult237ccb40C9024c6b88886f651d84fc59Item,
     ResellerProductsListResultItem,
     ResellerProductsPickableResultItem,
     ResellerProductsSaveResultItem,
@@ -8550,7 +8550,7 @@ class FraudEvents:
         *,
         page: Optional[int] = None,
         perPage: Optional[int] = None,
-        reason: Optional[Literal["blacklist", "vpn", "country", "unpaid_limit", "dispute", "allowed", "refund", "changes"]] = None,
+        reason: Optional[Literal["blacklist", "vpn", "country", "unpaid_limit", "dispute", "allowed", "refund", "imported", "changes"]] = None,
         search: Optional[str] = None,
         range: Optional[Literal["today", "yesterday", "7d", "30d", "this_week", "last_week", "this_month", "last_month", "this_year"]] = None,
         from_: Optional[str] = None,
@@ -8570,7 +8570,7 @@ class FraudEvents:
         Args:
             page: Which page of the list. The first is 1. Left out, it is 1.
             perPage: How many a page holds. Left out, it is 20.
-            reason: Only events of this reason. `changes` is every change to the rules and settings.
+            reason: Only events of this reason. `changes` is every change to the rules and settings; `imported` is a line of another platform's log, brought by Platform Migration.
             search: Part of an email address, an IP address or a rule's value.
             range: Only events in this period.
             from_: Only events on or after this day, as `YYYY-MM-DD`. With `to`, in place of `range`.
@@ -8584,7 +8584,7 @@ class FraudEvents:
     def export(
         self,
         *,
-        reason: Optional[Literal["blacklist", "vpn", "country", "unpaid_limit", "dispute", "allowed", "refund", "changes"]] = None,
+        reason: Optional[Literal["blacklist", "vpn", "country", "unpaid_limit", "dispute", "allowed", "refund", "imported", "changes"]] = None,
         search: Optional[str] = None,
         check: Optional[Literal["1"]] = None,
         range: Optional[Literal["today", "yesterday", "7d", "30d", "this_week", "last_week", "this_month", "last_month", "this_year"]] = None,
@@ -8603,7 +8603,7 @@ class FraudEvents:
         Needs the `fraud.read` permission (Read Fraud Protection). It is one of the heavier reads, and is counted against a smaller budget of its own: 60 a minute for each key.
 
         Args:
-            reason: Only events of this reason. `changes` is every change to the rules and settings.
+            reason: Only events of this reason. `changes` is every change to the rules and settings; `imported` is a line of another platform's log, brought by Platform Migration.
             search: Part of an email address, an IP address or a rule's value.
             check: `1` for how many rows the file would have, as `{ rows }`, in place of the file. Not counted against the store's exports, and refused with 429 where none are left.
             range: Only events in this period.

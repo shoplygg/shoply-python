@@ -222,6 +222,7 @@ StoreEmailSettingsResult = TypedDict("StoreEmailSettingsResult", {
     "discordCustomPaidEnabled": bool,
     "discordTicketsEnabled": bool,
     "discordResellersEnabled": bool,
+    "discordPaypalEnabled": bool,
     "discordDisputesEnabled": bool,
     "discordStockThreshold": float,
     "discordFailure": Any,
@@ -257,6 +258,7 @@ PaymentMethodsListResultItemTogglesItem = TypedDict("PaymentMethodsListResultIte
     "group": str,
     "needs": str,
     "on": bool,
+    "choices": Union[List[Any], Dict[str, Any]],
 })
 
 PaymentMethodsListResultItem = TypedDict("PaymentMethodsListResultItem", {
@@ -272,6 +274,7 @@ PaymentMethodsListResultItem = TypedDict("PaymentMethodsListResultItem", {
     "originHint": str,
     "callbackHint": str,
     "copies": Union[List[Any], Dict[str, Any]],
+    "friends": Any,
     "authorizeUrl": str,
     "connected": bool,
     "enabled": bool,
@@ -309,6 +312,7 @@ PaymentMethodsSetBalanceResultItemTogglesItem = TypedDict("PaymentMethodsSetBala
     "group": str,
     "needs": str,
     "on": bool,
+    "choices": Union[List[Any], Dict[str, Any]],
 })
 
 PaymentMethodsSetBalanceResultItem = TypedDict("PaymentMethodsSetBalanceResultItem", {
@@ -324,6 +328,7 @@ PaymentMethodsSetBalanceResultItem = TypedDict("PaymentMethodsSetBalanceResultIt
     "originHint": str,
     "callbackHint": str,
     "copies": Union[List[Any], Dict[str, Any]],
+    "friends": Any,
     "authorizeUrl": str,
     "connected": bool,
     "enabled": bool,
@@ -361,6 +366,7 @@ PaymentMethodsSetUnpaidHoursResultItemTogglesItem = TypedDict("PaymentMethodsSet
     "group": str,
     "needs": str,
     "on": bool,
+    "choices": Union[List[Any], Dict[str, Any]],
 })
 
 PaymentMethodsSetUnpaidHoursResultItem = TypedDict("PaymentMethodsSetUnpaidHoursResultItem", {
@@ -376,6 +382,7 @@ PaymentMethodsSetUnpaidHoursResultItem = TypedDict("PaymentMethodsSetUnpaidHours
     "originHint": str,
     "callbackHint": str,
     "copies": Union[List[Any], Dict[str, Any]],
+    "friends": Any,
     "authorizeUrl": str,
     "connected": bool,
     "enabled": bool,
@@ -413,6 +420,7 @@ PaymentMethodsSetMethodUnpaidHoursResultItemTogglesItem = TypedDict("PaymentMeth
     "group": str,
     "needs": str,
     "on": bool,
+    "choices": Union[List[Any], Dict[str, Any]],
 })
 
 PaymentMethodsSetMethodUnpaidHoursResultItem = TypedDict("PaymentMethodsSetMethodUnpaidHoursResultItem", {
@@ -428,6 +436,7 @@ PaymentMethodsSetMethodUnpaidHoursResultItem = TypedDict("PaymentMethodsSetMetho
     "originHint": str,
     "callbackHint": str,
     "copies": Union[List[Any], Dict[str, Any]],
+    "friends": Any,
     "authorizeUrl": str,
     "connected": bool,
     "enabled": bool,
@@ -5834,14 +5843,14 @@ ResellerProductsPickableResultItem = TypedDict("ResellerProductsPickableResultIt
     "price": float,
 })
 
-ResellerProductsBadgesResult17a715fc872e4907B0ecF6c1ca743380Item = TypedDict("ResellerProductsBadgesResult17a715fc872e4907B0ecF6c1ca743380Item", {
+ResellerProductsBadgesResult237ccb40C9024c6b88886f651d84fc59Item = TypedDict("ResellerProductsBadgesResult237ccb40C9024c6b88886f651d84fc59Item", {
     "label": str,
     "color": str,
     "kind": str,
 })
 
 ResellerProductsBadgesResult = TypedDict("ResellerProductsBadgesResult", {
-    "17a715fc-872e-4907-b0ec-f6c1ca743380": List[ResellerProductsBadgesResult17a715fc872e4907B0ecF6c1ca743380Item],
+    "237ccb40-c902-4c6b-8888-6f651d84fc59": List[ResellerProductsBadgesResult237ccb40C9024c6b88886f651d84fc59Item],
 })
 
 ResellerTiersListResultItem = TypedDict("ResellerTiersListResultItem", {
