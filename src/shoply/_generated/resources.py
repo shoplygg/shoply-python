@@ -453,7 +453,7 @@ from .types import (
     ResellerOrdersGetResultReseller,
     ResellerOrdersListItem,
     ResellerProductsBadgesResult,
-    ResellerProductsBadgesResult237ccb40C9024c6b88886f651d84fc59Item,
+    ResellerProductsBadgesResult5553d50f7e0b405b9a29B30b84627a91Item,
     ResellerProductsListResultItem,
     ResellerProductsPickableResultItem,
     ResellerProductsSaveResultItem,

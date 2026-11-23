@@ -17,6 +17,7 @@ KeyShowResultKey = TypedDict("KeyShowResultKey", {
     "createdAt": str,
     "lastUsedAt": Any,
     "revokedAt": Any,
+    "version": str,
 })
 
 KeyShowResultStore = TypedDict("KeyShowResultStore", {
@@ -45,6 +46,7 @@ KeyDestroyResult = TypedDict("KeyDestroyResult", {
     "createdAt": str,
     "lastUsedAt": str,
     "revokedAt": str,
+    "version": str,
 })
 
 StoreShowResultSocialLinks = TypedDict("StoreShowResultSocialLinks", {
@@ -1441,6 +1443,7 @@ RoutingShowResultSettings = TypedDict("RoutingShowResultSettings", {
     "guardDeclines": float,
     "guardWindow": float,
     "disputeAlert": float,
+    "version": str,
 })
 
 RoutingShowResultProcessorsItem = TypedDict("RoutingShowResultProcessorsItem", {
@@ -1459,6 +1462,7 @@ RoutingShowResultProcessorsItem = TypedDict("RoutingShowResultProcessorsItem", {
     "approved": Any,
     "disputes": Any,
     "fee": Any,
+    "version": str,
 })
 
 RoutingShowResultRulesItem = TypedDict("RoutingShowResultRulesItem", {
@@ -1469,6 +1473,7 @@ RoutingShowResultRulesItem = TypedDict("RoutingShowResultRulesItem", {
     "amount": Any,
     "action": str,
     "provider": str,
+    "version": str,
 })
 
 RoutingShowResultFiguresRouted = TypedDict("RoutingShowResultFiguresRouted", {
@@ -1514,6 +1519,7 @@ RoutingUpdateResultSettings = TypedDict("RoutingUpdateResultSettings", {
     "guardDeclines": float,
     "guardWindow": float,
     "disputeAlert": float,
+    "version": str,
 })
 
 RoutingUpdateResultProcessorsItem = TypedDict("RoutingUpdateResultProcessorsItem", {
@@ -1532,6 +1538,7 @@ RoutingUpdateResultProcessorsItem = TypedDict("RoutingUpdateResultProcessorsItem
     "approved": Any,
     "disputes": Any,
     "fee": Any,
+    "version": str,
 })
 
 RoutingUpdateResultRulesItem = TypedDict("RoutingUpdateResultRulesItem", {
@@ -1542,6 +1549,7 @@ RoutingUpdateResultRulesItem = TypedDict("RoutingUpdateResultRulesItem", {
     "amount": Any,
     "action": str,
     "provider": str,
+    "version": str,
 })
 
 RoutingUpdateResultFiguresRouted = TypedDict("RoutingUpdateResultFiguresRouted", {
@@ -1587,6 +1595,7 @@ RoutingAddProcessorResultSettings = TypedDict("RoutingAddProcessorResultSettings
     "guardDeclines": float,
     "guardWindow": float,
     "disputeAlert": float,
+    "version": str,
 })
 
 RoutingAddProcessorResultProcessorsItem = TypedDict("RoutingAddProcessorResultProcessorsItem", {
@@ -1605,6 +1614,7 @@ RoutingAddProcessorResultProcessorsItem = TypedDict("RoutingAddProcessorResultPr
     "approved": Any,
     "disputes": Any,
     "fee": Any,
+    "version": str,
 })
 
 RoutingAddProcessorResultAvailableItem = TypedDict("RoutingAddProcessorResultAvailableItem", {
@@ -1656,6 +1666,7 @@ RoutingUpdateProcessorResultSettings = TypedDict("RoutingUpdateProcessorResultSe
     "guardDeclines": float,
     "guardWindow": float,
     "disputeAlert": float,
+    "version": str,
 })
 
 RoutingUpdateProcessorResultProcessorsItem = TypedDict("RoutingUpdateProcessorResultProcessorsItem", {
@@ -1674,6 +1685,7 @@ RoutingUpdateProcessorResultProcessorsItem = TypedDict("RoutingUpdateProcessorRe
     "approved": Any,
     "disputes": Any,
     "fee": Any,
+    "version": str,
 })
 
 RoutingUpdateProcessorResultFiguresRouted = TypedDict("RoutingUpdateProcessorResultFiguresRouted", {
@@ -1719,6 +1731,7 @@ RoutingRemoveProcessorResultSettings = TypedDict("RoutingRemoveProcessorResultSe
     "guardDeclines": float,
     "guardWindow": float,
     "disputeAlert": float,
+    "version": str,
 })
 
 RoutingRemoveProcessorResultProcessorsItem = TypedDict("RoutingRemoveProcessorResultProcessorsItem", {
@@ -1737,6 +1750,7 @@ RoutingRemoveProcessorResultProcessorsItem = TypedDict("RoutingRemoveProcessorRe
     "approved": Any,
     "disputes": Any,
     "fee": Any,
+    "version": str,
 })
 
 RoutingRemoveProcessorResultAvailableItem = TypedDict("RoutingRemoveProcessorResultAvailableItem", {
@@ -1788,6 +1802,7 @@ RoutingResumeProcessorResultSettings = TypedDict("RoutingResumeProcessorResultSe
     "guardDeclines": float,
     "guardWindow": float,
     "disputeAlert": float,
+    "version": str,
 })
 
 RoutingResumeProcessorResultProcessorsItem = TypedDict("RoutingResumeProcessorResultProcessorsItem", {
@@ -1806,6 +1821,7 @@ RoutingResumeProcessorResultProcessorsItem = TypedDict("RoutingResumeProcessorRe
     "approved": Any,
     "disputes": Any,
     "fee": Any,
+    "version": str,
 })
 
 RoutingResumeProcessorResultRulesItem = TypedDict("RoutingResumeProcessorResultRulesItem", {
@@ -1816,6 +1832,7 @@ RoutingResumeProcessorResultRulesItem = TypedDict("RoutingResumeProcessorResultR
     "amount": Any,
     "action": str,
     "provider": str,
+    "version": str,
 })
 
 RoutingResumeProcessorResultFiguresRouted = TypedDict("RoutingResumeProcessorResultFiguresRouted", {
@@ -1861,6 +1878,7 @@ RoutingSortProcessorsResultSettings = TypedDict("RoutingSortProcessorsResultSett
     "guardDeclines": float,
     "guardWindow": float,
     "disputeAlert": float,
+    "version": str,
 })
 
 RoutingSortProcessorsResultProcessorsItem = TypedDict("RoutingSortProcessorsResultProcessorsItem", {
@@ -1879,6 +1897,7 @@ RoutingSortProcessorsResultProcessorsItem = TypedDict("RoutingSortProcessorsResu
     "approved": Any,
     "disputes": Any,
     "fee": Any,
+    "version": str,
 })
 
 RoutingSortProcessorsResultFiguresRouted = TypedDict("RoutingSortProcessorsResultFiguresRouted", {
@@ -1924,6 +1943,7 @@ RoutingAddRuleResultSettings = TypedDict("RoutingAddRuleResultSettings", {
     "guardDeclines": float,
     "guardWindow": float,
     "disputeAlert": float,
+    "version": str,
 })
 
 RoutingAddRuleResultProcessorsItem = TypedDict("RoutingAddRuleResultProcessorsItem", {
@@ -1942,6 +1962,7 @@ RoutingAddRuleResultProcessorsItem = TypedDict("RoutingAddRuleResultProcessorsIt
     "approved": Any,
     "disputes": Any,
     "fee": Any,
+    "version": str,
 })
 
 RoutingAddRuleResultRulesItem = TypedDict("RoutingAddRuleResultRulesItem", {
@@ -1952,6 +1973,7 @@ RoutingAddRuleResultRulesItem = TypedDict("RoutingAddRuleResultRulesItem", {
     "amount": float,
     "action": str,
     "provider": str,
+    "version": str,
 })
 
 RoutingAddRuleResultFiguresRouted = TypedDict("RoutingAddRuleResultFiguresRouted", {
@@ -1997,6 +2019,7 @@ RoutingUpdateRuleResultSettings = TypedDict("RoutingUpdateRuleResultSettings", {
     "guardDeclines": float,
     "guardWindow": float,
     "disputeAlert": float,
+    "version": str,
 })
 
 RoutingUpdateRuleResultProcessorsItem = TypedDict("RoutingUpdateRuleResultProcessorsItem", {
@@ -2015,6 +2038,7 @@ RoutingUpdateRuleResultProcessorsItem = TypedDict("RoutingUpdateRuleResultProces
     "approved": Any,
     "disputes": Any,
     "fee": Any,
+    "version": str,
 })
 
 RoutingUpdateRuleResultRulesItem = TypedDict("RoutingUpdateRuleResultRulesItem", {
@@ -2025,6 +2049,7 @@ RoutingUpdateRuleResultRulesItem = TypedDict("RoutingUpdateRuleResultRulesItem",
     "amount": Any,
     "action": str,
     "provider": str,
+    "version": str,
 })
 
 RoutingUpdateRuleResultFiguresRouted = TypedDict("RoutingUpdateRuleResultFiguresRouted", {
@@ -2070,6 +2095,7 @@ RoutingDeleteRuleResultSettings = TypedDict("RoutingDeleteRuleResultSettings", {
     "guardDeclines": float,
     "guardWindow": float,
     "disputeAlert": float,
+    "version": str,
 })
 
 RoutingDeleteRuleResultProcessorsItem = TypedDict("RoutingDeleteRuleResultProcessorsItem", {
@@ -2088,6 +2114,7 @@ RoutingDeleteRuleResultProcessorsItem = TypedDict("RoutingDeleteRuleResultProces
     "approved": Any,
     "disputes": Any,
     "fee": Any,
+    "version": str,
 })
 
 RoutingDeleteRuleResultFiguresRouted = TypedDict("RoutingDeleteRuleResultFiguresRouted", {
@@ -2133,6 +2160,7 @@ RoutingSortRulesResultSettings = TypedDict("RoutingSortRulesResultSettings", {
     "guardDeclines": float,
     "guardWindow": float,
     "disputeAlert": float,
+    "version": str,
 })
 
 RoutingSortRulesResultProcessorsItem = TypedDict("RoutingSortRulesResultProcessorsItem", {
@@ -2151,6 +2179,7 @@ RoutingSortRulesResultProcessorsItem = TypedDict("RoutingSortRulesResultProcesso
     "approved": Any,
     "disputes": Any,
     "fee": Any,
+    "version": str,
 })
 
 RoutingSortRulesResultRulesItem = TypedDict("RoutingSortRulesResultRulesItem", {
@@ -2161,6 +2190,7 @@ RoutingSortRulesResultRulesItem = TypedDict("RoutingSortRulesResultRulesItem", {
     "amount": Any,
     "action": str,
     "provider": str,
+    "version": str,
 })
 
 RoutingSortRulesResultFiguresRouted = TypedDict("RoutingSortRulesResultFiguresRouted", {
@@ -2208,6 +2238,7 @@ CustomMethodsListResultItem = TypedDict("CustomMethodsListResultItem", {
     "asksProof": bool,
     "requiresPicture": bool,
     "enabled": bool,
+    "version": str,
 })
 
 CustomMethodsCreateResult = TypedDict("CustomMethodsCreateResult", {
@@ -2221,6 +2252,7 @@ CustomMethodsCreateResult = TypedDict("CustomMethodsCreateResult", {
     "asksProof": bool,
     "requiresPicture": bool,
     "enabled": bool,
+    "version": str,
 })
 
 CustomMethodsUpdateResultItem = TypedDict("CustomMethodsUpdateResultItem", {
@@ -2234,6 +2266,7 @@ CustomMethodsUpdateResultItem = TypedDict("CustomMethodsUpdateResultItem", {
     "asksProof": bool,
     "requiresPicture": bool,
     "enabled": bool,
+    "version": str,
 })
 
 CustomMethodsDeleteResultItem = TypedDict("CustomMethodsDeleteResultItem", {
@@ -2247,6 +2280,7 @@ CustomMethodsDeleteResultItem = TypedDict("CustomMethodsDeleteResultItem", {
     "asksProof": bool,
     "requiresPicture": bool,
     "enabled": bool,
+    "version": str,
 })
 
 CustomMethodsSetEnabledResultItem = TypedDict("CustomMethodsSetEnabledResultItem", {
@@ -2260,6 +2294,7 @@ CustomMethodsSetEnabledResultItem = TypedDict("CustomMethodsSetEnabledResultItem
     "asksProof": bool,
     "requiresPicture": bool,
     "enabled": bool,
+    "version": str,
 })
 
 CustomMethodsSortResultItem = TypedDict("CustomMethodsSortResultItem", {
@@ -2273,6 +2308,7 @@ CustomMethodsSortResultItem = TypedDict("CustomMethodsSortResultItem", {
     "asksProof": bool,
     "requiresPicture": bool,
     "enabled": bool,
+    "version": str,
 })
 
 ProductsListItemBadgesItem = TypedDict("ProductsListItemBadgesItem", {
@@ -2891,6 +2927,7 @@ SubscriptionsSettingsResult = TypedDict("SubscriptionsSettingsResult", {
     "autoOn": bool,
     "cardChangeOn": bool,
     "chargeTries": float,
+    "version": str,
 })
 
 SubscriptionsUpdateSettingsResult = TypedDict("SubscriptionsUpdateSettingsResult", {
@@ -2907,6 +2944,7 @@ SubscriptionsUpdateSettingsResult = TypedDict("SubscriptionsUpdateSettingsResult
     "autoOn": bool,
     "cardChangeOn": bool,
     "chargeTries": float,
+    "version": str,
 })
 
 SubscriptionsPlansResultItem = TypedDict("SubscriptionsPlansResultItem", {
@@ -2919,6 +2957,7 @@ SubscriptionsPlansResultItem = TypedDict("SubscriptionsPlansResultItem", {
     "unit": str,
     "running": float,
     "automatic": float,
+    "version": str,
 })
 
 SubscriptionsSavePlansResultItem = TypedDict("SubscriptionsSavePlansResultItem", {
@@ -2931,6 +2970,7 @@ SubscriptionsSavePlansResultItem = TypedDict("SubscriptionsSavePlansResultItem",
     "unit": str,
     "running": float,
     "automatic": float,
+    "version": str,
 })
 
 SubscriptionsShowResult = TypedDict("SubscriptionsShowResult", {
@@ -3901,6 +3941,7 @@ BlogListResultItem = TypedDict("BlogListResultItem", {
     "path": str,
     "description": str,
     "imageUrl": Any,
+    "version": str,
     "posts": List[BlogListResultItemPostsItem],
 })
 
@@ -3911,6 +3952,7 @@ BlogCategoriesCreateResult = TypedDict("BlogCategoriesCreateResult", {
     "path": str,
     "description": str,
     "imageUrl": Any,
+    "version": str,
     "posts": Union[List[Any], Dict[str, Any]],
 })
 
@@ -3921,6 +3963,7 @@ BlogCategoriesUpdateResult = TypedDict("BlogCategoriesUpdateResult", {
     "path": str,
     "description": str,
     "imageUrl": Any,
+    "version": str,
 })
 
 BlogCategoriesDeleteResult = TypedDict("BlogCategoriesDeleteResult", {
@@ -3961,6 +4004,7 @@ BlogPostsCreateResult = TypedDict("BlogPostsCreateResult", {
     "seoDescription": str,
     "url": str,
     "search": BlogPostsCreateResultSearch,
+    "version": str,
 })
 
 BlogPostsShowResultSearchChecksItem = TypedDict("BlogPostsShowResultSearchChecksItem", {
@@ -3992,6 +4036,7 @@ BlogPostsShowResult = TypedDict("BlogPostsShowResult", {
     "seoDescription": str,
     "url": str,
     "search": BlogPostsShowResultSearch,
+    "version": str,
 })
 
 BlogPostsUpdateResultSearchChecksItem = TypedDict("BlogPostsUpdateResultSearchChecksItem", {
@@ -4023,6 +4068,7 @@ BlogPostsUpdateResult = TypedDict("BlogPostsUpdateResult", {
     "seoDescription": str,
     "url": str,
     "search": BlogPostsUpdateResultSearch,
+    "version": str,
 })
 
 BlogPostsDeleteResult = TypedDict("BlogPostsDeleteResult", {
@@ -4058,6 +4104,7 @@ SeoShowResult = TypedDict("SeoShowResult", {
     "aiCrawlers": bool,
     "indexNow": bool,
     "analytics": SeoShowResultAnalytics,
+    "version": str,
 })
 
 SeoUpdateResultAnalytics = TypedDict("SeoUpdateResultAnalytics", {
@@ -4071,6 +4118,7 @@ SeoUpdateResult = TypedDict("SeoUpdateResult", {
     "aiCrawlers": bool,
     "indexNow": bool,
     "analytics": SeoUpdateResultAnalytics,
+    "version": str,
 })
 
 RedirectsListResultItem = TypedDict("RedirectsListResultItem", {
@@ -4080,6 +4128,7 @@ RedirectsListResultItem = TypedDict("RedirectsListResultItem", {
     "hits": float,
     "createdAt": str,
     "live": bool,
+    "version": str,
 })
 
 RedirectsCreateResultItem = TypedDict("RedirectsCreateResultItem", {
@@ -4089,6 +4138,7 @@ RedirectsCreateResultItem = TypedDict("RedirectsCreateResultItem", {
     "hits": float,
     "createdAt": str,
     "live": bool,
+    "version": str,
 })
 
 RedirectsUpdateResultItem = TypedDict("RedirectsUpdateResultItem", {
@@ -4098,6 +4148,7 @@ RedirectsUpdateResultItem = TypedDict("RedirectsUpdateResultItem", {
     "hits": float,
     "createdAt": str,
     "live": bool,
+    "version": str,
 })
 
 SitemapShowResultKindsItemEntriesItem = TypedDict("SitemapShowResultKindsItemEntriesItem", {
@@ -4108,6 +4159,7 @@ SitemapShowResultKindsItemEntriesItem = TypedDict("SitemapShowResultKindsItemEnt
     "on": bool,
     "priority": str,
     "changefreq": str,
+    "version": str,
 })
 
 SitemapShowResultKindsItem = TypedDict("SitemapShowResultKindsItem", {
@@ -4115,6 +4167,7 @@ SitemapShowResultKindsItem = TypedDict("SitemapShowResultKindsItem", {
     "listed": bool,
     "priority": str,
     "changefreq": str,
+    "version": str,
     "entries": List[SitemapShowResultKindsItemEntriesItem],
 })
 
@@ -4136,6 +4189,7 @@ SitemapUpdateKindResultKindsItemEntriesItem = TypedDict("SitemapUpdateKindResult
     "on": bool,
     "priority": str,
     "changefreq": str,
+    "version": str,
 })
 
 SitemapUpdateKindResultKindsItem = TypedDict("SitemapUpdateKindResultKindsItem", {
@@ -4143,6 +4197,7 @@ SitemapUpdateKindResultKindsItem = TypedDict("SitemapUpdateKindResultKindsItem",
     "listed": bool,
     "priority": str,
     "changefreq": str,
+    "version": str,
     "entries": List[SitemapUpdateKindResultKindsItemEntriesItem],
 })
 
@@ -4168,6 +4223,7 @@ CartRecoveryShowResult = TypedDict("CartRecoveryShowResult", {
     "secondMinutes": float,
     "secondSubject": str,
     "secondPercent": float,
+    "version": str,
 })
 
 CartRecoveryUpdateResult = TypedDict("CartRecoveryUpdateResult", {
@@ -4182,6 +4238,7 @@ CartRecoveryUpdateResult = TypedDict("CartRecoveryUpdateResult", {
     "secondMinutes": float,
     "secondSubject": str,
     "secondPercent": float,
+    "version": str,
 })
 
 CartRecoveryCartsItem = TypedDict("CartRecoveryCartsItem", {
@@ -4228,6 +4285,7 @@ WinBackShowResult = TypedDict("WinBackShowResult", {
     "secondSubject": str,
     "secondPercent": float,
     "audience": str,
+    "version": str,
 })
 
 WinBackUpdateResult = TypedDict("WinBackUpdateResult", {
@@ -4240,6 +4298,7 @@ WinBackUpdateResult = TypedDict("WinBackUpdateResult", {
     "secondSubject": str,
     "secondPercent": float,
     "audience": str,
+    "version": str,
 })
 
 WinBackBuyersItem = TypedDict("WinBackBuyersItem", {
@@ -4795,6 +4854,7 @@ CustomerTagsListResultItem = TypedDict("CustomerTagsListResultItem", {
     "automatic": bool,
     "customers": float,
     "coupons": float,
+    "version": str,
 })
 
 CustomerTagsCreateResult = TypedDict("CustomerTagsCreateResult", {
@@ -4802,6 +4862,7 @@ CustomerTagsCreateResult = TypedDict("CustomerTagsCreateResult", {
     "name": str,
     "tone": str,
     "automatic": bool,
+    "version": str,
 })
 
 CustomerTagsAutomaticResultItem = TypedDict("CustomerTagsAutomaticResultItem", {
@@ -4811,6 +4872,7 @@ CustomerTagsAutomaticResultItem = TypedDict("CustomerTagsAutomaticResultItem", {
     "automatic": bool,
     "customers": float,
     "coupons": float,
+    "version": str,
 })
 
 CustomerTagsUpdateResult = TypedDict("CustomerTagsUpdateResult", {
@@ -4818,6 +4880,7 @@ CustomerTagsUpdateResult = TypedDict("CustomerTagsUpdateResult", {
     "name": str,
     "tone": str,
     "automatic": bool,
+    "version": str,
 })
 
 AffiliatesListResultItem = TypedDict("AffiliatesListResultItem", {
@@ -4839,6 +4902,7 @@ AffiliatesListResultItem = TypedDict("AffiliatesListResultItem", {
     "paidAsCredit": float,
     "joinedThemselves": bool,
     "dateCreated": str,
+    "version": str,
 })
 
 AffiliatesCreateResult = TypedDict("AffiliatesCreateResult", {
@@ -4860,6 +4924,7 @@ AffiliatesCreateResult = TypedDict("AffiliatesCreateResult", {
     "paidAsCredit": float,
     "joinedThemselves": bool,
     "dateCreated": str,
+    "version": str,
 })
 
 AffiliatesUpdateResult = TypedDict("AffiliatesUpdateResult", {
@@ -4881,6 +4946,7 @@ AffiliatesUpdateResult = TypedDict("AffiliatesUpdateResult", {
     "paidAsCredit": float,
     "joinedThemselves": bool,
     "dateCreated": str,
+    "version": str,
 })
 
 AffiliatesDeleteResultItem = TypedDict("AffiliatesDeleteResultItem", {
@@ -4902,6 +4968,7 @@ AffiliatesDeleteResultItem = TypedDict("AffiliatesDeleteResultItem", {
     "paidAsCredit": float,
     "joinedThemselves": bool,
     "dateCreated": str,
+    "version": str,
 })
 
 AffiliatesSetBalanceResult = TypedDict("AffiliatesSetBalanceResult", {
@@ -4923,6 +4990,7 @@ AffiliatesSetBalanceResult = TypedDict("AffiliatesSetBalanceResult", {
     "paidAsCredit": float,
     "joinedThemselves": bool,
     "dateCreated": str,
+    "version": str,
 })
 
 AffiliatesHistoryResultChangesItem = TypedDict("AffiliatesHistoryResultChangesItem", {
@@ -5271,6 +5339,7 @@ TeamGetResultTeamsItem = TypedDict("TeamGetResultTeamsItem", {
     "waiting": float,
     "createdAt": str,
     "updatedAt": str,
+    "version": str,
 })
 
 TeamGetResultInvitesItem = TypedDict("TeamGetResultInvitesItem", {
@@ -5423,6 +5492,7 @@ TeamsCreateResult = TypedDict("TeamsCreateResult", {
     "waiting": float,
     "createdAt": str,
     "updatedAt": str,
+    "version": str,
 })
 
 TeamsUpdateResult = TypedDict("TeamsUpdateResult", {
@@ -5435,6 +5505,7 @@ TeamsUpdateResult = TypedDict("TeamsUpdateResult", {
     "waiting": float,
     "createdAt": str,
     "updatedAt": str,
+    "version": str,
 })
 
 TeamsDeleteResult = TypedDict("TeamsDeleteResult", {
@@ -5481,6 +5552,7 @@ ResellersOverviewResultTopItem = TypedDict("ResellersOverviewResultTopItem", {
     "lastOrderAt": str,
     "joinedAt": str,
     "removedAt": Any,
+    "version": str,
 })
 
 ResellersOverviewResult = TypedDict("ResellersOverviewResult", {
@@ -5526,6 +5598,7 @@ ResellersListResultItem = TypedDict("ResellersListResultItem", {
     "lastOrderAt": Any,
     "joinedAt": str,
     "removedAt": Any,
+    "version": str,
 })
 
 ResellersGetResultTeamItemAccess = TypedDict("ResellersGetResultTeamItemAccess", {
@@ -5545,6 +5618,7 @@ ResellersGetResultTeamItem = TypedDict("ResellersGetResultTeamItem", {
     "verified": bool,
     "lastSeenAt": Any,
     "joinedAt": str,
+    "version": str,
 })
 
 ResellersGetResultCatalogueItemPermissionsItem = TypedDict("ResellersGetResultCatalogueItemPermissionsItem", {
@@ -5577,6 +5651,7 @@ ResellersGetResult = TypedDict("ResellersGetResult", {
     "lastOrderAt": str,
     "joinedAt": str,
     "removedAt": Any,
+    "version": str,
     "inviteName": Any,
     "team": List[ResellersGetResultTeamItem],
     "catalogue": List[ResellersGetResultCatalogueItem],
@@ -5599,6 +5674,7 @@ ResellersUpdateResultTeamItem = TypedDict("ResellersUpdateResultTeamItem", {
     "verified": bool,
     "lastSeenAt": Any,
     "joinedAt": str,
+    "version": str,
 })
 
 ResellersUpdateResultCatalogueItemPermissionsItem = TypedDict("ResellersUpdateResultCatalogueItemPermissionsItem", {
@@ -5631,6 +5707,7 @@ ResellersUpdateResult = TypedDict("ResellersUpdateResult", {
     "lastOrderAt": Any,
     "joinedAt": str,
     "removedAt": Any,
+    "version": str,
     "inviteName": Any,
     "team": List[ResellersUpdateResultTeamItem],
     "catalogue": List[ResellersUpdateResultCatalogueItem],
@@ -5657,6 +5734,7 @@ ResellersSetBalanceResultTeamItem = TypedDict("ResellersSetBalanceResultTeamItem
     "verified": bool,
     "lastSeenAt": Any,
     "joinedAt": str,
+    "version": str,
 })
 
 ResellersSetBalanceResultCatalogueItemPermissionsItem = TypedDict("ResellersSetBalanceResultCatalogueItemPermissionsItem", {
@@ -5689,6 +5767,7 @@ ResellersSetBalanceResult = TypedDict("ResellersSetBalanceResult", {
     "lastOrderAt": Any,
     "joinedAt": str,
     "removedAt": Any,
+    "version": str,
     "inviteName": Any,
     "team": List[ResellersSetBalanceResultTeamItem],
     "catalogue": List[ResellersSetBalanceResultCatalogueItem],
@@ -5711,6 +5790,7 @@ ResellersUpdateMemberResultTeamItem = TypedDict("ResellersUpdateMemberResultTeam
     "verified": bool,
     "lastSeenAt": Any,
     "joinedAt": str,
+    "version": str,
 })
 
 ResellersUpdateMemberResultCatalogueItemPermissionsItem = TypedDict("ResellersUpdateMemberResultCatalogueItemPermissionsItem", {
@@ -5743,6 +5823,7 @@ ResellersUpdateMemberResult = TypedDict("ResellersUpdateMemberResult", {
     "lastOrderAt": Any,
     "joinedAt": str,
     "removedAt": Any,
+    "version": str,
     "inviteName": Any,
     "team": List[ResellersUpdateMemberResultTeamItem],
     "catalogue": List[ResellersUpdateMemberResultCatalogueItem],
@@ -5765,6 +5846,7 @@ ResellersRemoveMemberResultTeamItem = TypedDict("ResellersRemoveMemberResultTeam
     "verified": bool,
     "lastSeenAt": Any,
     "joinedAt": str,
+    "version": str,
 })
 
 ResellersRemoveMemberResultCatalogueItemPermissionsItem = TypedDict("ResellersRemoveMemberResultCatalogueItemPermissionsItem", {
@@ -5797,6 +5879,7 @@ ResellersRemoveMemberResult = TypedDict("ResellersRemoveMemberResult", {
     "lastOrderAt": str,
     "joinedAt": str,
     "removedAt": Any,
+    "version": str,
     "inviteName": Any,
     "team": List[ResellersRemoveMemberResultTeamItem],
     "catalogue": List[ResellersRemoveMemberResultCatalogueItem],
@@ -5843,14 +5926,14 @@ ResellerProductsPickableResultItem = TypedDict("ResellerProductsPickableResultIt
     "price": float,
 })
 
-ResellerProductsBadgesResult237ccb40C9024c6b88886f651d84fc59Item = TypedDict("ResellerProductsBadgesResult237ccb40C9024c6b88886f651d84fc59Item", {
+ResellerProductsBadgesResult5553d50f7e0b405b9a29B30b84627a91Item = TypedDict("ResellerProductsBadgesResult5553d50f7e0b405b9a29B30b84627a91Item", {
     "label": str,
     "color": str,
     "kind": str,
 })
 
 ResellerProductsBadgesResult = TypedDict("ResellerProductsBadgesResult", {
-    "237ccb40-c902-4c6b-8888-6f651d84fc59": List[ResellerProductsBadgesResult237ccb40C9024c6b88886f651d84fc59Item],
+    "5553d50f-7e0b-405b-9a29-b30b84627a91": List[ResellerProductsBadgesResult5553d50f7e0b405b9a29B30b84627a91Item],
 })
 
 ResellerTiersListResultItem = TypedDict("ResellerTiersListResultItem", {
@@ -5859,6 +5942,7 @@ ResellerTiersListResultItem = TypedDict("ResellerTiersListResultItem", {
     "discount": float,
     "resellers": float,
     "spent30": float,
+    "version": str,
 })
 
 ResellerTiersCreateResult = TypedDict("ResellerTiersCreateResult", {
@@ -5867,6 +5951,7 @@ ResellerTiersCreateResult = TypedDict("ResellerTiersCreateResult", {
     "discount": float,
     "resellers": float,
     "spent30": float,
+    "version": str,
 })
 
 ResellerTiersUpdateResult = TypedDict("ResellerTiersUpdateResult", {
@@ -5875,6 +5960,7 @@ ResellerTiersUpdateResult = TypedDict("ResellerTiersUpdateResult", {
     "discount": float,
     "resellers": float,
     "spent30": float,
+    "version": str,
 })
 
 ResellerInvitesListResultItem = TypedDict("ResellerInvitesListResultItem", {
@@ -5888,6 +5974,7 @@ ResellerInvitesListResultItem = TypedDict("ResellerInvitesListResultItem", {
     "endsAt": str,
     "enabled": bool,
     "live": bool,
+    "version": str,
 })
 
 ResellerInvitesCreateResult = TypedDict("ResellerInvitesCreateResult", {
@@ -5901,6 +5988,7 @@ ResellerInvitesCreateResult = TypedDict("ResellerInvitesCreateResult", {
     "endsAt": Any,
     "enabled": bool,
     "live": bool,
+    "version": str,
 })
 
 ResellerInvitesUpdateResult = TypedDict("ResellerInvitesUpdateResult", {
@@ -5914,6 +6002,7 @@ ResellerInvitesUpdateResult = TypedDict("ResellerInvitesUpdateResult", {
     "endsAt": str,
     "enabled": bool,
     "live": bool,
+    "version": str,
 })
 
 ResellerAnnouncementsListResultItem = TypedDict("ResellerAnnouncementsListResultItem", {
@@ -5924,6 +6013,7 @@ ResellerAnnouncementsListResultItem = TypedDict("ResellerAnnouncementsListResult
     "createdAt": str,
     "updatedAt": str,
     "closes": float,
+    "version": str,
 })
 
 ResellerAnnouncementsCreateResult = TypedDict("ResellerAnnouncementsCreateResult", {
@@ -5934,6 +6024,7 @@ ResellerAnnouncementsCreateResult = TypedDict("ResellerAnnouncementsCreateResult
     "createdAt": str,
     "updatedAt": str,
     "closes": float,
+    "version": str,
 })
 
 ResellerAnnouncementsUpdateResult = TypedDict("ResellerAnnouncementsUpdateResult", {
@@ -5944,6 +6035,7 @@ ResellerAnnouncementsUpdateResult = TypedDict("ResellerAnnouncementsUpdateResult
     "createdAt": str,
     "updatedAt": str,
     "closes": float,
+    "version": str,
 })
 
 ResellerOrdersListItem = TypedDict("ResellerOrdersListItem", {
@@ -6715,6 +6807,7 @@ DisputesSettingsResult = TypedDict("DisputesSettingsResult", {
     "discordRoles": str,
     "discordRolesBack": bool,
     "currency": str,
+    "version": str,
 })
 
 DisputesUpdateSettingsResult = TypedDict("DisputesUpdateSettingsResult", {
@@ -6731,6 +6824,7 @@ DisputesUpdateSettingsResult = TypedDict("DisputesUpdateSettingsResult", {
     "discordRoles": str,
     "discordRolesBack": bool,
     "currency": str,
+    "version": str,
 })
 
 FinanceAccessResult = TypedDict("FinanceAccessResult", {
@@ -6939,6 +7033,7 @@ FinancePaymentCostsResult = TypedDict("FinancePaymentCostsResult", {
     "currency": str,
     "rates": List[FinancePaymentCostsResultRatesItem],
     "limits": FinancePaymentCostsResultLimits,
+    "version": str,
 })
 
 FinanceSetPaymentCostsResultItem = TypedDict("FinanceSetPaymentCostsResultItem", {
@@ -7360,6 +7455,8 @@ TaxShowResult = TypedDict("TaxShowResult", {
     "regions": TaxShowResultRegions,
     "limit": float,
     "maxRate": float,
+    "version": str,
+    "ratesVersion": str,
 })
 
 TaxUpdateResultStandardAT = TypedDict("TaxUpdateResultStandardAT", {
@@ -7764,6 +7861,8 @@ TaxUpdateResult = TypedDict("TaxUpdateResult", {
     "regions": TaxUpdateResultRegions,
     "limit": float,
     "maxRate": float,
+    "version": str,
+    "ratesVersion": str,
 })
 
 TaxSetRatesResultRatesItem = TypedDict("TaxSetRatesResultRatesItem", {
@@ -8178,6 +8277,8 @@ TaxSetRatesResult = TypedDict("TaxSetRatesResult", {
     "regions": TaxSetRatesResultRegions,
     "limit": float,
     "maxRate": float,
+    "version": str,
+    "ratesVersion": str,
 })
 
 TaxDeleteRateResultRatesItem = TypedDict("TaxDeleteRateResultRatesItem", {
@@ -8592,6 +8693,8 @@ TaxDeleteRateResult = TypedDict("TaxDeleteRateResult", {
     "regions": TaxDeleteRateResultRegions,
     "limit": float,
     "maxRate": float,
+    "version": str,
+    "ratesVersion": str,
 })
 
 ExpensesListResultItemCategory = TypedDict("ExpensesListResultItemCategory", {
@@ -9031,6 +9134,7 @@ CustomerOrdersShowResultLinesItem = TypedDict("CustomerOrdersShowResultLinesItem
     "imageUrl": Any,
     "productPath": str,
     "delivery": CustomerOrdersShowResultLinesItemDelivery,
+    "addons": Union[List[Any], Dict[str, Any]],
 })
 
 CustomerOrdersShowResult = TypedDict("CustomerOrdersShowResult", {
