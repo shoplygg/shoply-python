@@ -2334,6 +2334,7 @@ ProductsListItemVariantsItem = TypedDict("ProductsListItemVariantsItem", {
     "maxQuantity": float,
     "stock": float,
     "keyCount": float,
+    "fileCount": float,
     "deliveryMethods": List[str],
     "deliveryType": str,
     "deliveryInstructions": str,
@@ -2409,6 +2410,7 @@ ProductsCreateResultVariantsItem = TypedDict("ProductsCreateResultVariantsItem",
     "maxQuantity": float,
     "stock": float,
     "keyCount": float,
+    "fileCount": float,
     "deliveryMethods": List[str],
     "deliveryType": str,
     "deliveryInstructions": str,
@@ -2484,6 +2486,7 @@ ProductsShowResultVariantsItem = TypedDict("ProductsShowResultVariantsItem", {
     "maxQuantity": float,
     "stock": float,
     "keyCount": float,
+    "fileCount": float,
     "deliveryMethods": List[str],
     "deliveryType": str,
     "deliveryInstructions": str,
@@ -2559,6 +2562,7 @@ ProductsUpdateResultVariantsItem = TypedDict("ProductsUpdateResultVariantsItem",
     "maxQuantity": float,
     "stock": float,
     "keyCount": float,
+    "fileCount": float,
     "deliveryMethods": List[str],
     "deliveryType": str,
     "deliveryInstructions": str,
@@ -2634,6 +2638,7 @@ StockAddKeysResult = TypedDict("StockAddKeysResult", {
     "added": float,
     "skipped": float,
     "duplicates": float,
+    "leftOut": float,
     "available": float,
 })
 
@@ -3349,6 +3354,7 @@ OrdersShowResultRefund = TypedDict("OrdersShowResultRefund", {
     "source": OrdersShowResultRefundSource,
     "balance": OrdersShowResultRefundBalance,
     "record": OrdersShowResultRefundRecord,
+    "subscription": Any,
 })
 
 OrdersShowResultCustomer = TypedDict("OrdersShowResultCustomer", {
@@ -3460,6 +3466,7 @@ OrdersRefundResult = TypedDict("OrdersRefundResult", {
     "id": str,
     "status": str,
     "destination": str,
+    "subscriptionCancelled": bool,
 })
 
 OrdersRedeliverResultItemsItem = TypedDict("OrdersRedeliverResultItemsItem", {
@@ -5904,6 +5911,7 @@ ResellerProductsListResultItem = TypedDict("ResellerProductsListResultItem", {
     "dailyCap": float,
     "maxDiscount": Any,
     "enabled": bool,
+    "held": bool,
 })
 
 ResellerProductsSaveResultItem = TypedDict("ResellerProductsSaveResultItem", {
@@ -5919,6 +5927,7 @@ ResellerProductsSaveResultItem = TypedDict("ResellerProductsSaveResultItem", {
     "dailyCap": float,
     "maxDiscount": Any,
     "enabled": bool,
+    "held": bool,
 })
 
 ResellerProductsPickableResultItem = TypedDict("ResellerProductsPickableResultItem", {
@@ -5932,14 +5941,14 @@ ResellerProductsPickableResultItem = TypedDict("ResellerProductsPickableResultIt
     "price": float,
 })
 
-ResellerProductsBadgesResult7502259b6fc741f39052C8675b99433aItem = TypedDict("ResellerProductsBadgesResult7502259b6fc741f39052C8675b99433aItem", {
+ResellerProductsBadgesResult212a0544Bad644f0B3f1Bc71394a59e2Item = TypedDict("ResellerProductsBadgesResult212a0544Bad644f0B3f1Bc71394a59e2Item", {
     "label": str,
     "color": str,
     "kind": str,
 })
 
 ResellerProductsBadgesResult = TypedDict("ResellerProductsBadgesResult", {
-    "7502259b-6fc7-41f3-9052-c8675b99433a": List[ResellerProductsBadgesResult7502259b6fc741f39052C8675b99433aItem],
+    "212a0544-bad6-44f0-b3f1-bc71394a59e2": List[ResellerProductsBadgesResult212a0544Bad644f0B3f1Bc71394a59e2Item],
 })
 
 ResellerTiersListResultItem = TypedDict("ResellerTiersListResultItem", {

@@ -455,7 +455,7 @@ from .types import (
     ResellerOrdersGetResultReseller,
     ResellerOrdersListItem,
     ResellerProductsBadgesResult,
-    ResellerProductsBadgesResult7502259b6fc741f39052C8675b99433aItem,
+    ResellerProductsBadgesResult212a0544Bad644f0B3f1Bc71394a59e2Item,
     ResellerProductsListResultItem,
     ResellerProductsPickableResultItem,
     ResellerProductsSaveResultItem,
@@ -2609,7 +2609,7 @@ class Products:
     ) -> ProductsUpdateResult:
         """**Update a product**
 
-        Saves the product whole, as its editor does: send every field as it should be. `variants` is the complete list. An entry with an `id` changes that variant, an entry without one is added, and a variant left out is removed with its unsold stock. A variant buyers have received license keys from cannot be removed.
+        Saves the product whole, as its editor does: send every field as it should be. `variants` is the complete list. An entry with an `id` changes that variant, an entry without one is added, and a variant left out is removed with its unsold stock, which needs the `stock.write` permission as well where it holds unsold keys or files. Buyers keep what they paid for: the keys delivered to them stay with their orders, and the files they bought stay on their orders to download.
 
         Read the product first and send it back changed. The fields that say "stay as they are" are the only ones that may be left out.
 
@@ -2651,7 +2651,7 @@ class Products:
     ) -> Any:
         """**Delete a product**
 
-        Removes the product with its variants, pictures and unsold stock. Refused for a product buyers have received license keys from, since those keys are part of their orders: set its visibility to `private` instead.
+        Removes the product with its variants, pictures and unsold stock, which needs the `stock.write` permission as well where it holds unsold keys or files. Buyers keep what they paid for: the keys delivered to them stay with their orders, and the files they bought stay on their orders to download.
 
         Needs the `products.write` permission (Change Products).
 
@@ -2749,7 +2749,7 @@ class Products:
     ) -> Any:
         """**Delete many products**
 
-        Deletes each product as deleting one does. A product buyers have received license keys from is kept, and the answer names the ones that stayed.
+        Deletes each product as deleting one does, and none of them without the `stock.write` permission where any holds unsold keys or files. `kept` in the answer is always empty: nothing is kept since November 24, 2026.
 
         Needs the `products.write` permission (Change Products).
 
@@ -2876,6 +2876,7 @@ class Stock:
         variant_id: str,
         *,
         keys: List[str],
+        duplicates: Optional[Literal["ask", "skip", "keep"]] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -2885,16 +2886,17 @@ class Stock:
 
         Adds license keys to a variant's stock, up to 5,000 in one request. A variant and a store each hold as many unsold keys as the store's plan does.
 
-        A key sent twice is stocked twice, which is how one key is sold to several buyers. `duplicates` in the answer counts the ones that matched stock the variant already had, so sending the same batch a second time by mistake shows.
+        A key that would go to more than one buyer is a duplicate: one the variant delivered before, one it has in stock, or one sent twice in the same request. A request with any is refused with `duplicate_keys`, which counts each kind (`sold`, `inStock`, `repeated`), and nothing is added, unless `duplicates` says what to do. `skip` adds the rest and leaves them out; `keep` stocks every one, which is how one key is sold to several buyers. In the answer, `duplicates` counts the ones stocked and `leftOut` the ones left out.
 
         Needs the `stock.write` permission (Change Stock).
 
         Args:
             keys: The keys, one an entry, each up to 500 characters with no line break in it. Required.
+            duplicates: What to do with a key that would go to more than one buyer. `ask` refuses the request with `duplicate_keys`. Left out, it is "ask".
 
         Docs: https://docs.shoply.gg/api-reference/stock/add-license-keys
         """
-        return cast("StockAddKeysResult", self._caller._call("stock.addKeys", [variant_id], {"keys": keys}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("StockAddKeysResult", self._caller._call("stock.addKeys", [variant_id], {"keys": keys, "duplicates": duplicates}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def replaceKeys(
         self,
@@ -2902,6 +2904,8 @@ class Stock:
         *,
         keys: List[str],
         expectedAvailable: Optional[int] = None,
+        expectedStock: Optional[str] = None,
+        duplicates: Optional[Literal["ask", "skip", "keep"]] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -2911,15 +2915,19 @@ class Stock:
 
         Makes the variant's unsold stock exactly the keys sent. Keys already delivered are not touched: they are order history, not stock. Up to 5,000 keys, and only for a variant with no more than that in stock: one with more is refused with `validation_error`, and its keys are added and deleted instead.
 
+        A key the variant delivered before, or one sent twice, would go to more than one buyer, and is refused with `duplicate_keys` as Add license keys refuses it, unless `duplicates` says `skip` or `keep`. A key that is in the stock being replaced is not one.
+
         Needs the `stock.write` permission (Change Stock).
 
         Args:
             keys: The keys the variant is to have in stock, one an entry. An empty list empties the stock. Required.
             expectedAvailable: How many unsold keys you last read. Sent, the change is refused with `stale_write` if that number has changed, so a key sold in the meantime is not put back.
+            expectedStock: The `stock` a list of the variant's keys answered beside its first page, read with no search (in `meta`). Sent, the change is refused with `stale_write` if any of those keys was sold or removed, or another added, since: a sale and an addition together leave the count the same.
+            duplicates: What to do with a key that would go to more than one buyer. `ask` refuses the request with `duplicate_keys`. Left out, it is "ask".
 
         Docs: https://docs.shoply.gg/api-reference/stock/replace-a-variants-license-keys
         """
-        return cast("Any", self._caller._call("stock.replaceKeys", [variant_id], {"keys": keys, "expectedAvailable": expectedAvailable}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("Any", self._caller._call("stock.replaceKeys", [variant_id], {"keys": keys, "expectedAvailable": expectedAvailable, "expectedStock": expectedStock, "duplicates": duplicates}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def deleteKeys(
         self,
@@ -3022,13 +3030,41 @@ class Stock:
     ) -> Any:
         """**Finish a file upload**
 
-        The last step of adding a file: says the file has been sent. Shoply checks it arrived and is the size that was said, and from then on buyers of the variant receive it.
+        The last step of adding a file: says the file has been sent. Shoply checks it arrived and is the size that was said, and from then on buyers of the variant receive it. For a new version started with "Start replacing a file", the answer is the file it replaced, under that file's own `id`, now with the new version's name and size.
 
         Needs the `stock.write` permission (Change Stock).
 
         Docs: https://docs.shoply.gg/api-reference/stock/finish-a-file-upload
         """
         return cast("Any", self._caller._call("stock.finishFile", [variant_id, file_id], {}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+
+    def replaceFile(
+        self,
+        variant_id: str,
+        file_id: str,
+        *,
+        name: str,
+        size: int,
+        idempotency_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+        max_retries: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> Any:
+        """**Start replacing a file**
+
+        The first of three steps to put a new version of a file in its place, the same three as adding one: this one says what the new version is and answers a signed address to send it to, then send it there with a `PUT`, then call "Finish a file upload" with the `id` this step answered.
+
+        Once it is finished, everybody who bought the file downloads the new version, buyers of past orders too. The file keeps its own `id`, and every download link already sent goes on working. Until then they download the old one, so an upload that fails or is never finished changes nothing. It takes the old file's place rather than one more, so it counts against the variant's and the store's files as the old one did, and against the store's storage by the difference in size.
+
+        Needs the `stock.write` permission (Change Stock).
+
+        Args:
+            name: The new version's name, with its ending. Buyers download it under this name from then on. Required.
+            size: Its size in bytes. Required.
+
+        Docs: https://docs.shoply.gg/api-reference/stock/start-replacing-a-file
+        """
+        return cast("Any", self._caller._call("stock.replaceFile", [variant_id, file_id], {"name": name, "size": size}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def deleteFile(
         self,
@@ -3042,7 +3078,7 @@ class Stock:
     ) -> Any:
         """**Delete a file**
 
-        Removes a file from the variant. Buyers who already have a link to it can no longer download it.
+        Takes a file off the variant: buyers from now on are not sent it. Buyers who already paid for it keep downloading it, and it still counts against the store's file storage while they do. To give everybody a new version instead, use "Start replacing a file".
 
         Needs the `stock.write` permission (Change Stock).
 
@@ -3410,6 +3446,7 @@ class Upsells:
         firstOrders: Optional[bool] = None,
         hideOwned: Optional[bool] = None,
         enabled: Optional[bool] = None,
+        expectedUpdatedAt: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -3444,10 +3481,11 @@ class Upsells:
             firstOrders: A checkout offer only, since the checkout is where the buyer is known: offered only to a buyer who has never paid at the store. Left out, it is false.
             hideOwned: A checkout offer only: not offered to a buyer who has bought it before. Left out, it is false.
             enabled: Whether it is offered. Left out, it is true.
+            expectedUpdatedAt: The `updatedAt` you last read. Sent, the change is refused with `stale_write` if the record has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/upsells/update-an-upsell
         """
-        return cast("UpsellsUpdateResult", self._caller._call("upsells.update", [upsell_id], {"kind": kind, "tz": tz, "name": name, "sells": sells, "productId": productId, "variantId": variantId, "price": price, "cost": cost, "message": message, "offered": offered, "charged": charged, "trigger": trigger, "minSubtotal": minSubtotal, "discountType": discountType, "discountValue": discountValue, "targets": targets, "words": words, "startsAt": startsAt, "endsAt": endsAt, "firstOrders": firstOrders, "hideOwned": hideOwned, "enabled": enabled}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("UpsellsUpdateResult", self._caller._call("upsells.update", [upsell_id], {"kind": kind, "tz": tz, "name": name, "sells": sells, "productId": productId, "variantId": variantId, "price": price, "cost": cost, "message": message, "offered": offered, "charged": charged, "trigger": trigger, "minSubtotal": minSubtotal, "discountType": discountType, "discountValue": discountValue, "targets": targets, "words": words, "startsAt": startsAt, "endsAt": endsAt, "firstOrders": firstOrders, "hideOwned": hideOwned, "enabled": enabled, "expectedUpdatedAt": expectedUpdatedAt}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -3559,6 +3597,7 @@ class Subscriptions:
         autoOn: Optional[bool] = None,
         cardChangeOn: Optional[bool] = None,
         chargeTries: Optional[int] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -3584,10 +3623,11 @@ class Subscriptions:
             autoOn: Whether a card paid with through Stripe, Authorize.net, Tagada, Mollie, MONEI, Adyen or Square, or through NMI where its Keep Cards for Subscriptions is on, is kept and each renewal charged to it by itself. Off, every renewal is paid by an emailed link.
             cardChangeOn: Whether a renewal a buyer pays by its link with another card keeps that card, and a buyer whose card is kept through Stripe may give another on Stripe's own page.
             chargeTries: How many times a declined card is tried, one a day while the grace days last, from 1 to 5.
+            expectedVersion: The settings' `version` you last read. Sent, the change is refused with `stale_write` if any of them has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/subscriptions/change-subscription-settings
         """
-        return cast("SubscriptionsUpdateSettingsResult", self._caller._call("subscriptions.updateSettings", [], {"cancelOn": cancelOn, "cancelMode": cancelMode, "undoOn": undoOn, "pauseOn": pauseOn, "pauseDays": pauseDays, "pausesAYear": pausesAYear, "remindersOn": remindersOn, "reminderDays": reminderDays, "graceDays": graceDays, "revokeOn": revokeOn, "autoOn": autoOn, "cardChangeOn": cardChangeOn, "chargeTries": chargeTries}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("SubscriptionsUpdateSettingsResult", self._caller._call("subscriptions.updateSettings", [], {"cancelOn": cancelOn, "cancelMode": cancelMode, "undoOn": undoOn, "pauseOn": pauseOn, "pauseDays": pauseDays, "pausesAYear": pausesAYear, "remindersOn": remindersOn, "reminderDays": reminderDays, "graceDays": graceDays, "revokeOn": revokeOn, "autoOn": autoOn, "cardChangeOn": cardChangeOn, "chargeTries": chargeTries, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def plans(
         self,
@@ -3611,6 +3651,7 @@ class Subscriptions:
         self,
         *,
         items: List[Dict[str, Any]],
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -3624,10 +3665,11 @@ class Subscriptions:
 
         Args:
             items: The options and how often each renews. Required.
+            expectedVersion: For a change to one option that is a plan already: that plan's `version` you last read. Sent, the change is refused with `stale_write` if the plan has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/subscriptions/sell-options-as-subscriptions
         """
-        return cast("List[SubscriptionsSavePlansResultItem]", self._caller._call("subscriptions.savePlans", [], {"items": items}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("List[SubscriptionsSavePlansResultItem]", self._caller._call("subscriptions.savePlans", [], {"items": items, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def removePlan(
         self,
@@ -3972,6 +4014,7 @@ class Orders:
         destination: Literal["source", "balance", "record"],
         reason: Literal["requested", "duplicate", "fraudulent", "other"],
         amount: Optional[float] = None,
+        cancelSubscription: Optional[bool] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -3983,16 +4026,19 @@ class Orders:
 
         Send an `Idempotency-Key` with this request. The order is marked refunded only once the payment provider has said the money is on its way, or the buyer has been credited.
 
+        A refund does not end a subscription the order started or renews: it carries on and renews as before, unless `cancelSubscription` says to cancel it too. Which subscription that is, while it is running, is `refund.subscription` on the order.
+
         Needs the `orders.refund` permission (Refund Orders).
 
         Args:
             destination: `source`: back through the payment provider, to what paid. `balance`: credit on the buyer's balance at the store. `record`: only marked as refunded, because you returned the money yourself. Required.
             reason: Why. Required.
             amount: For `balance` only: how much to credit, from 0.01 up to what was paid, with at most 2 decimals. Left out, all of it.
+            cancelSubscription: Also cancel the running subscription this order started or renews, now, once the refund has gone through. Needs the `subscriptions.write` permission as well, asked before anything is refunded. `subscriptionCancelled` in the answer says whether one was. Left out, it is false.
 
         Docs: https://docs.shoply.gg/api-reference/orders/refund-an-order
         """
-        return cast("OrdersRefundResult", self._caller._call("orders.refund", [order_id], {"destination": destination, "reason": reason, "amount": amount}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("OrdersRefundResult", self._caller._call("orders.refund", [order_id], {"destination": destination, "reason": reason, "amount": amount, "cancelSubscription": cancelSubscription}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def redeliver(
         self,
@@ -4619,6 +4665,7 @@ class CouponCategories:
         *,
         name: str,
         description: Optional[str] = None,
+        expectedUpdatedAt: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -4633,10 +4680,11 @@ class CouponCategories:
         Args:
             name: Its name. Required.
             description: A note for whoever manages the store.
+            expectedUpdatedAt: The `updatedAt` you last read. Sent, the change is refused with `stale_write` if the record has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/coupon-categories/update-a-coupon-category
         """
-        return cast("CouponCategoriesUpdateResult", self._caller._call("couponCategories.update", [category_id], {"name": name, "description": description}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("CouponCategoriesUpdateResult", self._caller._call("couponCategories.update", [category_id], {"name": name, "description": description, "expectedUpdatedAt": expectedUpdatedAt}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -4714,6 +4762,7 @@ class CouponPopup:
         opens: Optional[Literal["delay", "leave"]] = None,
         delaySeconds: Optional[int] = None,
         frequency: Optional[Literal["page", "visit", "browser"]] = None,
+        expectedUpdatedAt: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -4734,10 +4783,11 @@ class CouponPopup:
             opens: After a wait, or when the visitor looks like leaving. Left out, it is "delay".
             delaySeconds: How long the wait is when `opens` is `delay`: 0 to 120 seconds. Left out, it is 5.
             frequency: How often one visitor sees it: on every page, once a visit, or once in that browser. Left out, it is "visit".
+            expectedUpdatedAt: The `updatedAt` you last read. Sent, the change is refused with `stale_write` if the record has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/coupon-pop-up/update-the-coupon-pop-up
         """
-        return cast("CouponPopupUpdateResult", self._caller._call("couponPopup.update", [], {"enabled": enabled, "couponId": couponId, "title": title, "message": message, "buttonText": buttonText, "opens": opens, "delaySeconds": delaySeconds, "frequency": frequency}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("CouponPopupUpdateResult", self._caller._call("couponPopup.update", [], {"enabled": enabled, "couponId": couponId, "title": title, "message": message, "buttonText": buttonText, "opens": opens, "delaySeconds": delaySeconds, "frequency": frequency, "expectedUpdatedAt": expectedUpdatedAt}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
 
 class Sales:
@@ -4842,6 +4892,7 @@ class Sales:
         exceptions: Optional[List[Dict[str, Any]]] = None,
         enabled: Optional[bool] = None,
         showBar: Optional[bool] = None,
+        expectedUpdatedAt: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -4866,10 +4917,11 @@ class Sales:
             exceptions: Up to 100 coupons or coupon categories that `couponRule` is turned around for.
             enabled: Whether the sale runs when its time comes. Left out, it is true.
             showBar: Whether the storefront shows the sale's countdown bar. Left out, it is true.
+            expectedUpdatedAt: The `updatedAt` you last read. Sent, the change is refused with `stale_write` if the record has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/sales/update-a-sale
         """
-        return cast("Any", self._caller._call("sales.update", [sale_id], {"name": name, "value": value, "startsAt": startsAt, "endsAt": endsAt, "tz": tz, "discountType": discountType, "appliesTo": appliesTo, "targets": targets, "couponRule": couponRule, "exceptions": exceptions, "enabled": enabled, "showBar": showBar}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("Any", self._caller._call("sales.update", [sale_id], {"name": name, "value": value, "startsAt": startsAt, "endsAt": endsAt, "tz": tz, "discountType": discountType, "appliesTo": appliesTo, "targets": targets, "couponRule": couponRule, "exceptions": exceptions, "enabled": enabled, "showBar": showBar, "expectedUpdatedAt": expectedUpdatedAt}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -7607,6 +7659,7 @@ class ResellerProducts:
         self,
         *,
         rows: List[Dict[str, Any]],
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -7620,10 +7673,11 @@ class ResellerProducts:
 
         Args:
             rows: One a product option: `variantId`; `price`, its Reseller Price, above 0 and up to 1,000,000; `minQty`, the fewest bought at once, 1 to 1,000 (1 when left out); `dailyCap`, the most one reseller may buy of it in a day, or null for no cap; `maxDiscount`, the most off it in percent, or null for no limit (left out, as it was); `enabled`, whether it is on sale (true when left out). Required.
+            expectedVersion: The `version` of the panel's products you last read. Sent, the change is refused with `stale_write` if a row has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/resellers/sell-products-on-the-panel
         """
-        return cast("List[ResellerProductsSaveResultItem]", self._caller._call("resellerProducts.save", [], {"rows": rows}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("List[ResellerProductsSaveResultItem]", self._caller._call("resellerProducts.save", [], {"rows": rows, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def pickable(
         self,
@@ -7739,6 +7793,7 @@ class ResellerTiers:
         *,
         name: str,
         discount: float,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -7753,10 +7808,11 @@ class ResellerTiers:
         Args:
             name: What the tier is called, up to 40 characters. Required.
             discount: What it takes off every Reseller Price, in percent: 0.01 to 99.99. Required.
+            expectedVersion: The tier's `version` you last read. Sent, the change is refused with `stale_write` if it has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/resellers/update-a-tier
         """
-        return cast("ResellerTiersUpdateResult", self._caller._call("resellerTiers.update", [tier_id], {"name": name, "discount": discount}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("ResellerTiersUpdateResult", self._caller._call("resellerTiers.update", [tier_id], {"name": name, "discount": discount, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
