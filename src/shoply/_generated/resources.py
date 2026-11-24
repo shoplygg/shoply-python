@@ -351,6 +351,7 @@ from .types import (
     FinanceAccountingResultPrevious,
     FinanceAccountingResultTax,
     FinanceAccountingResultTaxReport,
+    FinanceAccountingResultUnknownExpenses,
     FinancePaymentCostsResult,
     FinancePaymentCostsResultLimits,
     FinancePaymentCostsResultRatesItem,
@@ -363,6 +364,7 @@ from .types import (
     FinanceProfitResultPrevious,
     FinanceProfitResultProductsItem,
     FinanceProfitResultProductsItemVariantsItem,
+    FinanceProfitResultUnknownExpenses,
     FinanceSetCostResult,
     FinanceSetPaymentCostsResultItem,
     FraudEventsListItem,
@@ -453,7 +455,7 @@ from .types import (
     ResellerOrdersGetResultReseller,
     ResellerOrdersListItem,
     ResellerProductsBadgesResult,
-    ResellerProductsBadgesResult5553d50f7e0b405b9a29B30b84627a91Item,
+    ResellerProductsBadgesResult7502259b6fc741f39052C8675b99433aItem,
     ResellerProductsListResultItem,
     ResellerProductsPickableResultItem,
     ResellerProductsSaveResultItem,
@@ -1514,7 +1516,7 @@ class Analytics:
     ) -> AnalyticsOverviewResult:
         """**Get the overview**
 
-        A period's headline figures (revenue, orders, customers and the rest), the same figures for the period before, and a day by day series. What the dashboard's home page draws.
+        A period's headline figures (revenue, orders, customers and the rest), the same figures for the period before, and a day by day series. What the dashboard's home page draws. Every figure of money is in the store's currency today (`currencyCode`), its orders alone; what the period took in another currency is `otherCurrencies`, each in its own, never added in or converted. A count that is not money counts every order.
 
         Needs the `analytics.read` permission (Read Analytics). It is one of the heavier reads, and is counted against a smaller budget of its own: 60 a minute for each key.
 
@@ -6127,7 +6129,7 @@ class Customers:
     ) -> Page[CustomersListItem]:
         """**List customers**
 
-        The store's customers, a page at a time, each with how many orders they have paid for, what they have spent, their balance and their `tags`: Shoply's two first (`vip` and `disputed`, worked out from their orders as they are read), then the store's own.
+        The store's customers, a page at a time, each with how many orders they have paid for, what they have spent in the store's currency today (`totalSpend`) and in any other (`otherSpend`, never added in or converted), their balance and their `tags`: Shoply's two first (`vip` and `disputed`, worked out from their orders as they are read), then the store's own.
 
         Needs the `customers.read` permission (Read Customers).
 
@@ -6188,7 +6190,7 @@ class Customers:
     ) -> File:
         """**Export customers**
 
-        The customers the same filters would list, as a CSV file: each one's email, when they were first seen, the orders they paid for and what they spent, their first and last paid order, their store balance, their affiliate code and balance where they have one, their tags, and whether they are subscribed to the store's news and offers. Every customer the filters match is in the file, however many: it is sent as it is read. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, orders, customers, fraud events, blacklist rules and allowlist entries together, whoever asks: after that the answer is 429.
+        The customers the same filters would list, as a CSV file: each one's email, when they were first seen, the orders they paid for and what they spent in the store's currency today, with what they spent in any other in a column of its own, their first and last paid order, their store balance, their affiliate code and balance where they have one, their tags, and whether they are subscribed to the store's news and offers. Every customer the filters match is in the file, however many: it is sent as it is read. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, orders, customers, fraud events, blacklist rules and allowlist entries together, whoever asks: after that the answer is 429.
 
         Needs the `customers.read` permission (Read Customers). It is one of the heavier reads, and is counted against a smaller budget of its own: 60 a minute for each key.
 
@@ -6246,7 +6248,7 @@ class Customers:
     ) -> CustomersShowResult:
         """**Get a customer**
 
-        One customer: their orders, their balance and its history, their `tags`, whether they are blacklisted, and their affiliate figures if they are one.
+        One customer: their orders, what they have spent in the store's currency today (`totalSpend`, over `paidInCurrency` of their paid orders) and in any other (`otherSpend`), their balance and its history, their `tags`, whether they are blacklisted, and their affiliate figures if they are one.
 
         Needs the `customers.read` permission (Read Customers).
 
@@ -6450,7 +6452,7 @@ class CustomerTags:
     ) -> List[CustomerTagsListResultItem]:
         """**List customer tags**
 
-        The store's own tags as `data`, by name, each with `customers`, how many wear it. `meta.automatic` is Shoply's two: VIP's rule (`vipOn`, `vipSpent` in the store's currency, `vipOrders` completed orders, `vipDays` the period, 0 for all time; either number 0 leaves that half out) and `disputedOn`, with `vipCustomers` and `disputedCustomers`, how many wear each today.
+        The store's own tags as `data`, by name, each with `customers`, how many wear it. `meta.automatic` is Shoply's two: VIP's rule (`vipOn`, `vipSpent` in the store's currency today, counting the orders in it alone, `vipOrders` completed orders in any currency, `vipDays` the period, 0 for all time; either number 0 leaves that half out) and `disputedOn`, with `vipCustomers` and `disputedCustomers`, how many wear each today.
 
         Needs the `customers.read` permission (Read Customers).
 
@@ -6503,7 +6505,7 @@ class CustomerTags:
 
         Args:
             vipOn: Whether VIP is put on.
-            vipSpent: A VIP has spent at least this, in the store's currency, on completed orders. 0 leaves it out.
+            vipSpent: A VIP has spent at least this on completed orders in the store's currency today, as `totalSpend` counts it: what a buyer paid in another is not counted. 0 leaves it out.
             vipOrders: Or paid for at least this many orders. 0 leaves it out.
             vipDays: Over this many days back, 0 for all time.
             disputedOn: Whether Disputed Before is put on: a dispute on any of their orders, won or lost.
@@ -8023,7 +8025,7 @@ class ResellerOrders:
     ) -> File:
         """**Export reseller orders**
 
-        The orders the same filters would list, as a CSV file: Order ID, Reseller, Bought By, Product, Variant, Quantity, Total, Currency, Bought With and Date. No delivered key is in it. Every row the filters match is in the file, up to 50,000, sent as it is read. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, whatever they are of, whoever asks: after that the answer is 429.
+        The orders the same filters would list, as a CSV file: Order ID, Reseller, Bought By, Product, Variant, Quantity, Total, Currency, Bought With and Date. No delivered key is in it. Every row the filters match is in the file, however many, sent as it is read. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, whatever they are of, whoever asks: after that the answer is 429.
 
         Needs the `resellers.read` permission (Read Resellers). It is one of the heavier reads, and is counted against a smaller budget of its own: 60 a minute for each key.
 
@@ -8104,7 +8106,7 @@ class ResellerTopUps:
     ) -> File:
         """**Export top-ups**
 
-        The top-ups the same filters would list, as a CSV file: Top-up ID, Reseller, Paid By, Amount, Currency, Paid With, Status, Opened and Paid. Every row the filters match is in the file, up to 50,000, sent as it is read. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, whatever they are of, whoever asks: after that the answer is 429.
+        The top-ups the same filters would list, as a CSV file: Top-up ID, Reseller, Paid By, Amount, Currency, Paid With, Status, Opened and Paid. Every row the filters match is in the file, however many, sent as it is read. Add `check=1` for `{ rows }`, how many it would have, which is not counted. A store exports at most 30 files every 10 minutes, whatever they are of, whoever asks: after that the answer is 429.
 
         Needs the `resellers.read` permission (Read Resellers). It is one of the heavier reads, and is counted against a smaller budget of its own: 60 a minute for each key.
 
@@ -9090,7 +9092,7 @@ class Finance:
     ) -> FinanceProfitResult:
         """**Get profit**
 
-        What the store kept in a period and how that is made up, beside the period before: net sales, the cost of goods, payment fees, affiliate commission, expenses and net profit, twelve months of sales and profit, and every product with what each variant sold and cost. A sale is what the buyer paid: at its sale price, after its coupon and any affiliate link's discount, without tax. Payment fees are worked out from the rates the store typed, never read from a provider, so they can be slightly off. A store makes at most 20 reports every 10 minutes, counting this one, the other report, their files and the dashboard's Generate Report together: after that the answer is 429. Refused with `business_details_required` until the store has its business details.
+        What the store kept in a period and how that is made up, beside the period before: net sales, the cost of goods, payment fees, affiliate commission, expenses and net profit, twelve months of sales and profit, and every product with what each variant sold and cost. A sale is what the buyer paid: at its sale price, after its coupon and any affiliate link's discount, without tax. Payment fees are worked out from the rates the store typed, never read from a provider, so they can be slightly off. Every figure is in the store's currency today (`currency`), its orders and its expenses alone. What the period took or spent in another currency is `otherCurrencies`, each in its own, and the expenses whose currency is not known are `unknownExpenses`: nothing is added across currencies or converted. A store makes at most 20 reports every 10 minutes, counting this one, the other report, their files and the dashboard's Generate Report together: after that the answer is 429. Refused with `business_details_required` until the store has its business details.
 
         Needs the `finance.read` permission (Read Finance). It is one of the heavier reads, and is counted against a smaller budget of its own: 60 a minute for each key.
 
@@ -9118,7 +9120,7 @@ class Finance:
     ) -> FinanceAccountingResult:
         """**Get the books**
 
-        The books for a period: the profit and loss line by line beside the period before, where the buyers were, and what each payment method took in. Gross sales are at the prices before any sale, and what sales, discounts, refunds and chargebacks took off is a line each; affiliate commission is a cost of sales. Tax collected is not income and is in none of it but the tax report. A store makes at most 20 reports every 10 minutes, counting this one, the other report, their files and the dashboard's Generate Report together: after that the answer is 429. Refused with `business_details_required` until the store has its business details.
+        The books for a period: the profit and loss line by line beside the period before, where the buyers were, and what each payment method took in. Gross sales are at the prices before any sale, and what sales, discounts, refunds and chargebacks took off is a line each; affiliate commission is a cost of sales. Tax collected is not income and is in none of it but the tax report. The statement is in the store's currency today (`currency`), its orders and its expenses alone. Each other currency the period or the one before took or spent anything in has a statement of its own in `others`, beside the period before in that currency, and the expenses whose currency is not known are `unknownExpenses`. `taxReport` is the same: its rows in the store's currency, then `others`. Nothing is added across currencies or converted. A store makes at most 20 reports every 10 minutes, counting this one, the other report, their files and the dashboard's Generate Report together: after that the answer is 429. Refused with `business_details_required` until the store has its business details.
 
         Needs the `finance.read` permission (Read Finance). It is one of the heavier reads, and is counted against a smaller budget of its own: 60 a minute for each key.
 
@@ -9349,7 +9351,7 @@ class Expenses:
     ) -> List[ExpensesListResultItem]:
         """**List expenses**
 
-        A period's expenses, newest first, up to 2,000 of them. `meta.totals` is what the expenses matched come to, counting every one, and `meta.groups` the same by category. Refused with `business_details_required` until the store has its business details.
+        A period's expenses, newest first, up to 2,000 of them, each with the `currency` its amount is in (null where it is not known). `meta.totals` is what the expenses matched in the store's currency today (`meta.currency`) come to, counting every one, and `meta.groups` the same by category. `meta.otherCurrencies` is what those in each other currency come to, and those whose currency is not known (`currency` null), never added in or converted. `meta.listedOf` is how many the filters match, whatever their currency. Refused with `business_details_required` until the store has its business details.
 
         Needs the `expenses.read` permission (Read Expenses).
 
@@ -9420,7 +9422,7 @@ class Expenses:
     ) -> ExpensesSummaryResult:
         """**Get an expense summary**
 
-        A period's spending at a glance: the total beside the period before, what repeats, the largest category, how many have receipts, twelve months of totals and what is coming up. Refused with `business_details_required` until the store has its business details.
+        A period's spending at a glance: the total beside the period before, what repeats, the largest category, how many have receipts, twelve months of totals and what is coming up. The figures are in the store's currency today; `otherCurrencies` is what the period spent in each other currency, and in none known. Refused with `business_details_required` until the store has its business details.
 
         Needs the `expenses.read` permission (Read Expenses). It is one of the heavier reads, and is counted against a smaller budget of its own: 60 a minute for each key.
 
@@ -9502,6 +9504,7 @@ class Expenses:
         note: Optional[str] = None,
         reference: Optional[str] = None,
         productId: Optional[str] = None,
+        amountCurrency: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -9509,7 +9512,7 @@ class Expenses:
     ) -> ExpensesUpdateResult:
         """**Update an expense**
 
-        Changes an expense. A field left out stays as it is. Refused with `business_details_required` until the store has its business details.
+        Changes an expense. A field left out stays as it is. An expense keeps the currency its amount was typed in, the store's of that moment, while its amount stays as it was; a new amount is in the store's currency today. Refused with `business_details_required` until the store has its business details.
 
         Needs the `expenses.write` permission (Change Expenses).
 
@@ -9524,10 +9527,11 @@ class Expenses:
             note: A note, up to 255 characters.
             reference: An invoice number or the like, up to 160 characters.
             productId: A product this expense is a cost of.
+            amountCurrency: With its amount as it was, the currency that amount is in: for an expense whose currency is not known (`currency` null), or to put right one that is wrong. Nothing is converted. With a new `amount` it is not read: a new amount is in the store's currency today.
 
         Docs: https://docs.shoply.gg/api-reference/expenses/update-an-expense
         """
-        return cast("ExpensesUpdateResult", self._caller._call("expenses.update", [expense_id], {"spentOn": spentOn, "payee": payee, "amount": amount, "currency": currency, "method": method, "categoryId": categoryId, "category": category, "note": note, "reference": reference, "productId": productId}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("ExpensesUpdateResult", self._caller._call("expenses.update", [expense_id], {"spentOn": spentOn, "payee": payee, "amount": amount, "currency": currency, "method": method, "categoryId": categoryId, "category": category, "note": note, "reference": reference, "productId": productId, "amountCurrency": amountCurrency}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -9760,7 +9764,7 @@ class RecurringExpenses:
     ) -> List[RecurringExpensesListResultItem]:
         """**List recurring expenses**
 
-        The expenses that come round every month or year, with the day each is next due. A store holds up to 100. Refused with `business_details_required` until the store has its business details.
+        The expenses that come round every month or year, with the day each is next due and the `currency` its amount is in (null where it is not known). A store holds up to 100. `meta.running` is what the running ones come to a month, a yearly one as a twelfth: `monthly` those in the store's currency today, `others` those in each other currency and those not known, never added in or converted, and `count` every one. Refused with `business_details_required` until the store has its business details.
 
         Needs the `expenses.read` permission (Read Expenses).
 
@@ -9792,7 +9796,7 @@ class RecurringExpenses:
 
         Args:
             payee: Who is paid, up to 120 characters. Required.
-            amount: How much each time, in the store's currency. Required.
+            amount: How much each time, in the store's currency today. Required.
             cadence: How often it comes round. Required.
             nextOn: The day it is next due, as `YYYY-MM-DD`. Required.
             method: How it is paid.
@@ -9816,6 +9820,7 @@ class RecurringExpenses:
         categoryId: Optional[str] = None,
         note: Optional[str] = None,
         reference: Optional[str] = None,
+        amountCurrency: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -9823,23 +9828,24 @@ class RecurringExpenses:
     ) -> RecurringExpensesUpdateResult:
         """**Update a recurring expense**
 
-        Changes a recurring expense. A field left out stays as it is. The expenses it has already written are not changed. Refused with `business_details_required` until the store has its business details.
+        Changes a recurring expense. A field left out stays as it is. The expenses it has already written are not changed. It keeps the currency its amount was typed in while its amount stays as it was; a new amount is in the store's currency today. Refused with `business_details_required` until the store has its business details.
 
         Needs the `expenses.write` permission (Change Expenses).
 
         Args:
             payee: Who is paid, up to 120 characters. Required.
-            amount: How much each time, in the store's currency. Required.
+            amount: How much each time, in the store's currency today. Required.
             cadence: How often it comes round. Required.
             nextOn: The day it is next due, as `YYYY-MM-DD`. Required.
             method: How it is paid.
             categoryId: The expense category it is filed in.
             note: A note, up to 255 characters.
             reference: A reference, up to 160 characters.
+            amountCurrency: With its amount as it was, the currency that amount is in: for one whose currency is not known (`currency` null), or to put right one that is wrong. Nothing is converted. The expenses it writes from then on are in it; those it has written keep theirs.
 
         Docs: https://docs.shoply.gg/api-reference/expense-setup/update-a-recurring-expense
         """
-        return cast("RecurringExpensesUpdateResult", self._caller._call("recurringExpenses.update", [recurring_id], {"payee": payee, "amount": amount, "cadence": cadence, "nextOn": nextOn, "method": method, "categoryId": categoryId, "note": note, "reference": reference}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("RecurringExpensesUpdateResult", self._caller._call("recurringExpenses.update", [recurring_id], {"payee": payee, "amount": amount, "cadence": cadence, "nextOn": nextOn, "method": method, "categoryId": categoryId, "note": note, "reference": reference, "amountCurrency": amountCurrency}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,

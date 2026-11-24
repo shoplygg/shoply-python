@@ -634,6 +634,7 @@ AnalyticsOverviewResult = TypedDict("AnalyticsOverviewResult", {
     "store": AnalyticsOverviewResultStore,
     "range": AnalyticsOverviewResultRange,
     "currencyCode": str,
+    "otherCurrencies": Union[List[Any], Dict[str, Any]],
     "totals": AnalyticsOverviewResultTotals,
     "previous": AnalyticsOverviewResultPrevious,
     "change": AnalyticsOverviewResultChange,
@@ -3373,6 +3374,7 @@ OrdersShowResultTimelineItem = TypedDict("OrdersShowResultTimelineItem", {
 OrdersShowResultCustomerTotals = TypedDict("OrdersShowResultCustomerTotals", {
     "totalOrders": float,
     "totalSpend": float,
+    "otherSpend": Union[List[Any], Dict[str, Any]],
     "paidOrders": float,
 })
 
@@ -4562,6 +4564,7 @@ CustomersListItem = TypedDict("CustomersListItem", {
     "dateCreated": str,
     "totalOrders": float,
     "totalSpend": float,
+    "otherSpend": Union[List[Any], Dict[str, Any]],
     "paidOrders": float,
     "lastOrderAt": Any,
     "balance": float,
@@ -4575,6 +4578,7 @@ CustomersCreateResult = TypedDict("CustomersCreateResult", {
     "dateCreated": str,
     "totalOrders": float,
     "totalSpend": float,
+    "otherSpend": Union[List[Any], Dict[str, Any]],
     "paidOrders": float,
     "lastOrderAt": Any,
     "balance": float,
@@ -4655,7 +4659,9 @@ CustomersShowResult = TypedDict("CustomersShowResult", {
     "dateCreated": str,
     "totalOrders": float,
     "totalSpend": float,
+    "otherSpend": Union[List[Any], Dict[str, Any]],
     "paidOrders": float,
+    "paidInCurrency": float,
     "lastOrderAt": Any,
     "currencyCode": str,
     "ordersTruncated": bool,
@@ -5926,14 +5932,14 @@ ResellerProductsPickableResultItem = TypedDict("ResellerProductsPickableResultIt
     "price": float,
 })
 
-ResellerProductsBadgesResult5553d50f7e0b405b9a29B30b84627a91Item = TypedDict("ResellerProductsBadgesResult5553d50f7e0b405b9a29B30b84627a91Item", {
+ResellerProductsBadgesResult7502259b6fc741f39052C8675b99433aItem = TypedDict("ResellerProductsBadgesResult7502259b6fc741f39052C8675b99433aItem", {
     "label": str,
     "color": str,
     "kind": str,
 })
 
 ResellerProductsBadgesResult = TypedDict("ResellerProductsBadgesResult", {
-    "5553d50f-7e0b-405b-9a29-b30b84627a91": List[ResellerProductsBadgesResult5553d50f7e0b405b9a29B30b84627a91Item],
+    "7502259b-6fc7-41f3-9052-c8675b99433a": List[ResellerProductsBadgesResult7502259b6fc741f39052C8675b99433aItem],
 })
 
 ResellerTiersListResultItem = TypedDict("ResellerTiersListResultItem", {
@@ -6911,6 +6917,11 @@ FinanceProfitResultProductsItem = TypedDict("FinanceProfitResultProductsItem", {
     "costSet": str,
 })
 
+FinanceProfitResultUnknownExpenses = TypedDict("FinanceProfitResultUnknownExpenses", {
+    "count": float,
+    "total": float,
+})
+
 FinanceProfitResult = TypedDict("FinanceProfitResult", {
     "period": FinanceProfitResultPeriod,
     "currency": str,
@@ -6922,6 +6933,8 @@ FinanceProfitResult = TypedDict("FinanceProfitResult", {
     "fees": FinanceProfitResultFees,
     "months": List[FinanceProfitResultMonthsItem],
     "products": List[FinanceProfitResultProductsItem],
+    "otherCurrencies": Union[List[Any], Dict[str, Any]],
+    "unknownExpenses": FinanceProfitResultUnknownExpenses,
 })
 
 FinanceAccountingResultPeriod = TypedDict("FinanceAccountingResultPeriod", {
@@ -6970,6 +6983,11 @@ FinanceAccountingResultCounts = TypedDict("FinanceAccountingResultCounts", {
     "expenses": float,
 })
 
+FinanceAccountingResultUnknownExpenses = TypedDict("FinanceAccountingResultUnknownExpenses", {
+    "count": float,
+    "total": float,
+})
+
 FinanceAccountingResultCountriesItem = TypedDict("FinanceAccountingResultCountriesItem", {
     "country": str,
     "name": str,
@@ -6989,9 +7007,11 @@ FinanceAccountingResultMethodsItem = TypedDict("FinanceAccountingResultMethodsIt
 })
 
 FinanceAccountingResultTaxReport = TypedDict("FinanceAccountingResultTaxReport", {
+    "currency": str,
     "rows": Union[List[Any], Dict[str, Any]],
     "taxable": float,
     "tax": float,
+    "others": Union[List[Any], Dict[str, Any]],
 })
 
 FinanceAccountingResult = TypedDict("FinanceAccountingResult", {
@@ -7004,6 +7024,8 @@ FinanceAccountingResult = TypedDict("FinanceAccountingResult", {
     "previous": FinanceAccountingResultPrevious,
     "checks": List[FinanceAccountingResultChecksItem],
     "counts": FinanceAccountingResultCounts,
+    "others": Union[List[Any], Dict[str, Any]],
+    "unknownExpenses": FinanceAccountingResultUnknownExpenses,
     "countries": List[FinanceAccountingResultCountriesItem],
     "methods": List[FinanceAccountingResultMethodsItem],
     "taxReport": FinanceAccountingResultTaxReport,
@@ -8712,6 +8734,7 @@ ExpensesListResultItem = TypedDict("ExpensesListResultItem", {
     "method": str,
     "reference": str,
     "amount": float,
+    "currency": str,
     "entered": Any,
     "productId": Any,
     "recurring": bool,
@@ -8736,6 +8759,7 @@ ExpensesCreateResult = TypedDict("ExpensesCreateResult", {
     "method": str,
     "reference": str,
     "amount": float,
+    "currency": str,
     "entered": Any,
     "productId": Any,
     "recurring": bool,
@@ -8757,6 +8781,7 @@ ExpensesSummaryResultPeriod = TypedDict("ExpensesSummaryResultPeriod", {
 ExpensesSummaryResultRecurring = TypedDict("ExpensesSummaryResultRecurring", {
     "count": float,
     "monthly": float,
+    "others": Union[List[Any], Dict[str, Any]],
 })
 
 ExpensesSummaryResultLargest = TypedDict("ExpensesSummaryResultLargest", {
@@ -8785,6 +8810,7 @@ ExpensesSummaryResult = TypedDict("ExpensesSummaryResult", {
     "period": ExpensesSummaryResultPeriod,
     "spent": float,
     "previous": float,
+    "otherCurrencies": Union[List[Any], Dict[str, Any]],
     "recurring": ExpensesSummaryResultRecurring,
     "largest": ExpensesSummaryResultLargest,
     "receipts": ExpensesSummaryResultReceipts,
@@ -8856,6 +8882,7 @@ ExpensesUpdateResult = TypedDict("ExpensesUpdateResult", {
     "method": str,
     "reference": str,
     "amount": float,
+    "currency": str,
     "entered": Any,
     "productId": Any,
     "recurring": bool,
@@ -8909,6 +8936,7 @@ RecurringExpensesListResultItem = TypedDict("RecurringExpensesListResultItem", {
     "method": str,
     "reference": str,
     "amount": float,
+    "currency": str,
     "cadence": str,
     "onDay": float,
     "nextOn": str,
@@ -8926,6 +8954,7 @@ RecurringExpensesCreateResult = TypedDict("RecurringExpensesCreateResult", {
     "method": str,
     "reference": str,
     "amount": float,
+    "currency": str,
     "cadence": str,
     "onDay": float,
     "nextOn": str,
@@ -8943,6 +8972,7 @@ RecurringExpensesUpdateResult = TypedDict("RecurringExpensesUpdateResult", {
     "method": str,
     "reference": str,
     "amount": float,
+    "currency": str,
     "cadence": str,
     "onDay": float,
     "nextOn": str,
@@ -8965,6 +8995,7 @@ RecurringExpensesSkipResultRecurring = TypedDict("RecurringExpensesSkipResultRec
     "method": str,
     "reference": str,
     "amount": float,
+    "currency": str,
     "cadence": str,
     "onDay": float,
     "nextOn": str,
