@@ -455,7 +455,7 @@ from .types import (
     ResellerOrdersGetResultReseller,
     ResellerOrdersListItem,
     ResellerProductsBadgesResult,
-    ResellerProductsBadgesResult212a0544Bad644f0B3f1Bc71394a59e2Item,
+    ResellerProductsBadgesResultE4d31280633545618cd8312acfcdde7fItem,
     ResellerProductsListResultItem,
     ResellerProductsPickableResultItem,
     ResellerProductsSaveResultItem,
@@ -967,7 +967,6 @@ from .types import (
     TaxUpdateResultStandardVN,
     TaxUpdateResultStandardZA,
     TeamActivityItem,
-    TeamActivityItemSubject,
     TeamCancelInviteResult,
     TeamGetResult,
     TeamGetResultInvitesItem,
@@ -1970,7 +1969,7 @@ class Storefronts:
     ) -> StorefrontsCodePublishResult:
         """**Publish a storefront's code**
 
-        Puts the draft live, its files and its design together, and makes this storefront the one buyers see, as Publish in the code studio does. Send `rev` and `version` from "Get a storefront's code" as you last read it: if either has moved since (somebody saved in the meantime) it is refused with `draft_conflict`, so you never publish what you have not seen. A mistake in a template refuses it with `code_problems`, the mistakes listed in `problems`.
+        Puts the draft live, its files and its design together, and makes this storefront the one buyers see, as Publish in the code studio does. Send `rev` and `version` from "Get a storefront's code" as you last read it: if either has moved since (somebody saved in the meantime) it is refused with `draft_conflict`, so you never publish what you have not seen. A mistake in a template refuses it with `code_problems`, the mistakes listed in `problems`. Making another storefront the one buyers see is the owner's: a key or a CLI sign-in somebody on the store's team made publishes only the storefront that is live already, and is refused another with `team_permission`.
 
         Needs the `storefronts.write` permission (Change Storefronts).
 
@@ -6085,6 +6084,7 @@ class EmailTemplates:
         html: Optional[str] = None,
         css: Optional[str] = None,
         subject: Optional[str] = None,
+        expectedVersion: Optional[str] = None,
         expectedUpdatedAt: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
@@ -6101,11 +6101,12 @@ class EmailTemplates:
             html: The email's HTML, or null for the original.
             css: Its whole look, or null to follow the shared CSS. The look it would get anyway is saved as null.
             subject: Its subject, or null for the original.
+            expectedVersion: The `version` you read. Sent, the change is refused with `stale_write` if its HTML, CSS or subject has changed since, a subject set by Change Cart Recovery or Change Win-Back included. Use it rather than `expectedUpdatedAt`, which neither of those moves.
             expectedUpdatedAt: The `updatedAt` you read; a template changed since is refused with `stale_write`.
 
         Docs: https://docs.shoply.gg/api-reference/email-templates/change-an-email-template
         """
-        return cast("EmailTemplatesUpdateResult", self._caller._call("emailTemplates.update", [kind], {"html": html, "css": css, "subject": subject, "expectedUpdatedAt": expectedUpdatedAt}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("EmailTemplatesUpdateResult", self._caller._call("emailTemplates.update", [kind], {"html": html, "css": css, "subject": subject, "expectedVersion": expectedVersion, "expectedUpdatedAt": expectedUpdatedAt}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def preview(
         self,
@@ -7158,7 +7159,7 @@ class Team:
     ) -> Page[TeamActivityItem]:
         """**List activity**
 
-        Who did what at the store on the dashboard, the newest first, fifty a page: each line's `summary` ("Refunded order ..."), who did it as they were then (`name`, `email`, `team`, which is null for the owner), its `area` of the dashboard, and what it was about (`subject`). Every change and every export is a line, the owner's included; what a key does is not, and is in List API requests. Kept 365 days.
+        Who did what at the store on the dashboard, the newest first, fifty a page: each line's `summary` ("Refunded order ..."), who did it as they were then (`name`, `email`, `team`, which is null for the owner), its `area` of the dashboard, and what it was about (`subject`). Every change and every export is a line, the owner's included. What a key does is not, and is in List API requests, except a change to the team, which is a line under whoever made the key, saying which key. Kept 365 days.
 
         Needs the `team.read` permission (Read the Team).
 
@@ -7247,7 +7248,7 @@ class Team:
     ) -> TeamMoveMemberResult:
         """**Move somebody to another team**
 
-        They can do what the other team can from their next request. Not onto a team that holds a sensitive permission: do that on the dashboard.
+        They can do what the other team can from their next request. The API keys and CLI sign-ins a person on the team made lose what their team no longer holds, and are revoked when nothing is left or the team does not hold `dev.keys`; an app they connected is disconnected when the team does not hold all it was given, or `dev.apps`. Not onto a team that holds a sensitive permission: do that on the dashboard.
 
         Needs the `team.write` permission (Manage the Team).
 
@@ -7269,7 +7270,7 @@ class Team:
     ) -> TeamRemoveMemberResult:
         """**Remove somebody from the team**
 
-        They can no longer reach the store. The API keys they made and the apps they connected stop working with them (`keysStopped` says how many), and the webhooks those made are deleted.
+        They can no longer reach the store. The API keys they made and the apps they connected stop working with them (`keysStopped` says how many), the webhooks those made and the ones they added on the dashboard are deleted, and the invites they sent and nobody has taken up are cancelled.
 
         Needs the `team.write` permission (Manage the Team).
 
@@ -7295,7 +7296,7 @@ class Teams:
     ) -> TeamsCreateResult:
         """**Create a team**
 
-        A store holds as many teams as its plan does (`limits.teams` in Get the team). A permission marked `sensitive` that the team did not hold before cannot be given with a key: give it on the dashboard, which asks the person to confirm it is them.
+        A store holds as many teams as its plan does (`limits.teams` in Get the team). A key does this as whoever made it: a key somebody on the store's team made gives, takes away and changes only what their own team holds, as they can on the dashboard, and is refused with `team_beyond` otherwise. A permission marked `sensitive` that the team did not hold before cannot be given with a key: give it on the dashboard, which asks the person to confirm it is them.
 
         Needs the `team.write` permission (Manage the Team).
 
@@ -7320,7 +7321,7 @@ class Teams:
     ) -> TeamsUpdateResult:
         """**Update a team**
 
-        Saves the team whole: its name and its permissions. Its people can do what it now holds from their next request. A permission marked `sensitive` that the team did not hold before cannot be given with a key: give it on the dashboard, which asks the person to confirm it is them.
+        Saves the team whole: its name and its permissions. Its people can do what it now holds from their next request. The API keys and CLI sign-ins a person on the team made lose what their team no longer holds, and are revoked when nothing is left or the team does not hold `dev.keys`; an app they connected is disconnected when the team does not hold all it was given, or `dev.apps`. A key does this as whoever made it: a key somebody on the store's team made gives, takes away and changes only what their own team holds, as they can on the dashboard, and is refused with `team_beyond` otherwise. A permission marked `sensitive` that the team did not hold before cannot be given with a key: give it on the dashboard, which asks the person to confirm it is them.
 
         Needs the `team.write` permission (Manage the Team).
 
@@ -10076,7 +10077,7 @@ class Requests:
     ) -> RequestsShowResult:
         """**Get an API request**
 
-        One request, with what was sent and what came back. Long bodies are cut short, and values that are secrets or goods (a password, license keys going into stock) are not kept. A request's ID is the `X-Request-Id` header of its answer.
+        One request, with what was sent and what came back. Long bodies are cut short, and values that are secrets or goods (a password, license keys going into stock) are not kept. The two bodies are answered only to a key that holds the scope of what the request did, and `bodiesWithheld` is true where they were kept back. A request's ID is the `X-Request-Id` header of its answer.
 
         Needs the `logs.read` permission (Read API Requests).
 
@@ -10161,6 +10162,7 @@ class Webhooks:
         events: List[str],
         description: Optional[str] = None,
         enabled: Optional[bool] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -10177,10 +10179,11 @@ class Webhooks:
             events: The events it is sent, by name, or `["*"]` for every event there is and every one there will be. Required.
             description: A note for whoever manages the store, up to 160 characters.
             enabled: Whether events are sent to it. Switched off, nothing is sent, and what happens meanwhile is not kept for it.
+            expectedVersion: The endpoint's `version` you last read. Sent, the change is refused with `stale_write` if its address, events, note or switch has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/webhook-endpoints/update-a-webhook-endpoint
         """
-        return cast("WebhooksUpdateResult", self._caller._call("webhooks.update", [endpoint_id], {"url": url, "events": events, "description": description, "enabled": enabled}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("WebhooksUpdateResult", self._caller._call("webhooks.update", [endpoint_id], {"url": url, "events": events, "description": description, "enabled": enabled, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,

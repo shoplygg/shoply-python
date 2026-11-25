@@ -211,6 +211,7 @@ StoreEmailSettingsResult = TypedDict("StoreEmailSettingsResult", {
     "emailResellersEnabled": bool,
     "emailPaymentSetupEnabled": bool,
     "emailDiscordSetupEnabled": bool,
+    "emailDomainEnabled": bool,
     "emailDisputeOpenedEnabled": bool,
     "emailDisputeClosedEnabled": bool,
     "testEmailEvery": StoreEmailSettingsResultTestEmailEvery,
@@ -292,6 +293,7 @@ PaymentMethodsListResultItem = TypedDict("PaymentMethodsListResultItem", {
     "toggles": List[PaymentMethodsListResultItemTogglesItem],
     "unpaidHours": Any,
     "updatedAt": Any,
+    "version": Any,
 })
 
 PaymentMethodsSetBalanceResultItemFieldsItem = TypedDict("PaymentMethodsSetBalanceResultItemFieldsItem", {
@@ -346,6 +348,7 @@ PaymentMethodsSetBalanceResultItem = TypedDict("PaymentMethodsSetBalanceResultIt
     "toggles": List[PaymentMethodsSetBalanceResultItemTogglesItem],
     "unpaidHours": Any,
     "updatedAt": Any,
+    "version": Any,
 })
 
 PaymentMethodsSetUnpaidHoursResultItemFieldsItem = TypedDict("PaymentMethodsSetUnpaidHoursResultItemFieldsItem", {
@@ -400,6 +403,7 @@ PaymentMethodsSetUnpaidHoursResultItem = TypedDict("PaymentMethodsSetUnpaidHours
     "toggles": List[PaymentMethodsSetUnpaidHoursResultItemTogglesItem],
     "unpaidHours": Any,
     "updatedAt": str,
+    "version": str,
 })
 
 PaymentMethodsSetMethodUnpaidHoursResultItemFieldsItem = TypedDict("PaymentMethodsSetMethodUnpaidHoursResultItemFieldsItem", {
@@ -454,6 +458,7 @@ PaymentMethodsSetMethodUnpaidHoursResultItem = TypedDict("PaymentMethodsSetMetho
     "toggles": List[PaymentMethodsSetMethodUnpaidHoursResultItemTogglesItem],
     "unpaidHours": float,
     "updatedAt": str,
+    "version": str,
 })
 
 AnalyticsOverviewResultStore = TypedDict("AnalyticsOverviewResultStore", {
@@ -4454,6 +4459,7 @@ EmailTemplatesShowResult = TypedDict("EmailTemplatesShowResult", {
     "css": Any,
     "subject": Any,
     "updatedAt": Any,
+    "version": str,
     "shared": Any,
     "baseCss": str,
     "accent": str,
@@ -4485,6 +4491,7 @@ EmailTemplatesUpdateResult = TypedDict("EmailTemplatesUpdateResult", {
     "css": str,
     "subject": str,
     "updatedAt": str,
+    "version": str,
     "shared": Any,
     "baseCss": str,
     "accent": str,
@@ -4553,6 +4560,7 @@ EmailTemplatesRevertResult = TypedDict("EmailTemplatesRevertResult", {
     "css": Any,
     "subject": Any,
     "updatedAt": Any,
+    "version": str,
     "shared": Any,
     "baseCss": str,
     "accent": str,
@@ -5424,20 +5432,15 @@ TeamGetResult = TypedDict("TeamGetResult", {
     "limits": TeamGetResultLimits,
 })
 
-TeamActivityItemSubject = TypedDict("TeamActivityItemSubject", {
-    "kind": str,
-    "id": str,
-})
-
 TeamActivityItem = TypedDict("TeamActivityItem", {
     "id": str,
     "userId": str,
-    "name": str,
+    "name": Any,
     "email": str,
-    "team": str,
+    "team": Any,
     "area": str,
     "summary": str,
-    "subject": TeamActivityItemSubject,
+    "subject": Any,
     "at": str,
 })
 
@@ -5941,14 +5944,14 @@ ResellerProductsPickableResultItem = TypedDict("ResellerProductsPickableResultIt
     "price": float,
 })
 
-ResellerProductsBadgesResult212a0544Bad644f0B3f1Bc71394a59e2Item = TypedDict("ResellerProductsBadgesResult212a0544Bad644f0B3f1Bc71394a59e2Item", {
+ResellerProductsBadgesResultE4d31280633545618cd8312acfcdde7fItem = TypedDict("ResellerProductsBadgesResultE4d31280633545618cd8312acfcdde7fItem", {
     "label": str,
     "color": str,
     "kind": str,
 })
 
 ResellerProductsBadgesResult = TypedDict("ResellerProductsBadgesResult", {
-    "212a0544-bad6-44f0-b3f1-bc71394a59e2": List[ResellerProductsBadgesResult212a0544Bad644f0B3f1Bc71394a59e2Item],
+    "e4d31280-6335-4561-8cd8-312acfcdde7f": List[ResellerProductsBadgesResultE4d31280633545618cd8312acfcdde7fItem],
 })
 
 ResellerTiersListResultItem = TypedDict("ResellerTiersListResultItem", {
@@ -9090,6 +9093,7 @@ RequestsShowResult = TypedDict("RequestsShowResult", {
     "createdAt": str,
     "requestBody": Any,
     "responseBody": str,
+    "bodiesWithheld": bool,
 })
 
 WebhooksListResultItem = TypedDict("WebhooksListResultItem", {
@@ -9104,6 +9108,7 @@ WebhooksListResultItem = TypedDict("WebhooksListResultItem", {
     "lastStatus": Any,
     "dateCreated": str,
     "updatedAt": str,
+    "version": str,
     "recentDeliveries": Union[List[Any], Dict[str, Any]],
 })
 
@@ -9119,6 +9124,7 @@ WebhooksCreateResult = TypedDict("WebhooksCreateResult", {
     "lastStatus": Any,
     "dateCreated": str,
     "updatedAt": str,
+    "version": str,
     "secret": str,
 })
 
@@ -9134,6 +9140,7 @@ WebhooksShowResult = TypedDict("WebhooksShowResult", {
     "lastStatus": Any,
     "dateCreated": str,
     "updatedAt": str,
+    "version": str,
 })
 
 WebhooksUpdateResult = TypedDict("WebhooksUpdateResult", {
@@ -9148,6 +9155,7 @@ WebhooksUpdateResult = TypedDict("WebhooksUpdateResult", {
     "lastStatus": Any,
     "dateCreated": str,
     "updatedAt": str,
+    "version": str,
 })
 
 WebhooksDeleteResult = TypedDict("WebhooksDeleteResult", {
