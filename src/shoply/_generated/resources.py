@@ -2016,6 +2016,7 @@ class Routing:
         guardDeclines: Optional[int] = None,
         guardWindow: Optional[int] = None,
         disputeAlert: Optional[float] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -2036,10 +2037,11 @@ class Routing:
             guardDeclines: How many of the window's payments declined pause a processor, from 1 to `guardWindow`.
             guardWindow: How many of its last routed payments are judged, from 5 to 200.
             disputeAlert: The percent of a processor's paid orders disputed that the store is told of, once a week at most, above 0 and up to 100. Empty or null for none. Nothing is moved for it.
+            expectedVersion: The `settings.version` you last read. Sent, the change is refused with `stale_write` if what this saves has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/payment-routing/change-payment-routing
         """
-        return cast("RoutingUpdateResult", self._caller._call("routing.update", [], {"enabled": enabled, "mode": mode, "retry": retry, "sticky": sticky, "guard": guard, "guardDeclines": guardDeclines, "guardWindow": guardWindow, "disputeAlert": disputeAlert}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("RoutingUpdateResult", self._caller._call("routing.update", [], {"enabled": enabled, "mode": mode, "retry": retry, "sticky": sticky, "guard": guard, "guardDeclines": guardDeclines, "guardWindow": guardWindow, "disputeAlert": disputeAlert, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def addProcessor(
         self,
@@ -2072,6 +2074,7 @@ class Routing:
         capDay: Optional[float] = None,
         minOrder: Optional[float] = None,
         maxOrder: Optional[float] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -2089,10 +2092,11 @@ class Routing:
             capDay: The most it is given in a UTC day. No more than `capMonth`.
             minOrder: The smallest order it is given.
             maxOrder: The largest order it is given. At least `minOrder`.
+            expectedVersion: The processor's `version` (in `processors`) you last read. Sent, the change is refused with `stale_write` if that processor has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/payment-routing/change-a-processor
         """
-        return cast("RoutingUpdateProcessorResult", self._caller._call("routing.updateProcessor", [provider], {"share": share, "capMonth": capMonth, "capDay": capDay, "minOrder": minOrder, "maxOrder": maxOrder}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("RoutingUpdateProcessorResult", self._caller._call("routing.updateProcessor", [provider], {"share": share, "capMonth": capMonth, "capDay": capDay, "minOrder": minOrder, "maxOrder": maxOrder, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def removeProcessor(
         self,
@@ -2196,6 +2200,7 @@ class Routing:
         countries: Optional[List[str]] = None,
         amountOp: Optional[Literal["over", "under"]] = None,
         amount: Optional[float] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -2214,10 +2219,11 @@ class Routing:
             countries: For `country`: up to 100 countries, as two-letter codes.
             amountOp: For `amount`: whether it is about orders over the amount or under it.
             amount: For `amount`: the amount, in the store's currency.
+            expectedVersion: The rule's `version` (in `rules`) you last read. Sent, the change is refused with `stale_write` if the rule has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/payment-routing/change-a-rule
         """
-        return cast("RoutingUpdateRuleResult", self._caller._call("routing.updateRule", [rule_id], {"kind": kind, "action": action, "provider": provider, "countries": countries, "amountOp": amountOp, "amount": amount}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("RoutingUpdateRuleResult", self._caller._call("routing.updateRule", [rule_id], {"kind": kind, "action": action, "provider": provider, "countries": countries, "amountOp": amountOp, "amount": amount, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def deleteRule(
         self,
@@ -2332,6 +2338,7 @@ class CustomMethods:
         asksProof: Optional[bool] = None,
         requiresPicture: Optional[bool] = None,
         enabled: Optional[bool] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -2352,10 +2359,11 @@ class CustomMethods:
             asksProof: Whether the buyer is asked for a reference or a proof of payment, at least one.
             requiresPicture: Whether a proof of payment is required, whatever else is sent. Needs `asksProof`.
             enabled: Whether the checkout offers it.
+            expectedVersion: The method's `version` you last read. Sent, the change is refused with `stale_write` if the method has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/custom-payment-methods/update-a-custom-payment-method
         """
-        return cast("List[CustomMethodsUpdateResultItem]", self._caller._call("customMethods.update", [method_id], {"kind": kind, "name": name, "description": description, "instructions": instructions, "redirectUrl": redirectUrl, "asksProof": asksProof, "requiresPicture": requiresPicture, "enabled": enabled}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("List[CustomMethodsUpdateResultItem]", self._caller._call("customMethods.update", [method_id], {"kind": kind, "name": name, "description": description, "instructions": instructions, "redirectUrl": redirectUrl, "asksProof": asksProof, "requiresPicture": requiresPicture, "enabled": enabled, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -5027,6 +5035,7 @@ class BlogCategories:
         name: str,
         description: Optional[str] = None,
         slug: Optional[str] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -5042,10 +5051,11 @@ class BlogCategories:
             name: The category's name. Required.
             description: What it is about. Shown on the blog's own page.
             slug: The part of its address after `/blog/`. Left out, it is made from the name. A post and a category cannot share one.
+            expectedVersion: The category's `version` you last read. Sent, the change is refused with `stale_write` if the category has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/blog/update-a-blog-category
         """
-        return cast("BlogCategoriesUpdateResult", self._caller._call("blogCategories.update", [category_id], {"name": name, "description": description, "slug": slug}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("BlogCategoriesUpdateResult", self._caller._call("blogCategories.update", [category_id], {"name": name, "description": description, "slug": slug, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -5195,6 +5205,7 @@ class BlogPosts:
         coverAlt: Optional[str] = None,
         seoTitle: Optional[str] = None,
         seoDescription: Optional[str] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -5215,10 +5226,11 @@ class BlogPosts:
             coverAlt: What its cover picture shows, for readers who cannot see it.
             seoTitle: Its own title in search results. Empty is its title.
             seoDescription: Its own description in search results. Empty is the start of its text.
+            expectedVersion: The post's `version` you last read. Sent, the change is refused with `stale_write` if the post has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/blog/update-a-blog-post
         """
-        return cast("BlogPostsUpdateResult", self._caller._call("blogPosts.update", [post_id], {"title": title, "slug": slug, "body": body, "status": status, "categoryId": categoryId, "coverAlt": coverAlt, "seoTitle": seoTitle, "seoDescription": seoDescription}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("BlogPostsUpdateResult", self._caller._call("blogPosts.update", [post_id], {"title": title, "slug": slug, "body": body, "status": status, "categoryId": categoryId, "coverAlt": coverAlt, "seoTitle": seoTitle, "seoDescription": seoDescription, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -5392,6 +5404,7 @@ class Seo:
         indexNow: Optional[bool] = None,
         measurementId: Optional[str] = None,
         apiSecret: Optional[str] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -5410,10 +5423,11 @@ class Seo:
             indexNow: Whether search engines are told when a product, a post or a page changes.
             measurementId: The Google Analytics property paid orders are sent to, as `G-XXXXXXXXXX`. Empty stops sending them.
             apiSecret: That property's Measurement Protocol API secret. It is never answered back.
+            expectedVersion: The `version` you last read. Sent, the change is refused with `stale_write` if any of these settings has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/search-settings/update-search-settings
         """
-        return cast("SeoUpdateResult", self._caller._call("seo.update", [], {"googleVerification": googleVerification, "bingVerification": bingVerification, "aiCrawlers": aiCrawlers, "indexNow": indexNow, "measurementId": measurementId, "apiSecret": apiSecret}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("SeoUpdateResult", self._caller._call("seo.update", [], {"googleVerification": googleVerification, "bingVerification": bingVerification, "aiCrawlers": aiCrawlers, "indexNow": indexNow, "measurementId": measurementId, "apiSecret": apiSecret, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
 
 class Redirects:
@@ -5469,6 +5483,7 @@ class Redirects:
         *,
         from_: str,
         to: str,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -5483,10 +5498,11 @@ class Redirects:
         Args:
             from_: The address that has nothing at it, as a path on the store (`/old-page`). A whole address of the store is cut down to its path. Required.
             to: Where it leads, as a path on the store. A redirect never leaves the store, and never leads to an address that is itself redirected. Required.
+            expectedVersion: The redirect's `version` you last read. Sent, the change is refused with `stale_write` if the redirect has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/redirects/update-a-redirect
         """
-        return cast("List[RedirectsUpdateResultItem]", self._caller._call("redirects.update", [redirect_id], {"from": from_, "to": to}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("List[RedirectsUpdateResultItem]", self._caller._call("redirects.update", [redirect_id], {"from": from_, "to": to, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -5566,6 +5582,7 @@ class Sitemap:
         listed: Optional[bool] = None,
         priority: Optional[str] = None,
         changefreq: Optional[Literal["always", "hourly", "daily", "weekly", "monthly", "yearly", "never"]] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -5581,16 +5598,18 @@ class Sitemap:
             listed: Whether the sitemap lists it.
             priority: Its priority, from `0.1` to `1.0`.
             changefreq: How often it changes.
+            expectedVersion: The kind's `version` (in `kinds`) you last read. Sent, the change is refused with `stale_write` if that kind's rule has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/sitemap/update-a-kind-of-address
         """
-        return cast("SitemapUpdateKindResult", self._caller._call("sitemap.updateKind", [kind], {"listed": listed, "priority": priority, "changefreq": changefreq}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("SitemapUpdateKindResult", self._caller._call("sitemap.updateKind", [kind], {"listed": listed, "priority": priority, "changefreq": changefreq, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def updateEntry(
         self,
         *,
         kind: Literal["pages", "categories", "products", "blog"],
         ref: str,
+        expectedVersion: Optional[str] = None,
         listed: Optional[bool] = None,
         priority: Optional[str] = None,
         changefreq: Optional[Literal["always", "hourly", "daily", "weekly", "monthly", "yearly", "never"]] = None,
@@ -5608,13 +5627,14 @@ class Sitemap:
         Args:
             kind: The kind the address is of. Required.
             ref: Which address of that kind, as "Get the sitemap" names it. Required.
+            expectedVersion: The entry's `version` (in its kind's `entries`) you last read. Sent, the change is refused with `stale_write` if the entry has changed since. Left out, it is saved whatever happened in between.
             listed: Whether the sitemap lists it.
             priority: Its priority, from `0.1` to `1.0`.
             changefreq: How often it changes.
 
         Docs: https://docs.shoply.gg/api-reference/sitemap/update-one-address
         """
-        return cast("Any", self._caller._call("sitemap.updateEntry", [], {"kind": kind, "ref": ref, "listed": listed, "priority": priority, "changefreq": changefreq}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("Any", self._caller._call("sitemap.updateEntry", [], {"kind": kind, "ref": ref, "expectedVersion": expectedVersion, "listed": listed, "priority": priority, "changefreq": changefreq}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
 
 class CartRecovery:
@@ -5664,6 +5684,7 @@ class CartRecovery:
         secondMinutes: Optional[int] = None,
         secondSubject: Optional[str] = None,
         secondPercent: Optional[int] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -5687,10 +5708,11 @@ class CartRecovery:
             secondMinutes: Minutes after the buyer left. One of 720, 1200, 1440, 2880.
             secondSubject: Its subject, up to 150 characters. It may hold the email's variables, such as `{{ store.name }}`; one whose marks cannot be read is refused.
             secondPercent: The percent off its coupon. One of 0, 5, 10, 15, 20, 25. 0 sends it with no coupon.
+            expectedVersion: The `version` you last read. Sent, the change is refused with `stale_write` if any of these settings has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/cart-recovery/change-cart-recovery
         """
-        return cast("CartRecoveryUpdateResult", self._caller._call("cartRecovery.update", [], {"enabled": enabled, "firstOn": firstOn, "firstMinutes": firstMinutes, "firstSubject": firstSubject, "declinedOn": declinedOn, "declinedMinutes": declinedMinutes, "declinedSubject": declinedSubject, "secondOn": secondOn, "secondMinutes": secondMinutes, "secondSubject": secondSubject, "secondPercent": secondPercent}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("CartRecoveryUpdateResult", self._caller._call("cartRecovery.update", [], {"enabled": enabled, "firstOn": firstOn, "firstMinutes": firstMinutes, "firstSubject": firstSubject, "declinedOn": declinedOn, "declinedMinutes": declinedMinutes, "declinedSubject": declinedSubject, "secondOn": secondOn, "secondMinutes": secondMinutes, "secondSubject": secondSubject, "secondPercent": secondPercent, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def carts(
         self,
@@ -5791,6 +5813,7 @@ class WinBack:
         secondSubject: Optional[str] = None,
         secondPercent: Optional[int] = None,
         audience: Optional[str] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -5812,10 +5835,11 @@ class WinBack:
             secondSubject: Its subject, up to 150 characters. It may hold the email's variables, such as `{{ store.name }}`; one whose marks cannot be read is refused.
             secondPercent: The percent off its coupon. One of 0, 5, 10, 15, 20, 25. 0 sends it with no coupon.
             audience: Who is written to: empty for every subscriber, `vip`, or the ID of one of the store's tags.
+            expectedVersion: The `version` you last read. Sent, the change is refused with `stale_write` if any of these settings has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/email-marketing/change-win-back
         """
-        return cast("WinBackUpdateResult", self._caller._call("winBack.update", [], {"enabled": enabled, "firstOn": firstOn, "firstDays": firstDays, "firstSubject": firstSubject, "secondOn": secondOn, "secondDays": secondDays, "secondSubject": secondSubject, "secondPercent": secondPercent, "audience": audience}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("WinBackUpdateResult", self._caller._call("winBack.update", [], {"enabled": enabled, "firstOn": firstOn, "firstDays": firstDays, "firstSubject": firstSubject, "secondOn": secondOn, "secondDays": secondDays, "secondSubject": secondSubject, "secondPercent": secondPercent, "audience": audience, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def buyers(
         self,
@@ -6573,6 +6597,7 @@ class CustomerTags:
         *,
         name: Optional[str] = None,
         tone: Optional[Literal["neutral", "primary", "success", "warning", "danger"]] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -6587,10 +6612,11 @@ class CustomerTags:
         Args:
             name: Its name, up to 32 characters.
             tone: Its colour.
+            expectedVersion: The tag's `version` you last read. Sent, the change is refused with `stale_write` if the tag has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/customers/change-a-customer-tag
         """
-        return cast("CustomerTagsUpdateResult", self._caller._call("customerTags.update", [tag_id], {"name": name, "tone": tone}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("CustomerTagsUpdateResult", self._caller._call("customerTags.update", [tag_id], {"name": name, "tone": tone, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -6673,6 +6699,7 @@ class Affiliates:
         commission: Optional[float] = None,
         discount: Optional[float] = None,
         active: Optional[bool] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -6689,10 +6716,11 @@ class Affiliates:
             commission: The share of each order they earn, in percent: above 0, up to 90. It is taken on what the buyer paid for the products, after every discount, before fees and tax.
             discount: What their link takes off for the buyer, in percent: 0 to 90. Left out, it is 0.
             active: Whether their link works. Switched off, it takes nothing off and earns nothing.
+            expectedVersion: The affiliate's `version` you last read. Sent, the change is refused with `stale_write` if what this saves of them has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/affiliates/update-an-affiliate
         """
-        return cast("AffiliatesUpdateResult", self._caller._call("affiliates.update", [affiliate_id], {"code": code, "commission": commission, "discount": discount, "active": active}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("AffiliatesUpdateResult", self._caller._call("affiliates.update", [affiliate_id], {"code": code, "commission": commission, "discount": discount, "active": active, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -6940,6 +6968,7 @@ class AffiliateProgramme:
         ownLinks: Optional[bool] = None,
         toStore: Optional[bool] = None,
         payouts: Optional[bool] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -6959,10 +6988,11 @@ class AffiliateProgramme:
             ownLinks: Whether an affiliate may change the code their link ends in.
             toStore: Whether an affiliate may move commission to their store balance.
             payouts: Whether an affiliate may ask for a payout.
+            expectedVersion: The programme's `version` (`meta.version`) you last read. Sent, the change is refused with `stale_write` if any of its settings has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/affiliates/update-the-affiliate-programme
         """
-        return cast("AffiliateProgrammeUpdateResult", self._caller._call("affiliateProgramme.update", [], {"enabled": enabled, "defaultCommission": defaultCommission, "defaultDiscount": defaultDiscount, "selfSignup": selfSignup, "ownLinks": ownLinks, "toStore": toStore, "payouts": payouts}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("AffiliateProgrammeUpdateResult", self._caller._call("affiliateProgramme.update", [], {"enabled": enabled, "defaultCommission": defaultCommission, "defaultDiscount": defaultDiscount, "selfSignup": selfSignup, "ownLinks": ownLinks, "toStore": toStore, "payouts": payouts, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
 
 class Tickets:
@@ -7314,6 +7344,7 @@ class Teams:
         *,
         name: str,
         permissions: List[str],
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -7328,10 +7359,11 @@ class Teams:
         Args:
             name: What the team is called, up to 40 characters, once a store. Required.
             permissions: What its people may do, by name (List the team answers every permission in `permissions`). What a permission leans on is added with it: `stock.edit` brings `stock.view` and `products.view`. Required.
+            expectedVersion: The team's `version` (in `teams`) you last read. Sent, the change is refused with `stale_write` if the team has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/teams/update-a-team
         """
-        return cast("TeamsUpdateResult", self._caller._call("teams.update", [team_id], {"name": name, "permissions": permissions}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("TeamsUpdateResult", self._caller._call("teams.update", [team_id], {"name": name, "permissions": permissions, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -7400,6 +7432,7 @@ class Resellers:
         enabled: Optional[bool] = None,
         currency: Optional[str] = None,
         minTopup: Optional[float] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -7415,10 +7448,11 @@ class Resellers:
             enabled: Whether the panel is on.
             currency: The currency its prices and balances are in, as a three-letter code.
             minTopup: The smallest top-up a reseller can make, 5.00 to 100,000.00.
+            expectedVersion: The settings' `version` (`meta.version`) you last read. Sent, the change is refused with `stale_write` if any of them has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/resellers/update-the-panels-settings
         """
-        return cast("ResellersUpdateSettingsResult", self._caller._call("resellers.updateSettings", [], {"enabled": enabled, "currency": currency, "minTopup": minTopup}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("ResellersUpdateSettingsResult", self._caller._call("resellers.updateSettings", [], {"enabled": enabled, "currency": currency, "minTopup": minTopup, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def domain(
         self,
@@ -7522,6 +7556,7 @@ class Resellers:
         tierId: Optional[str] = None,
         discount: Optional[float] = None,
         status: Optional[Literal["active", "paused"]] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -7537,10 +7572,11 @@ class Resellers:
             tierId: Their tier. Empty, none.
             discount: Their own discount off every Reseller Price, in percent, 0.01 to 99.99, in place of their tier's. Null or empty, none.
             status: Whether they can buy and top up.
+            expectedVersion: The reseller's `version` you last read. Sent, the change is refused with `stale_write` if what this saves of them has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/resellers/update-a-reseller
         """
-        return cast("ResellersUpdateResult", self._caller._call("resellers.update", [reseller_id], {"tierId": tierId, "discount": discount, "status": status}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("ResellersUpdateResult", self._caller._call("resellers.update", [reseller_id], {"tierId": tierId, "discount": discount, "status": status, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -7594,6 +7630,7 @@ class Resellers:
         member_id: str,
         *,
         permissions: List[str],
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -7607,10 +7644,11 @@ class Resellers:
 
         Args:
             permissions: What they may do, by name: `products.view`, `products.buy`, `orders.view`, `orders.keys`, `balance.view`, `balance.topup`, `api.keys`, `api.urls`, `team.view`, `team.manage`, `alerts.manage`. Required.
+            expectedVersion: The member's `version` (in the reseller's `team`) you last read. Sent, the change is refused with `stale_write` if the member has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/resellers/change-what-a-resellers-member-may-do
         """
-        return cast("ResellersUpdateMemberResult", self._caller._call("resellers.updateMember", [reseller_id, member_id], {"permissions": permissions}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("ResellersUpdateMemberResult", self._caller._call("resellers.updateMember", [reseller_id, member_id], {"permissions": permissions, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def removeMember(
         self,
@@ -7897,6 +7935,7 @@ class ResellerInvites:
         maxUses: Optional[int] = None,
         endsAt: Optional[str] = None,
         enabled: Optional[bool] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -7914,10 +7953,11 @@ class ResellerInvites:
             maxUses: How many may join through it, 1 to 100,000. Empty or left out, no limit.
             endsAt: When it stops working, as a date and time. Empty or left out, never.
             enabled: Whether it works. Left out, it is true.
+            expectedVersion: The link's `version` you last read. Sent, the change is refused with `stale_write` if the link has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/resellers/update-an-invite-link
         """
-        return cast("ResellerInvitesUpdateResult", self._caller._call("resellerInvites.update", [invite_id], {"name": name, "tierId": tierId, "maxUses": maxUses, "endsAt": endsAt, "enabled": enabled}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("ResellerInvitesUpdateResult", self._caller._call("resellerInvites.update", [invite_id], {"name": name, "tierId": tierId, "maxUses": maxUses, "endsAt": endsAt, "enabled": enabled, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -7995,6 +8035,7 @@ class ResellerAnnouncements:
         title: str,
         body: str,
         pinned: Optional[bool] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -8010,10 +8051,11 @@ class ResellerAnnouncements:
             title: Its title, up to 100 characters. Required.
             body: What it says, up to 1,000 characters. Required.
             pinned: Whether it is shown first, before the newer ones. Left out, it is false.
+            expectedVersion: The announcement's `version` you last read. Sent, the change is refused with `stale_write` if the announcement has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/resellers/update-an-announcement
         """
-        return cast("ResellerAnnouncementsUpdateResult", self._caller._call("resellerAnnouncements.update", [announcement_id], {"title": title, "body": body, "pinned": pinned}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("ResellerAnnouncementsUpdateResult", self._caller._call("resellerAnnouncements.update", [announcement_id], {"title": title, "body": body, "pinned": pinned, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -8107,7 +8149,7 @@ class ResellerOrders:
     ) -> ResellerOrdersGetResult:
         """**Get a reseller order**
 
-        One reseller order whole, as the dashboard's page for it shows it: who bought it (`reseller`, and `boughtBy`, the member of their team), how (`via`), the `total` taken off their balance, `listTotal` (what it came to at the panel's list prices when bought) and `discount` (what their price took off it), both null for an order from before those were kept, and `balanceAfter`. Each of `lines` is an option it bought, with its `unitPrice` and `quantity` and what it delivered: `keys`, `items` (what a dynamic delivery's server handed back, a line each), `instructions`, and `waiting` while a dynamic line is still being fetched. A store's own order or a top-up answers 404.
+        One reseller order whole, as the dashboard's page for it shows it: who bought it (`reseller`, and `boughtBy`, the member of their team), how (`via`), the `total` taken off their balance, `listTotal` (what it came to at the panel's list prices when bought) and `discount` (what their price took off it), both null for an order from before those were kept, and `balanceAfter`. Each of `lines` is an option it bought, with its `unitPrice` and `quantity` and what it delivered: `keys`, `items` (what a dynamic delivery's server handed back, a line each), `instructions`, and `waiting` while a dynamic line is still being fetched. What it delivered is answered only to a key that also holds `orders.read`, as a store order's is: to any other, `keys` and `items` are empty, `instructions` is empty, `delivered` says how many, and `goodsShown` is false. A store's own order or a top-up answers 404.
 
         Needs the `resellers.read` permission (Read Resellers).
 
@@ -8372,6 +8414,7 @@ class Blacklist:
         value: str,
         note: Optional[str] = None,
         enabled: Optional[bool] = None,
+        expectedUpdatedAt: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -8388,10 +8431,11 @@ class Blacklist:
             value: What to match. Required.
             note: Why, up to 500 characters.
             enabled: Whether the rule is in force. Left out, it is true.
+            expectedUpdatedAt: The rule's `updatedAt` you last read. Sent, the change is refused with `stale_write` if the rule has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/blacklist/update-a-blacklist-rule
         """
-        return cast("BlacklistUpdateResult", self._caller._call("blacklist.update", [rule_id], {"type": type, "value": value, "note": note, "enabled": enabled}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("BlacklistUpdateResult", self._caller._call("blacklist.update", [rule_id], {"type": type, "value": value, "note": note, "enabled": enabled, "expectedUpdatedAt": expectedUpdatedAt}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -8535,6 +8579,7 @@ class Allowlist:
         value: str,
         note: Optional[str] = None,
         enabled: Optional[bool] = None,
+        expectedUpdatedAt: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -8551,10 +8596,11 @@ class Allowlist:
             value: What to match. Required.
             note: Why, up to 500 characters.
             enabled: Whether the entry is in force. Left out, it is true.
+            expectedUpdatedAt: The entry's `updatedAt` you last read. Sent, the change is refused with `stale_write` if the entry has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/allowlist/update-an-allowlist-entry
         """
-        return cast("AllowlistUpdateResult", self._caller._call("allowlist.update", [entry_id], {"type": type, "value": value, "note": note, "enabled": enabled}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("AllowlistUpdateResult", self._caller._call("allowlist.update", [entry_id], {"type": type, "value": value, "note": note, "enabled": enabled, "expectedUpdatedAt": expectedUpdatedAt}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -9082,6 +9128,7 @@ class Disputes:
         discord: Optional[bool] = None,
         discordRoles: Optional[Literal["keep", "take", "kick", "ban"]] = None,
         discordRolesBack: Optional[bool] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -9106,10 +9153,11 @@ class Disputes:
             discord: Post both to the store's Discord. Needs a webhook in its notification settings.
             discordRoles: What an opened dispute does to a buyer who linked their Discord to the order: `keep` their roles, `take` them, `kick` (take them and remove the buyer from the server), or `ban` them from it.
             discordRolesBack: Whether a dispute closed in the store's favour gives the roles back, adds a kicked buyer again and lifts a ban.
+            expectedVersion: The `version` you last read. Sent, the change is refused with `stale_write` if any of these settings has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/disputes/change-dispute-settings
         """
-        return cast("DisputesUpdateSettingsResult", self._caller._call("disputes.updateSettings", [], {"blacklist": blacklist, "takeBackAccess": takeBackAccess, "acceptSmall": acceptSmall, "acceptUnder": acceptUnder, "autoSubmit": autoSubmit, "askAboveOn": askAboveOn, "askAbove": askAbove, "emailOpened": emailOpened, "emailClosed": emailClosed, "discord": discord, "discordRoles": discordRoles, "discordRolesBack": discordRolesBack}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("DisputesUpdateSettingsResult", self._caller._call("disputes.updateSettings", [], {"blacklist": blacklist, "takeBackAccess": takeBackAccess, "acceptSmall": acceptSmall, "acceptUnder": acceptUnder, "autoSubmit": autoSubmit, "askAboveOn": askAboveOn, "askAbove": askAbove, "emailOpened": emailOpened, "emailClosed": emailClosed, "discord": discord, "discordRoles": discordRoles, "discordRolesBack": discordRolesBack, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
 
 class Finance:
@@ -9271,6 +9319,7 @@ class Finance:
         self,
         *,
         rates: List[Dict[str, Any]],
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -9284,10 +9333,11 @@ class Finance:
 
         Args:
             rates: A rate a provider. Required.
+            expectedVersion: The `version` of the payment costs you last read. Sent, the change is refused with `stale_write` if any of them has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/finance/set-payment-fee-rates
         """
-        return cast("List[FinanceSetPaymentCostsResultItem]", self._caller._call("finance.setPaymentCosts", [], {"rates": rates}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("List[FinanceSetPaymentCostsResultItem]", self._caller._call("finance.setPaymentCosts", [], {"rates": rates, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
 
 class Tax:
@@ -9319,6 +9369,7 @@ class Tax:
         collect: Optional[bool] = None,
         included: Optional[bool] = None,
         business: Optional[bool] = None,
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -9334,15 +9385,17 @@ class Tax:
             collect: Whether tax is charged at checkout.
             included: Whether the store's prices already include the tax. Off, it is added on top.
             business: Whether a business buyer's VAT number takes the tax off, when the EU's register confirms it and it is from another country than the store's.
+            expectedVersion: The `version` you last read. Sent, the change is refused with `stale_write` if any of these settings has changed since; the rates have a `ratesVersion` of their own. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/tax/update-tax-settings
         """
-        return cast("TaxUpdateResult", self._caller._call("tax.update", [], {"collect": collect, "included": included, "business": business}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("TaxUpdateResult", self._caller._call("tax.update", [], {"collect": collect, "included": included, "business": business, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def setRates(
         self,
         *,
         places: List[Dict[str, Any]],
+        expectedVersion: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -9356,10 +9409,11 @@ class Tax:
 
         Args:
             places: The places. Required.
+            expectedVersion: The `ratesVersion` you last read. Sent, the change is refused with `stale_write` if a rate has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/tax/add-or-change-tax-rates
         """
-        return cast("TaxSetRatesResult", self._caller._call("tax.setRates", [], {"places": places}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("TaxSetRatesResult", self._caller._call("tax.setRates", [], {"places": places, "expectedVersion": expectedVersion}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def deleteRate(
         self,
@@ -9562,6 +9616,7 @@ class Expenses:
         reference: Optional[str] = None,
         productId: Optional[str] = None,
         amountCurrency: Optional[str] = None,
+        expectedUpdatedAt: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -9585,10 +9640,11 @@ class Expenses:
             reference: An invoice number or the like, up to 160 characters.
             productId: A product this expense is a cost of.
             amountCurrency: With its amount as it was, the currency that amount is in: for an expense whose currency is not known (`currency` null), or to put right one that is wrong. Nothing is converted. With a new `amount` it is not read: a new amount is in the store's currency today.
+            expectedUpdatedAt: The expense's `updatedAt` you last read. Sent, the change is refused with `stale_write` if the expense has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/expenses/update-an-expense
         """
-        return cast("ExpensesUpdateResult", self._caller._call("expenses.update", [expense_id], {"spentOn": spentOn, "payee": payee, "amount": amount, "currency": currency, "method": method, "categoryId": categoryId, "category": category, "note": note, "reference": reference, "productId": productId, "amountCurrency": amountCurrency}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("ExpensesUpdateResult", self._caller._call("expenses.update", [expense_id], {"spentOn": spentOn, "payee": payee, "amount": amount, "currency": currency, "method": method, "categoryId": categoryId, "category": category, "note": note, "reference": reference, "productId": productId, "amountCurrency": amountCurrency, "expectedUpdatedAt": expectedUpdatedAt}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -9745,6 +9801,7 @@ class ExpenseCategories:
         *,
         name: str,
         icon: Optional[str] = None,
+        expectedUpdatedAt: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -9759,10 +9816,11 @@ class ExpenseCategories:
         Args:
             name: Its name. Required.
             icon: Its icon. Left out, it stays as it is.
+            expectedUpdatedAt: The category's `updatedAt` you last read. Sent, the change is refused with `stale_write` if the category has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/expense-setup/update-an-expense-category
         """
-        return cast("ExpenseCategoriesUpdateResult", self._caller._call("expenseCategories.update", [category_id], {"name": name, "icon": icon}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("ExpenseCategoriesUpdateResult", self._caller._call("expenseCategories.update", [category_id], {"name": name, "icon": icon, "expectedUpdatedAt": expectedUpdatedAt}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -9878,6 +9936,7 @@ class RecurringExpenses:
         note: Optional[str] = None,
         reference: Optional[str] = None,
         amountCurrency: Optional[str] = None,
+        expectedUpdatedAt: Optional[str] = None,
         idempotency_key: Optional[str] = None,
         timeout: Optional[float] = None,
         max_retries: Optional[int] = None,
@@ -9899,10 +9958,11 @@ class RecurringExpenses:
             note: A note, up to 255 characters.
             reference: A reference, up to 160 characters.
             amountCurrency: With its amount as it was, the currency that amount is in: for one whose currency is not known (`currency` null), or to put right one that is wrong. Nothing is converted. The expenses it writes from then on are in it; those it has written keep theirs.
+            expectedUpdatedAt: The recurring expense's `updatedAt` you last read. Sent, the change is refused with `stale_write` if it has changed since. Left out, it is saved whatever happened in between.
 
         Docs: https://docs.shoply.gg/api-reference/expense-setup/update-a-recurring-expense
         """
-        return cast("RecurringExpensesUpdateResult", self._caller._call("recurringExpenses.update", [recurring_id], {"payee": payee, "amount": amount, "cadence": cadence, "nextOn": nextOn, "method": method, "categoryId": categoryId, "note": note, "reference": reference, "amountCurrency": amountCurrency}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
+        return cast("RecurringExpensesUpdateResult", self._caller._call("recurringExpenses.update", [recurring_id], {"payee": payee, "amount": amount, "cadence": cadence, "nextOn": nextOn, "method": method, "categoryId": categoryId, "note": note, "reference": reference, "amountCurrency": amountCurrency, "expectedUpdatedAt": expectedUpdatedAt}, {"idempotency_key": idempotency_key, "timeout": timeout, "max_retries": max_retries, "headers": headers}))
 
     def delete(
         self,
@@ -10077,7 +10137,7 @@ class Requests:
     ) -> RequestsShowResult:
         """**Get an API request**
 
-        One request, with what was sent and what came back. Long bodies are cut short, and values that are secrets or goods (a password, license keys going into stock) are not kept. The two bodies are answered only to a key that holds the scope of what the request did, and `bodiesWithheld` is true where they were kept back. A request's ID is the `X-Request-Id` header of its answer.
+        One request, with what was sent and what came back. Long bodies are cut short. A secret is never kept, in what was sent, what came back or the query: a value under a name that says it is one (a password, a signing secret, a token) and a value shaped like one under any name (an API key, a join link) is `[not kept]`. Nor are license keys going into stock. The two bodies are answered only to a key that holds the scope of what the request did, and `bodiesWithheld` is true where they were kept back. A request's ID is the `X-Request-Id` header of its answer.
 
         Needs the `logs.read` permission (Read API Requests).
 
@@ -10913,7 +10973,7 @@ class CustomerResources:
 
         Emails a six-digit code to the address a buyer typed, for them to type back with Sign in with the code. The code works for 10 minutes, five tries.
 
-        The answer is the same for any address, and a code is only mailed to an address that has orders at the store, so this cannot be used to find out who has bought there. One address is sent a code a minute at most, five an hour and ten a day: past that the answer is `code_cooldown` with `resendIn`, the seconds to wait. A store sends 60 codes an hour at most, and past that, or on a busy hour for the whole platform, the answer is `store_busy`.
+        The answer is the same for any address, and a code is only mailed to an address that has orders at the store, so this cannot be used to find out who has bought there. One address is sent a code a minute at most, five an hour and ten a day: past that the answer is `code_cooldown` with `resendIn`, the seconds to wait. A store sends 60 codes an hour at most, and past that the answer is `store_busy`. Other stores' codes never count against it.
 
         Call it from the buyer's own device. It is counted for the address that asks, 10 an hour, so a server asking for every buyer would run out at once.
 
